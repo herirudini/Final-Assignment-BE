@@ -51,7 +51,7 @@ class Routes {
         this.router.patch('/user/change-email-username', auth.twoStepAuth, auth.uniqueData, userController.changeEmailOrUsername, userController.logout);
     }
     public changePassword(): void {
-        this.router.put('/user/change-password', auth.twoStepAuth, userController.changePassword, userController.logout);
+        this.router.patch('/user/change-password', auth.twoStepAuth, userController.changePassword, userController.logout);
     }
     public logout(): void {
         this.router.patch('/logout', userController.logout)
