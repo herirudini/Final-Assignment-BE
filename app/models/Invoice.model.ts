@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 const validator = require('mongoose-validators')
 
 interface Invoice {
+    status: string,
     suplier_id: string
     orders: object[],
     paid: number, //dihitung setiap kedatangan barang (up-date)
@@ -11,6 +12,7 @@ interface Invoice {
 }
 
 interface InvoiceData extends mongoose.Document {
+    status: string, //on-process, finish
     suplier_id: string
     orders: object[], //dipush dari get order by id
     paid: number, //dihitung setiap kedatangan barang (up-date)
@@ -24,6 +26,7 @@ interface InvoiceInterface extends mongoose.Model<InvoiceData> {
 }
 
 const invoiceSchema = new Schema({
+    status: {type: String},
     suplier_id: { type: String },
     orders: [{ type: Object }], 
     paid: { type: Number },
