@@ -7,9 +7,10 @@ class accountingRouter {
         this.router = Router()
         this.updateOrder() //memasukkan harga beli dan presentase laba
         this.createInvoice()
-        this.listInvoice()
+        this.getAllInvoice()
         this.getInvoiceBySuplier()
         this.getInvoiceByMonth()
+        this.getInvoiceByWeek()
         this.getInvoiceByDay()
         this.createReport() //print invoice" yang akan dilaporkan kedalam format xls
     }
@@ -19,17 +20,20 @@ class accountingRouter {
     private createInvoice(): void {
         this.router.post('/order', accountingController.createInvoice);
     }
-    private listInvoice(): void {
-        this.router.get('/invoice', accountingController.listInvoice);
+    private getAllInvoice(): void {
+        this.router.get('/invoice', accountingController.getAllInvoice);
     }
     private getInvoiceBySuplier(): void {
-        this.router.get('/invoice/suplier/:suplier_id', accountingController.getInvoiceBySuplier);
+        this.router.get('/invoice/by-suplier/:suplier_id', accountingController.getInvoiceBySuplier);
     }
     private getInvoiceByMonth(): void {
-        this.router.get('/invoice/month/:month', accountingController.getInvoiceByMonth);
+        this.router.get('/invoice/by-date/:month', accountingController.getInvoiceByMonth);
+    }
+    private getInvoiceByWeek(): void {
+        this.router.get('/invoice/by-date/:month/:week', accountingController.getInvoiceByWeek);
     }
     private getInvoiceByDay(): void {
-        this.router.get('/invoice/day/:day', accountingController.getInvoiceByDay);
+        this.router.get('/invoice/by-date/:month/:week/:day', accountingController.getInvoiceByDay);
     }
     private createReport(): void {
         this.router.post('/invoice', accountingController.createReport);

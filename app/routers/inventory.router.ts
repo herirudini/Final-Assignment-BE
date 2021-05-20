@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import {inventoryController} from '../controllers/inventory.controller'
+import inventoryController from '../controllers/inventory.controller'
 
 class inventoryRouter {
     router: Router
@@ -8,6 +8,7 @@ class inventoryRouter {
         this.createBrand()
         this.createSuplier()
         this.createOrder()
+        this.confirmDelivery()
     }
     private createBrand(): void {
         this.router.post('/brand', inventoryController.createBrand);
@@ -17,6 +18,9 @@ class inventoryRouter {
     }
     private createOrder(): void {
         this.router.post('/purchase-order', inventoryController.createOrder);
+    }
+    private confirmDelivery(): void {
+        this.router.post('/delivery-order/:order_id', inventoryController.confirmDelivery);
     }
 }
 

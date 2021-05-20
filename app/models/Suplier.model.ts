@@ -4,13 +4,13 @@ const validator = require('mongoose-validators')
 interface Suplier {
     name: string,
     contact: string,
-    brands: string,
+    // brands: string[],
 }
 
 interface SuplierData extends mongoose.Document {
     name: string, //pt.wingsfood-solokanjeruk
     contact: string, //wings-solokanjeruk@wingsfood.com
-    brands: string, //[misedap-karisoto, misedap-goreng] (dalam bentuk id)
+    // brands: string[], //[misedap-karisoto, misedap-goreng] (dalam bentuk id)
 }
 
 interface SuplierInterface extends mongoose.Model<SuplierData> {
@@ -24,7 +24,7 @@ const suplierSchema = new Schema({
         validate: validator.isNumeric(),
         required: true
     },
-    brands: [{ type: Schema.Types.ObjectId, ref: 'Brand' }],
+    // brands: [{ type: Schema.Types.ObjectId, ref: 'Brand' }],
 }, { timestamps: true });
 
 const Suplier = mongoose.model<SuplierData, SuplierInterface>('Suplier', suplierSchema)

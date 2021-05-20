@@ -6,18 +6,16 @@ interface Invoice {
     suplier_id: string
     orders: object[],
     paid: number, //dihitung setiap kedatangan barang (up-date)
-    unpaid: number, //dihitung setiap kedatangan barang (up-date)
-    total: number,
+    totalPayment: number,
     date: object,
 }
 
 interface InvoiceData extends mongoose.Document {
     status: string, //on-process, finish
     suplier_id: string
-    orders: object[], //dipush dari get order by id
-    paid: number, //dihitung setiap kedatangan barang (up-date)
-    unpaid: number, //dihitung setiap kedatangan barang (up-date)
-    total: number,
+    orders: object[], //pupulate order
+    paid: number, //++ setiap kedatangan barang (up-date)
+    totalPayment: number,
     date: object,
 }
 
@@ -28,10 +26,9 @@ interface InvoiceInterface extends mongoose.Model<InvoiceData> {
 const invoiceSchema = new Schema({
     status: {type: String},
     suplier_id: { type: String },
-    orders: [{ type: Object }], 
+    orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }], 
     paid: { type: Number },
-    unpaid: { type: Number },
-    total: { type: Number },
+    totalPayment: { type: Number },
     date: {
         day: {type: String},
         month: {type: String},
