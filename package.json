@@ -13,7 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Heri Rudini",
+  "author": "",
   "license": "GPL-3.0",
   "dependencies": {
     "@types/dotenv": "^8.2.0",
