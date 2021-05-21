@@ -8,7 +8,7 @@ interface Brand {
 
 interface BrandData extends mongoose.Document {
     name: string, //misedap
-    products: string[], //karisoto, migoreng, rendang
+    products: string[], //id id products
 }
 
 interface BrandInterface extends mongoose.Model<BrandData> {
@@ -17,7 +17,7 @@ interface BrandInterface extends mongoose.Model<BrandData> {
 
 const brandSchema = new Schema({
     name: { type: String, required: true },
-    products: [{ type: String, required: true }]
+    products: [{ type: Schema.Types.ObjectId, ref: 'Product' }]
 }, { timestamps: true });
 
 const Brand = mongoose.model<BrandData, BrandInterface>('Brand', brandSchema)

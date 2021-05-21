@@ -25,28 +25,40 @@ class inventoryController {
         }
     }
     static async createProduct(req: Request, res: Response, next: NextFunction) {
-        const inputBrand = req.body.brand_id;
+        const inputBrandName = req.body.brand
         const inputName = req.body.name;
         const inputImage = req.body.image;
         const inputUom = req.body.uom;
-        const inputSellPrice = req.body.sellPrice;
         const inputBarcode = req.body.barcode
+        const countBrand = await Brand.countDocuments({ name: inputBrandName })
 
+        let brandId;
+        let createBrand;
         let createProduct;
+        let pushProductId;
         try {
-            createProduct = await Order.create({
-                brand_id: inputBrand,
-                name: inputName,
-                image: inputImage,
-                uom: inputUom,
-                sellPrice: inputSellPrice,
-                barcode: inputBarcode,
-            })
+            if (countBrand == 0) {
+                createBrand = await Brand.create({
+                    name: inputBrandName
+                });
+                brandId = createBrand.id
+            } else {
+                const getBrand = await Brand.findOne({ name: inputBrandName })
+                brandId = getBrand?.id;
+            }
         }
         catch (err) {
             next(err)
         }
         finally {
+            createProduct = await Order.create({
+                brand_id: brandId,
+                name: inputName,
+                image: inputImage,
+                uom: inputUom,
+                barcode: inputBarcode,
+            })
+            pushProductId = await Brand.findByIdAndUpdate(brandId, { $push: { products: createProduct.id } }, { new: true })
             res.status(201).json({ success: true, message: "Product created", data: createProduct })
         }
     }

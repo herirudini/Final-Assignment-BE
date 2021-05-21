@@ -40,9 +40,9 @@ const productSchema = new Schema({
     image: { type: String, required: true },
     uom: { type: String, required: true },
     stock: { type: Number, default: 0 },
-    buyPrice: { type: Number, required: true },
-    sellPrice: { type: Number, required: true },
-    isAfterTax: { type: String, required: true },
+    buyPrice: { type: Number },
+    sellPrice: { type: Number },
+    isAfterTax: { type: String },
     barcode: { type: String, required: true }
 }, { timestamps: true });
 
