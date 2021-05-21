@@ -118,6 +118,25 @@ class inventoryController {
             res.status(201).json({ success: true, message: "Delivery created, Invoice updated, Order updated, Product created or updated", data: "Too Much Im Spinning" })
         }
     }
+    static getAllProduct(req: Request, res: Response, next: NextFunction) {
+        Product.find()
+            .then((result) => {
+                res.status(200).json({ success: true, message: "All Product:", data: result })
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
+    static setProductStatus(req: Request, res: Response, next: NextFunction) {
+        const inputStatus = req.body.status
+        Product.findById(req.params.product_id, { status: inputStatus }, { new: true })
+            .then((result) => {
+                res.status(200).json({ success: true, message: "Product updated:", data: result.status })
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
 }
 
 export default inventoryController
