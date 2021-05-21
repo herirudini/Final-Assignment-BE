@@ -68,19 +68,21 @@ class inventoryController {
         }
     }
     static async createOrder(req: Request, res: Response, next: NextFunction) {
-        const inputSuplier = req.body.suplier_id;
-        const inputBrand = req.body.brand_id;
-        const inputProduct = req.body.product_id;
-        const inputUom = req.body.uom;
+        const inputBarcode = req.body.barcode;
         const inputQuantity = req.body.quantity;
+        const getProduct = await Product.findOne({ barcode: inputBarcode })
+        const suplierId = getProduct?.suplier_id;
+        const brandId = getProduct?.brand_id;
+        const productId = getProduct?.id;
+        const uom = getProduct?.uom;
 
         let createOrder;
         try {
             createOrder = await Order.create({
-                suplier_id: inputSuplier,
-                brand_id: inputBrand,
-                product_id: inputProduct,
-                uom: inputUom,
+                suplier_id: suplierId,
+                brand_id: brandId,
+                product_id: productId,
+                uom: uom,
                 quantity: inputQuantity,
             })
         }
