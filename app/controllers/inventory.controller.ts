@@ -74,12 +74,11 @@ class inventoryController {
         const uom = order?.uom;
         const quantity = order?.quantity;
         const arrived = order?.arrived;
-        const price = order?.price;
-        const profit = order?.profit;
+        const buyPrice = order?.buyPrice;
+        const sellPrice = order?.sellPrice;
         const isAfterTax = order?.isAfterTax;
-        const measureProfit = price * (profit / 100);
-        const priceTag = measureProfit + price;
-        const billToPay = price * inputArrivedQuantity;
+        const priceTag = sellPrice;
+        const billToPay = buyPrice * inputArrivedQuantity;
         const tryMatchQuantity = arrived + inputArrivedQuantity;
         let createDelivery;
         let createProduct;

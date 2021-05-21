@@ -6,7 +6,6 @@ interface Product {
     stock: number,
     priceTag: number,
     isAfterTax: string,
-    // discount: number,
     barcode: string
 }
 
@@ -16,7 +15,6 @@ interface ProductData extends mongoose.Document {
     stock: number,
     priceTag: number,
     isAfterTax: string, //diisi otomatis dari delivery
-    // discount: number,
     barcode: string //order_id.brand_id.uom
 }
 
@@ -30,7 +28,6 @@ const productSchema = new Schema({
     stock: { type: Number, default: 0 },
     priceTag: { type: Number, required: true },
     isAfterTax: { type: String, required: true },
-    // discount: { type: Number, default: 0},
     barcode: { type: String, required: true }
 }, { timestamps: true });
 

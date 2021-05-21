@@ -9,22 +9,24 @@ interface Order {
     uom: string,
     quantity: number,
     arrived: number,
-    price: number,
+    buyPrice: number,
+    discount: number,
     isAfterTax: string,
-    profit: number,
+    sellPrice: number,
 }
 
 interface OrderData extends mongoose.Document {
     status: string, //requested, accepted (sudah di acc jadi invoice), finish (barang sudah sampai semua)
     suplier_id: string, //pt.wingsfood-solokanjeruk
-    invoice_id: string, //diupdate otomatis setelah invocie created
+    invoice_id: string, //diisi otomatis setelah create invoice
     brand_id: string, //misedap-karisoto
     uom: string, //karton-40x1
     quantity: number,
     arrived: number, //jika arrived == quantity maka status = finish
-    price: number, //harga beli
+    buyPrice: number, //harga beli
+    discount: number,
     isAfterTax: string,
-    profit: number, //presentasi laba yang diinginkan (ini akan menentukan harga jual)
+    sellPrice: number, //presentasi laba yang diinginkan (ini akan menentukan harga jual)
 }
 
 interface OrderInterface extends mongoose.Model<OrderData> {
@@ -34,14 +36,15 @@ interface OrderInterface extends mongoose.Model<OrderData> {
 const orderSchema = new Schema({
     status: { type: String, default: "requested" },
     suplier_id: { type: String, required: true },
-    invoice_id: { type: String, required: true },
+    invoice_id: { type: String },
     brand_id: { type: String, required: true },
     uom: { type: String, required: true },
     quantity: { type: Number },
     arrived: { type: Number, default: 0 },
-    price: { type: Number, default: 0 },
+    buyPrice: { type: Number, default: 0 },
+    discount: { type: Number, default: 0 },
     isAfterTax: { type: String, default: "yes" },
-    profit: { type: Number, default: 0 },
+    sellPrice: { type: Number, default: 0 },
 }, { timestamps: true });
 
 const Order = mongoose.model<OrderData, OrderInterface>('Order', orderSchema)

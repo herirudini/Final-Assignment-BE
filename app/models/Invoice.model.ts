@@ -12,7 +12,7 @@ interface Invoice {
 
 interface InvoiceData extends mongoose.Document {
     status: string, //on-process, finish
-    suplier_id: string
+    suplier_id: string,
     orders: object[], //pupulate order
     paid: number, //++ setiap kedatangan barang (up-date)
     totalPayment: number,
