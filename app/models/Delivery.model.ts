@@ -15,7 +15,6 @@ interface DeliveryInterface extends mongoose.Model<DeliveryData> {
 }
 
 const deliverySchema = new Schema({
-    invoice_id: { type: Schema.Types.ObjectId, ref: 'Invoice' },
     order_id: { type: Schema.Types.ObjectId, ref: 'Order' },
     arrivedQuantity: { type: Number, default: 0 },
 }, { timestamps: true });

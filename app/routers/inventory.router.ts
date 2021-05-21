@@ -8,6 +8,7 @@ class inventoryRouter {
         this.createBrand()
         this.createSuplier()
         this.createOrder()
+        this.createProduct()
         this.confirmDelivery()
         this.getAllProduct()
         this.setProductStatus()
@@ -21,14 +22,17 @@ class inventoryRouter {
     private createOrder(): void {
         this.router.post('/purchase-order', inventoryController.createOrder);
     }
-    private confirmDelivery(): void {
-        this.router.post('/delivery-order/:order_id', inventoryController.confirmDelivery);
+    private createProduct(): void {
+        this.router.post('/product', inventoryController.createProduct);
     }
     private getAllProduct(): void {
-        this.router.get('/product/', inventoryController.getAllProduct);
+        this.router.get('/product', inventoryController.getAllProduct);
     }
     private setProductStatus(): void {
         this.router.patch('/product/:product_id', inventoryController.setProductStatus);
+    }
+    private confirmDelivery(): void {
+        this.router.post('/delivery-order/:order_id', inventoryController.confirmDelivery);
     }
 }
 
