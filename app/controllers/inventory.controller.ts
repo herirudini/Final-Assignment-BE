@@ -131,7 +131,7 @@ class inventoryController {
         const inputStatus = req.body.status
         Product.findById(req.params.product_id, { status: inputStatus }, { new: true })
             .then((result) => {
-                res.status(200).json({ success: true, message: "Product updated:", data: result.status })
+                res.status(200).json({ success: true, message: "Product updated:", data: result })
             })
             .catch((err) => {
                 next(err)
