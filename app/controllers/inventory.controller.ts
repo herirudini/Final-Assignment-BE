@@ -29,7 +29,9 @@ class inventoryController {
         const inputName = req.body.name;
         const inputImage = req.body.image;
         const inputUom = req.body.uom;
-        const inputBarcode = req.body.barcode
+        const inputBarcode = req.body.barcode;
+        const inputBuyPrice = req.body.buyPrice;
+        const inputSellPrice = req.body.sellPrice;
         const countBrand = await Brand.countDocuments({ name: inputBrandName })
 
         let brandId;
@@ -51,11 +53,13 @@ class inventoryController {
             next(err)
         }
         finally {
-            createProduct = await Order.create({
+            createProduct = await Product.create({
                 brand_id: brandId,
                 name: inputName,
                 image: inputImage,
                 uom: inputUom,
+                buyPrice: inputBuyPrice,
+                sellPrice: inputSellPrice,
                 barcode: inputBarcode,
             })
             pushProductId = await Brand.findByIdAndUpdate(brandId, { $push: { products: createProduct.id } }, { new: true })
@@ -107,9 +111,12 @@ class inventoryController {
     }
     static async confirmDelivery(req: Request, res: Response, next: NextFunction) {
         const inputArrivedQuantity = req.body.arrivedQuantity;
+        const inputBarcode = req.body.barcode;
+        const getProduct = await Product.findOne({ barcode: inputBarcode })
+        const product_id = getProduct?.id;
+
         const order_id = req.params.order_id;
         const order = await Order.findById(order_id);
-        const product_id = order?.product_id;
         const quantity = order?.quantity;
         const arrived = order?.arrived;
         const buyPrice = order?.buyPrice;
