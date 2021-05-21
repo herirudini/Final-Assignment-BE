@@ -113,16 +113,14 @@ class inventoryController {
         const inputArrivedQuantity = req.body.arrivedQuantity;
         const inputBarcode = req.body.barcode;
         const getProduct = await Product.findOne({ barcode: inputBarcode })
-        const product_id = getProduct?.id;
+        const productId = getProduct?.id;
 
-        const order_id = req.params.order_id;
-        const order = await Order.findById(order_id);
-        const quantity = order?.quantity;
-        const arrived = order?.arrived;
-        const buyPrice = order?.buyPrice;
-        const isAfterTax = order?.isAfterTax;
-        const discount = order?.discount;
-        const checkProduct = await Product.countDocuments({ product_id });
+        const getOrder = await Order.findOne({product_id: productId});
+        const orderId = getOrder?.id;
+        const quantity = getOrder?.quantity;
+        const arrived = getOrder?.arrived;
+        const buyPrice = getOrder?.buyPrice;
+        const isAfterTax = getOrder?.isAfterTax;
         const tryMatchQuantity = arrived + inputArrivedQuantity;
 
         let createDelivery;
@@ -133,11 +131,11 @@ class inventoryController {
 
         try {
             createDelivery = await Delivery.create({
-                order_id: order_id,
+                order_id: orderId,
                 arrivedQuantity: inputArrivedQuantity,
             });
-            updateProduct = await Product.findByIdAndUpdate(product_id, { $inc: { stock: inputArrivedQuantity }, buyPrice: buyPrice, isAfterTax: isAfterTax }, { new: true });
-            updateOrder = await Order.findByIdAndUpdate(order_id, updateOrderData, { new: true });
+            updateProduct = await Product.findByIdAndUpdate(productId, { $inc: { stock: inputArrivedQuantity }, buyPrice: buyPrice, isAfterTax: isAfterTax }, { new: true });
+            updateOrder = await Order.findByIdAndUpdate(orderId, updateOrderData, { new: true });
         }
         catch (err) {
             console.log("inventory_controller_err: " + err)
