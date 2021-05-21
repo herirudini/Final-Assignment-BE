@@ -32,7 +32,7 @@ class inventoryRouter {
         this.router.patch('/product/:product_id', inventoryController.setProductStatus);
     }
     private confirmDelivery(): void {
-        this.router.post('/delivery-order/:order_id', inventoryController.confirmDelivery);
+        this.router.post('/delivery', inventoryController.confirmDelivery);
     }
 }
 
