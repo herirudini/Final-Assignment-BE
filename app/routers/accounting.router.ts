@@ -5,6 +5,8 @@ class accountingRouter {
     router: Router
     constructor() {
         this.router = Router()
+        this.listRequestedOrder() //menampilkan pesanan pesanan yang belum diacc
+        this.getRequestedOrder() //menampilkan pesanan yang belum diacc
         this.updateOrder() //memasukkan harga beli dan presentase laba
         this.createInvoice()
         this.getAllInvoice()
@@ -13,6 +15,12 @@ class accountingRouter {
         this.getInvoiceByWeek()
         this.getInvoiceByDay()
         this.createReport() //print invoice" yang akan dilaporkan kedalam format xls
+    }
+    private listRequestedOrder(): void {
+        this.router.get('/order', accountingController.listRequestedOrder);
+    }
+    private getRequestedOrder(): void {
+        this.router.get('/order/:order_id', accountingController.getRequestedOrder);
     }
     private updateOrder(): void {
         this.router.patch('/order/:order_id', accountingController.updateOrder);

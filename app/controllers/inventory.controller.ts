@@ -63,7 +63,7 @@ class inventoryController {
             res.status(201).json({ success: true, message: "Order created", data: createOrder })
         }
     }
-    static async confirmDelivery(req: Request, res: Response, next: NextFuncition) {
+    static async confirmDelivery(req: Request, res: Response, next: NextFunction) {
         const barcode = req.body.barcode;
         const inputArrivedQuantity = req.body.arrivedQuantity;
         const order_id = req.params.order_id;
