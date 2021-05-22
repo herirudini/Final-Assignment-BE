@@ -4,7 +4,7 @@ interface Product {
     status: string,
     brand_id: string,
     suplier_id: string,
-    name: string,
+    productName: string,
     image: string,
     uom: string,
     stock: number,
@@ -16,9 +16,9 @@ interface Product {
 
 interface ProductData extends mongoose.Document {
     status: string, //active atau inactive
-    brand_id: string, //populate = {name: misedap-karisoto, image: //google.gambar/misedap-karisoto}
+    brand_id: string, //populate = {productName: misedap-karisoto, image: //google.gambar/misedap-karisoto}
     suplier_id: string,
-    name: string,
+    productName: string,
     image: string,
     uom: string, //karton-40x1
     stock: number,
@@ -36,7 +36,7 @@ const productSchema = new Schema({
     status: { type: String, default: "inactive" },
     brand_id: { type: Schema.Types.ObjectId, ref: 'Brand' },
     suplier_id: { type: Schema.Types.ObjectId, ref: 'Suplier' },
-    name: { type: String, required: true },
+    productName: { type: String, required: true },
     image: { type: String, required: true },
     uom: { type: String, required: true },
     stock: { type: Number, default: 0 },

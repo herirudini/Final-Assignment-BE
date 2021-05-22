@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import ownerRouter from './owner.router'
 import inventoryRouter from './inventory.router'
-import accountingRouter from './accounting.router'
+import financeRouter from './finance.router'
 import cashierRouter from './cashier.router'
 
 import userController from '../controllers/user.controller'
@@ -14,10 +14,12 @@ class Routes {
     constructor() {
         this.router = Router()
         this.login()
+        this.forgotPassword()
+        this.emergency()
         this.authentication()
         this.owner()
         this.inventory()
-        this.accounting()
+        this.finance()
         this.cashier()
         this.accountDetails()
         this.changeEmailOrPhone()
@@ -28,7 +30,13 @@ class Routes {
 
     public login(): void {
         this.router.put('/login', userController.login)
-    }  
+    }
+    public forgotPassword(): void {
+        this.router.put('/login/forgot-password', userController.forgotPassword)
+    }
+    public emergency(): void { //create password for new user or forget password emergency
+        this.router.patch('/login/emergency/:user_id/:secreet_key', auth.emergencyAuth, userController.emergency);
+    }
     public authentication(): void {
         this.router.use(auth.authentication)
     }
@@ -38,8 +46,8 @@ class Routes {
     private inventory(): void {
         this.router.use(auth.inventoryAuth, inventoryRouter)
     }
-    private accounting(): void {
-        this.router.use(auth.accountingAuth, accountingRouter)
+    private finance(): void {
+        this.router.use(auth.financeAuth, financeRouter)
     }
     private cashier(): void {
         this.router.use(auth.cashierAuth, cashierRouter)
@@ -48,7 +56,7 @@ class Routes {
         this.router.get('/user', userController.myDetails);
     }
     public changeEmailOrPhone(): void {
-        this.router.patch('/user/change-email-username', auth.twoStepAuth, auth.uniqueData, userController.changeEmailOrUsername, userController.logout);
+        this.router.patch('/user/change-email-username', auth.twoStepAuth, auth.uniqueDataUser, userController.changeEmailOrUsername, userController.logout);
     }
     public changePassword(): void {
         this.router.patch('/user/change-password', auth.twoStepAuth, userController.changePassword, userController.logout);

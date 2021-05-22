@@ -1,43 +1,53 @@
-import { User } from '../models/User.model'
-import bcrypt from 'bcrypt'
+import { User } from '../models/User.model';
+import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response, NextFunction } from 'express';
+// const nodemailer: any = require('nodemailer');
+// const envEmail: any = process.env.EMAIL as string;
+// const envEmailPass: any = process.env.EMAIL_PASS as string;
+// const transporter: any = nodemailer.createTransport({ service: 'gmail', auth: { user: envEmail, pass: envEmailPass } })
 
 
-class customerController {
+class userController {
     static async createUser(req: Request, res: Response) {
         const role = req.body.role;
         const username = req.body.new_username;
         const email = req.body.new_email;
-        const password = bcrypt.hashSync("1234", 8); //Default Password 1234
+        const token: string = jwt.sign({ pesan: email }, process.env.TOKEN as string)
+        const emergency = bcrypt.hashSync(token, 8);
         let createUser: any;
-
+        let mailOptions: any;
+        let sendEmailToUser: any;
+        let linkChangePassword: any;
         try {
-            if (role == "inventory" || role == "accounting" || role == "cashier") {
+            if (role == "inventory" || role == "finance" || role == "cashier") {
                 createUser = await User.create({
                     role: role,
                     username: username,
                     email: email,
-                    password: password,
-                }) 
+                    emergency: emergency,
+                })
+                linkChangePassword = `/${createUser.id}/${token}`
+                // mailOptions = { from: envEmail, to: email, subject: 'Create Account', text: `https://localhost:3000/login/emergency/${createUser.id}/${token}` };
             }
             else {
-                res.status(422).json({ success: false, message: "create user failed! please choose a valid role: inventory/accounting/cashier" });
+                res.status(422).json({ success: false, message: "create user failed! please choose a valid role: inventory/finance/cashier" });
             }
         }
         catch (err) {
             res.status(422).json({ success: false, message: "create user failed!", data: err });
         }
         finally {
-            res.status(201).json({ success: true, message: "create user success", data: createUser })
+            // sendEmailToUser = transporter.sendMail(mailOptions, (err: any, info: any) => { (err) ? console.log(err) : console.log("Email sent: " + info.responsive) })
+            res.status(201).json({ success: true, message: "create user success", data: createUser, linkChangePassword })
         }
     }
     static async login(req: Request, res: Response, next: NextFunction) {
-        const customer: any = await User.findOne({ email: (<any>req).body.email }).select('+password');
-        const passwordIsValid: any = bcrypt.compareSync((<any>req).body.password, customer.password);
-        const token: string = jwt.sign({ id: customer.id }, process.env.TOKEN as string)
+        const user: any = await User.findOne({ email: (<any>req).body.email }).select('+password');
+        const passwordIsValid: any = bcrypt.compareSync((<any>req).body.password, user.password);
+        const token: string = jwt.sign({ id: user.id }, process.env.TOKEN as string)
         const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
-        const logIp = customer.logIp;
+        const logIp = user.logIp;
         let ipExist = logIp.includes(ip)
         let signCredentials: any;
         let credentialsData: any;
@@ -46,7 +56,7 @@ class customerController {
         try {
             // console.log(typeof(logIp))
             console.log("login Controller Ip exist?: " + ipExist)
-            if (!customer) { //wrong email
+            if (!user) { //wrong email
                 throw ({ name: 'not_verified' })
             } else if (passwordIsValid) { //true email and password
                 signCredentials = await User.findOneAndUpdate({ email: req.body.email }, credentialsData, { new: true });
@@ -114,6 +124,35 @@ class customerController {
                 next(err)
             })
     }
+    static async forgotPassword(req: Request, res: Response) {
+        const inputEmail = req.body.email;
+        const token: string = jwt.sign({ pesan: inputEmail }, process.env.TOKEN as string)
+        const emergency = bcrypt.hashSync(token, 8);
+        let linkChangePassword: string;
+        let updateUser: any;
+
+        try {
+            updateUser = await User.findOneAndUpdate({ email: inputEmail }, { emergency: emergency, }, { new: true })
+        }
+        catch (err) {
+            res.status(422).json({ success: false, message: "forgotPassword update user failed!", data: err });
+        }
+        finally {
+            linkChangePassword = `/${updateUser.id}/${token}`
+            res.status(201).json({ success: true, message: "chek your email", data: updateUser, linkChangePassword })
+        }
+    }
+    static emergency(req: Request, res: Response, next: NextFunction) {
+        User.findByIdAndUpdate(req.params.user_id, { password: bcrypt.hashSync(req.body.new_password, 8) }, { new: true }).select('+password')
+            .then((result) => {
+                res.status(200).json({ success: true, message: "Password changed! You're logged out automatically" });
+                next()
+            })
+            .catch((err) => {
+                console.log(err)
+                next(err)
+            })
+    }
 }
 
-export default customerController
+export default userController

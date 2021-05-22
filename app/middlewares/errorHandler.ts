@@ -1,6 +1,6 @@
 import { ErrorRequestHandler, Request, Response, NextFunction } from 'express'
 
-export default function errorHandler (err: ErrorRequestHandler, req: Request,res: Response, next: NextFunction) {
+export default function errorHandler(err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) {
     let code;
     let name = err.name;
     let message;
@@ -41,6 +41,10 @@ export default function errorHandler (err: ErrorRequestHandler, req: Request,res
         case "unique_username":
             code = 422;
             message = "This username is already taken! use another!"
+            break;
+        case "unique_name":
+            code = 422;
+            message = "This name is already taken! use another!"
             break;
         case "invalid_email":
             code = 422;

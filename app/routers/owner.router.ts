@@ -2,7 +2,7 @@ import { Router } from 'express'
 import userController from '../controllers/user.controller'
 import auth from '../middlewares/authJwt'
 import inventoryRouter from './inventory.router'
-import accountingRouter from './accounting.router'
+import financeRouter from './finance.router'
 import cashierRouter from './cashier.router'
 
 class ownerRouter {
@@ -11,17 +11,17 @@ class ownerRouter {
         this.router = Router()
         this.createUser()
         this.inventory()
-        this.accounting()
+        this.finance()
         this.cashier()
     }
     private createUser(): void {
-        this.router.post('/user', auth.uniqueData, userController.createUser);
+        this.router.post('/user', auth.uniqueDataUser, userController.createUser);
     }
     private inventory(): void {
         this.router.use(inventoryRouter)
     }
-    private accounting(): void {
-        this.router.use(accountingRouter)
+    private finance(): void {
+        this.router.use(financeRouter)
     }
     private cashier(): void {
         this.router.use(cashierRouter)

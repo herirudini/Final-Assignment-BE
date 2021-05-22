@@ -2,7 +2,9 @@ import { Request, Response, NextFunction } from 'express'
 import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
 import { User } from '../models/User.model'
-
+import { Suplier } from '../models/Suplier.model'
+import { Brand } from '../models/Brand.model'
+const validator: any = require('validator');
 
 class auth {
     static async authentication(req: Request, res: Response, next: NextFunction) {
@@ -10,12 +12,10 @@ class auth {
         const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
 
         try {
-            // console.log("access_tokennya: " + access_token)
 
             if (!access_token) {
                 console.log("Incorrect Token: Please Login")
                 throw ({ name: 'missing_token' })
-                // res.redirect('../../login')
 
             } else {
                 jwt.verify(access_token, process.env.TOKEN as string, (err, decoded: any) => {
@@ -31,7 +31,6 @@ class auth {
 
                 if (ipExist == false || logToken != access_token) {
                     throw ({ name: 'invalid_token' })
-                    // res.redirect('../login');
                 } else {
                     console.log("berhasil lewat Authentication")
                     next();
@@ -43,13 +42,18 @@ class auth {
             next(err)
         }
     }
-    static async uniqueData(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
-        const checkEmail: any = await User.countDocuments({ email: req.body.new_email })
-        const checkUsername: any = await User.countDocuments({ phone: req.body.new_username })
+    static async uniqueDataUser(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
+        const inputEmail: string = req.body.new_email;
+        const inputUsername: string = req.body.new_username;
+        const isValidEmail: boolean = validator.isEmail(inputEmail)
+        const checkUserByEmail: any = await User.countDocuments({ email: inputEmail })
+        const checkUserByName: any = await User.countDocuments({ username: inputUsername })
         try {
-            if (checkEmail != 0) {
+            if (isValidEmail === false) {
+                throw ({ name: 'invalid_email' })
+            } else if (checkUserByEmail != 0) {
                 throw ({ name: 'unique_email' })
-            } else if (checkUsername != 0) {
+            } else if (checkUserByName != 0) {
                 throw ({ name: 'unique_username' })
             } else {
                 next()
@@ -60,20 +64,72 @@ class auth {
             next(err)
         }
     }
+    static async uniqueDataSuplier(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
+        const inputSuplierName: string = req.body.suplierName.toUpperCase()
+        const checkSuplierByName: any = await Suplier.countDocuments({ name: inputSuplierName })
+        try {
+            if (checkSuplierByName != 0) {
+                throw ({ name: 'unique_name' })
+            } else {
+                next()
+            }
+        }
+        catch (err) {
+            console.log(err)
+            next(err)
+        }
+    }
+    static async uniqueDataBrand(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
+        const inputBrandName: string = req.body.brandName.toUpperCase()
+        const checkBrandByName: any = await Brand.countDocuments({ name: inputBrandName })
+        try {
+            if (checkBrandByName != 0) {
+                throw ({ name: 'unique_name' })
+            } else {
+                next()
+            }
+        }
+        catch (err) {
+            console.log(err)
+            next(err)
+        }
+    }
     static async twoStepAuth(req: Request, res: Response, next: NextFunction) {
-        const author: any = await User.findById((<any>req).user_id).select('+password')
+        const getUser: any = await User.findById((<any>req).user_id).select('+password')
 
         try {
             if (!req.body.password) {
                 res.status(402).json({ success: false, message: "Please input password!" })
             } else {
-                const match = bcrypt.compareSync(req.body.password, author.password);
+                const match = bcrypt.compareSync(req.body.password, getUser.password);
                 if (!match) {
                     throw ({ name: 'twostep_auth' })
                 } else {
                     next()
                 }
-            } 
+            }
+        }
+        catch (err) {
+            console.log(err)
+            next(err)
+        }
+    }
+    static async emergencyAuth(req: Request, res: Response, next: NextFunction) {
+        const userId: string = req.params.user_id;
+        const secretToken: string = req.params.secret_key;
+        const getUser: any = await User.findById(userId).select('+emergency')
+
+        try {
+            if (!secretToken || !userId) {
+                res.status(402).json({ success: false, message: "Ultra-Terrestrial ERROR" })
+            } else {
+                const match = bcrypt.compareSync(secretToken, getUser.emergency);
+                if (!match) {
+                    res.status(402).json({ success: false, message: "Ultra-Terrestrial ERROR !match" })
+                } else {
+                    next()
+                }
+            }
         }
         catch (err) {
             console.log(err)
@@ -112,12 +168,12 @@ class auth {
             next(err)
         }
     }
-    static async accountingAuth(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
+    static async financeAuth(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
         const author: any = await User.findById((<any>req).user_id)
         try {
             if (!author) {
                 throw ({ name: 'not_found' })
-            } else if (author.role == "accounting" || author.role == "owner") {
+            } else if (author.role == "finance" || author.role == "owner") {
                 next()
             } else {
                 throw ({ name: 'unauthorized' })

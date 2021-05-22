@@ -8,13 +8,11 @@ import { Delivery } from '../models/Delivery.model'
 
 class inventoryController {
     static async createBrand(req: Request, res: Response, next: NextFunction) {
-        const inputName = req.body.name;
-        const inputProducts = req.body.products;
+        const inputName = req.body.brandName.toUpperCase();
         let createBrand;
         try {
             createBrand = await Brand.create({
-                name: inputName,
-                products: inputProducts,
+                brandName: inputName,
             })
         }
         catch (err) {
@@ -25,27 +23,32 @@ class inventoryController {
         }
     }
     static async createProduct(req: Request, res: Response, next: NextFunction) {
-        const inputBrandName = req.body.brand
-        const inputName = req.body.name;
+        const inputSuplierName = req.body.suplierName.toUpperCase()
+        const inputBrandName = req.body.brandName.toUpperCase()
+        const inputName = req.body.productName.toUpperCase();
         const inputImage = req.body.image;
         const inputUom = req.body.uom;
         const inputBarcode = req.body.barcode;
         const inputBuyPrice = req.body.buyPrice;
         const inputSellPrice = req.body.sellPrice;
-        const countBrand = await Brand.countDocuments({ name: inputBrandName })
+        const countBrand = await Brand.countDocuments({ brandName: inputBrandName })
+        const getSuplier = await Suplier.findOne({ suplierName: inputSuplierName })
+        const suplierId = getSuplier?.id
 
         let brandId;
         let createBrand;
+        let pushBrandId;
         let createProduct;
         let pushProductId;
         try {
             if (countBrand == 0) {
                 createBrand = await Brand.create({
-                    name: inputBrandName
+                    brandName: inputBrandName
                 });
                 brandId = createBrand.id
+                pushBrandId = await Suplier.findByIdAndUpdate(suplierId, { $push: { brands: brandId } }, { new: true })
             } else {
-                const getBrand = await Brand.findOne({ name: inputBrandName })
+                const getBrand = await Brand.findOne({ brandName: inputBrandName })
                 brandId = getBrand?.id;
             }
         }
@@ -55,7 +58,8 @@ class inventoryController {
         finally {
             createProduct = await Product.create({
                 brand_id: brandId,
-                name: inputName,
+                suplier_id: suplierId,
+                productName: inputName,
                 image: inputImage,
                 uom: inputUom,
                 buyPrice: inputBuyPrice,
@@ -67,13 +71,13 @@ class inventoryController {
         }
     }
     static async createSuplier(req: Request, res: Response, next: NextFunction) {
-        const inputName = req.body.name;
-        const inputContact = req.body.contact;
+        const inputName = req.body.suplierName.toUpperCase();
+        const inputContact = req.body.suplierContact;
         let createSuplier;
         try {
             createSuplier = await Suplier.create({
-                name: inputName,
-                contact: inputContact,
+                suplierName: inputName,
+                suplierContact: inputContact,
             })
         }
         catch (err) {
@@ -86,12 +90,14 @@ class inventoryController {
     static async createOrder(req: Request, res: Response, next: NextFunction) {
         const inputBarcode = req.body.barcode;
         const inputQuantity = req.body.quantity;
+        const inputDiscount = req.body.discount;
         const getProduct = await Product.findOne({ barcode: inputBarcode })
         const suplierId = getProduct?.suplier_id;
         const brandId = getProduct?.brand_id;
         const productId = getProduct?.id;
         const uom = getProduct?.uom;
-
+        const quantity = inputQuantity;
+        const discount = inputDiscount
         let createOrder;
         try {
             createOrder = await Order.create({
@@ -99,7 +105,8 @@ class inventoryController {
                 brand_id: brandId,
                 product_id: productId,
                 uom: uom,
-                quantity: inputQuantity,
+                quantity: quantity,
+                discount: discount,
             })
         }
         catch (err) {
@@ -115,7 +122,7 @@ class inventoryController {
         const getProduct = await Product.findOne({ barcode: inputBarcode })
         const productId = getProduct?.id;
 
-        const getOrder = await Order.findOne({product_id: productId});
+        const getOrder = await Order.findOne({ product_id: productId });
         const orderId = getOrder?.id;
         const quantity = getOrder?.quantity;
         const arrived = getOrder?.arrived;
