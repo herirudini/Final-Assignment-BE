@@ -38,6 +38,7 @@ class inventoryController {
         let createProduct: any;
         try {
             createProduct = await Product.create({
+                suplier_name: inputSuplierName,
                 brand_name: inputBrandName,
                 product_name: inputProductName,
                 image: inputImage,
@@ -57,17 +58,19 @@ class inventoryController {
     }
 
     static async purchaseOrder(req: Request, res: Response, next: NextFunction) {
-        const inputSuplierName = req.body.suplier_name.toUpperCase();
         const inputBarcode = req.body.barcode;
+        const inputDiscount = req.body.discount;
+        const inputQuantity = req.body.quantity;
+
         const getProduct: any = await Product.findOne({ barcode: inputBarcode });
-        const getBrandName: string = getProduct?.brand_name.toUpperCase();
+        const getBrandName: string = getProduct?.brand_name;
+        const getSuplierName: string = getProduct?.suplier_name;
         const getProductId = getProduct?.id;
         const getUom = getProduct?.uom;
-        const inputQuantity = req.body.quantity;
-        const inputBuyPrice = req.body.buyPrice;
-        const inputDiscount = req.body.discount;
-        const inputIsAfterTax = req.body.isAfterTax;
-        const getSuplier = await Suplier.findOne({ suplier_name: inputSuplierName });
+        const getBuyPrice = getProduct?.buyPrice;
+        const getIsAfterTax = getProduct?.isAfterTax;
+
+        const getSuplier = await Suplier.findOne({ suplier_name: getSuplierName });
         const getSuplierId = getSuplier?.id;
         const checkBrands = getSuplier?.brands;
         const checkOrder = await Order.countDocuments({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
@@ -85,10 +88,10 @@ class inventoryController {
                 product_id: getProductId,
                 brand_name: getBrandName,
                 uom: getUom,
-                buyPrice: inputBuyPrice,
+                buyPrice: getBuyPrice,
                 discount: inputDiscount,
                 quantity: inputQuantity,
-                isAfterTax: inputIsAfterTax,
+                isAfterTax: getIsAfterTax,
             });
             if (!brandIsExist) {
                 pushBrand = await Suplier.findByIdAndUpdate(getSuplierId, { $push: { brands: getBrandName } }, { new: true })
@@ -103,13 +106,14 @@ class inventoryController {
     }
 
     static async deliveryOrder(req: Request, res: Response, next: NextFunction) {
-        const inputSuplierName = req.body.suplier_name.toUpperCase();
-        const getSuplier = await Suplier.findOne({ suplier_name: inputSuplierName });
-        const getSuplierId = getSuplier?.id;
+        
         const inputArrivedQuantity = req.body.arrivedQuantity;
         const inputBarcode = req.body.barcode;
         const getProduct = await Product.findOne({ barcode: inputBarcode })
         const getProductId = getProduct?.id;
+        const getSuplierName = getProduct?.suplier_name;
+        const getSuplier = await Suplier.findOne({ suplier_name: getSuplierName });
+        const getSuplierId = getSuplier?.id;
         const getOrder: any = await Order.findOne({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
         const getOrderId = getOrder?.id;
         const getQuantity: any = getOrder?.quantity;
@@ -125,7 +129,7 @@ class inventoryController {
         } else if (tryMatchQuantity < 0) {
             updateOrderData = { $inc: { arrived: inputArrivedQuantity } }
         } else {
-            res.status(400).json({ success: false, message: "wrong number", data: getQuantity })
+            res.status(400).json({ success: false, message: "Wrong input arrived quanitity, count carefully", data: getOrder })
         }
 
         try {

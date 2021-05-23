@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 
 interface Product {
     status: string,
+    suplier_name: string,
     brand_name: string,
     product_name: string,
     image: string,
@@ -15,6 +16,7 @@ interface Product {
 
 interface ProductData extends mongoose.Document {
     status: string, //active atau inactive
+    suplier_name: string,
     brand_name: string, //populate = {product_name: misedap-karisoto, image: //google.gambar/misedap-karisoto}
     product_name: string,
     image: string,
@@ -32,6 +34,7 @@ interface ProductInterface extends mongoose.Model<ProductData> {
 
 const productSchema = new Schema({
     status: { type: String, default: "inactive" },
+    suplier_name: { type: String, required: true },
     brand_name: { type: String, required: true },
     product_name: { type: String, required: true },
     image: { type: String, required: true },
