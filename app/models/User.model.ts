@@ -7,7 +7,7 @@ interface User {
     password: string,
     logIp: any[],
     logToken: string,
-    emergency: string
+    masterkey: string
 }
 
 interface UserData extends mongoose.Document {
@@ -17,7 +17,7 @@ interface UserData extends mongoose.Document {
     password: string,
     logIp: any[],
     logToken: string,
-    emergency: string
+    masterkey: string
 }
 
 interface UserInterface extends mongoose.Model<UserData> {
@@ -37,7 +37,7 @@ const userSchema = new Schema({
     },
     logIp: [{ type: String }],
     logToken: { type: String },
-    emergency: { type: String, select: false }
+    masterkey: { type: String, select: false }
 }, { timestamps: true });
 
 const User = mongoose.model<UserData, UserInterface>('User', userSchema)

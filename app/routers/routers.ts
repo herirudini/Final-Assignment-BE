@@ -15,7 +15,7 @@ class Routes {
         this.router = Router()
         this.login()
         this.forgotPassword()
-        this.emergency()
+        this.resetPassword()
         this.authentication()
         this.owner()
         this.inventory()
@@ -34,8 +34,8 @@ class Routes {
     public forgotPassword(): void {
         this.router.put('/login/forgot-password', userController.forgotPassword)
     }
-    public emergency(): void { //create password for new user or forget password emergency
-        this.router.patch('/login/emergency/:user_id/:secreet_key', auth.emergencyAuth, userController.emergency);
+    public resetPassword(): void { //create password for new user or forget password resetPassword
+        this.router.patch('/login/reset-password/:user_id/:superkey', auth.resetPasswordAuth, userController.resetPassword);
     }
     public authentication(): void {
         this.router.use(auth.authentication)

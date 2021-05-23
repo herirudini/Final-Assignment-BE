@@ -2,9 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 
 interface Product {
     status: string,
-    brand_id: string,
-    suplier_id: string,
-    productName: string,
+    brand_name: string,
+    product_name: string,
     image: string,
     uom: string,
     stock: number,
@@ -16,16 +15,15 @@ interface Product {
 
 interface ProductData extends mongoose.Document {
     status: string, //active atau inactive
-    brand_id: string, //populate = {productName: misedap-karisoto, image: //google.gambar/misedap-karisoto}
-    suplier_id: string,
-    productName: string,
+    brand_name: string, //populate = {product_name: misedap-karisoto, image: //google.gambar/misedap-karisoto}
+    product_name: string,
     image: string,
     uom: string, //karton-40x1
     stock: number,
     buyPrice: number,
     sellPrice: number,
     isAfterTax: string, //yes or no
-    barcode: string //order_id.brand_id.uom
+    barcode: string //order_id.brand_name.uom
 }
 
 interface ProductInterface extends mongoose.Model<ProductData> {
@@ -34,14 +32,13 @@ interface ProductInterface extends mongoose.Model<ProductData> {
 
 const productSchema = new Schema({
     status: { type: String, default: "inactive" },
-    brand_id: { type: Schema.Types.ObjectId, ref: 'Brand' },
-    suplier_id: { type: Schema.Types.ObjectId, ref: 'Suplier' },
-    productName: { type: String, required: true },
+    brand_name: { type: String, required: true },
+    product_name: { type: String, required: true },
     image: { type: String, required: true },
     uom: { type: String, required: true },
     stock: { type: Number, default: 0 },
     buyPrice: { type: Number },
-    sellPrice: { type: Number },
+    sellPrice: { type: Number, required: true },
     isAfterTax: { type: String },
     barcode: { type: String, required: true }
 }, { timestamps: true });

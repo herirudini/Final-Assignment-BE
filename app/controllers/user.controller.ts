@@ -13,8 +13,8 @@ class userController {
         const role = req.body.role;
         const username = req.body.new_username;
         const email = req.body.new_email;
-        const token: string = jwt.sign({ pesan: email }, process.env.TOKEN as string)
-        const emergency = bcrypt.hashSync(token, 8);
+        const superkey: string = jwt.sign({ pesan: email }, process.env.TOKEN as string)
+        const masterkey = bcrypt.hashSync(superkey, 8);
         let createUser: any;
         let mailOptions: any;
         let sendEmailToUser: any;
@@ -25,10 +25,10 @@ class userController {
                     role: role,
                     username: username,
                     email: email,
-                    emergency: emergency,
+                    masterkey: masterkey,
                 })
-                linkChangePassword = `/${createUser.id}/${token}`
-                // mailOptions = { from: envEmail, to: email, subject: 'Create Account', text: `https://localhost:3000/login/emergency/${createUser.id}/${token}` };
+                linkChangePassword = `/${createUser.id}/${superkey}`
+                // mailOptions = { from: envEmail, to: email, subject: 'Create Account', text: `https://localhost:3000/login/masterkey/${createUser.id}/${superkey}` };
             }
             else {
                 res.status(422).json({ success: false, message: "create user failed! please choose a valid role: inventory/finance/cashier" });
@@ -126,23 +126,23 @@ class userController {
     }
     static async forgotPassword(req: Request, res: Response) {
         const inputEmail = req.body.email;
-        const token: string = jwt.sign({ pesan: inputEmail }, process.env.TOKEN as string)
-        const emergency = bcrypt.hashSync(token, 8);
+        const superkey: string = jwt.sign({ pesan: inputEmail }, process.env.TOKEN as string)
+        const masterkey = bcrypt.hashSync(superkey, 8);
         let linkChangePassword: string;
         let updateUser: any;
 
         try {
-            updateUser = await User.findOneAndUpdate({ email: inputEmail }, { emergency: emergency, }, { new: true })
+            updateUser = await User.findOneAndUpdate({ email: inputEmail }, { masterkey: masterkey, }, { new: true })
         }
         catch (err) {
             res.status(422).json({ success: false, message: "forgotPassword update user failed!", data: err });
         }
         finally {
-            linkChangePassword = `/${updateUser.id}/${token}`
+            linkChangePassword = `/${updateUser.id}/${superkey}`
             res.status(201).json({ success: true, message: "chek your email", data: updateUser, linkChangePassword })
         }
     }
-    static emergency(req: Request, res: Response, next: NextFunction) {
+    static resetPassword(req: Request, res: Response, next: NextFunction) {
         User.findByIdAndUpdate(req.params.user_id, { password: bcrypt.hashSync(req.body.new_password, 8) }, { new: true }).select('+password')
             .then((result) => {
                 res.status(200).json({ success: true, message: "Password changed! You're logged out automatically" });

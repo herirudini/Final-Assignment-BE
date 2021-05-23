@@ -3,7 +3,6 @@ import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
 import { User } from '../models/User.model'
 import { Suplier } from '../models/Suplier.model'
-import { Brand } from '../models/Brand.model'
 const validator: any = require('validator');
 
 class auth {
@@ -79,21 +78,6 @@ class auth {
             next(err)
         }
     }
-    static async uniqueDataBrand(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
-        const inputBrandName: string = req.body.brandName.toUpperCase()
-        const checkBrandByName: any = await Brand.countDocuments({ name: inputBrandName })
-        try {
-            if (checkBrandByName != 0) {
-                throw ({ name: 'unique_name' })
-            } else {
-                next()
-            }
-        }
-        catch (err) {
-            console.log(err)
-            next(err)
-        }
-    }
     static async twoStepAuth(req: Request, res: Response, next: NextFunction) {
         const getUser: any = await User.findById((<any>req).user_id).select('+password')
 
@@ -114,16 +98,16 @@ class auth {
             next(err)
         }
     }
-    static async emergencyAuth(req: Request, res: Response, next: NextFunction) {
+    static async resetPasswordAuth(req: Request, res: Response, next: NextFunction) {
         const userId: string = req.params.user_id;
         const secretToken: string = req.params.secret_key;
-        const getUser: any = await User.findById(userId).select('+emergency')
+        const getUser: any = await User.findById(userId).select('+masterkey')
 
         try {
             if (!secretToken || !userId) {
                 res.status(402).json({ success: false, message: "Ultra-Terrestrial ERROR" })
             } else {
-                const match = bcrypt.compareSync(secretToken, getUser.emergency);
+                const match = bcrypt.compareSync(secretToken, getUser.masterkey);
                 if (!match) {
                     res.status(402).json({ success: false, message: "Ultra-Terrestrial ERROR !match" })
                 } else {

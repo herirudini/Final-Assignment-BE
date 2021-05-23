@@ -1,83 +1,19 @@
 import { Request, Response, NextFunction } from 'express'
 import { Order } from '../models/Order.model'
-import { Brand } from '../models/Brand.model'
 import { Suplier } from '../models/Suplier.model'
 import { Product } from '../models/Product.model'
 import { Delivery } from '../models/Delivery.model'
 
 
 class inventoryController {
-    static async createBrand(req: Request, res: Response, next: NextFunction) {
-        const inputName = req.body.brandName.toUpperCase();
-        let createBrand;
-        try {
-            createBrand = await Brand.create({
-                brandName: inputName,
-            })
-        }
-        catch (err) {
-            next(err)
-        }
-        finally {
-            res.status(201).json({ success: true, message: "Brand created", data: createBrand })
-        }
-    }
-    static async createProduct(req: Request, res: Response, next: NextFunction) {
-        const inputSuplierName = req.body.suplierName.toUpperCase()
-        const inputBrandName = req.body.brandName.toUpperCase()
-        const inputName = req.body.productName.toUpperCase();
-        const inputImage = req.body.image;
-        const inputUom = req.body.uom;
-        const inputBarcode = req.body.barcode;
-        const inputBuyPrice = req.body.buyPrice;
-        const inputSellPrice = req.body.sellPrice;
-        const countBrand = await Brand.countDocuments({ brandName: inputBrandName })
-        const getSuplier = await Suplier.findOne({ suplierName: inputSuplierName })
-        const suplierId = getSuplier?.id
-
-        let brandId;
-        let createBrand;
-        let pushBrandId;
-        let createProduct;
-        let pushProductId;
-        try {
-            if (countBrand == 0) {
-                createBrand = await Brand.create({
-                    brandName: inputBrandName
-                });
-                brandId = createBrand.id
-                pushBrandId = await Suplier.findByIdAndUpdate(suplierId, { $push: { brands: brandId } }, { new: true })
-            } else {
-                const getBrand = await Brand.findOne({ brandName: inputBrandName })
-                brandId = getBrand?.id;
-            }
-        }
-        catch (err) {
-            next(err)
-        }
-        finally {
-            createProduct = await Product.create({
-                brand_id: brandId,
-                suplier_id: suplierId,
-                productName: inputName,
-                image: inputImage,
-                uom: inputUom,
-                buyPrice: inputBuyPrice,
-                sellPrice: inputSellPrice,
-                barcode: inputBarcode,
-            })
-            pushProductId = await Brand.findByIdAndUpdate(brandId, { $push: { products: createProduct.id } }, { new: true })
-            res.status(201).json({ success: true, message: "Product created", data: createProduct })
-        }
-    }
     static async createSuplier(req: Request, res: Response, next: NextFunction) {
-        const inputName = req.body.suplierName.toUpperCase();
-        const inputContact = req.body.suplierContact;
+        const inputSuplierName = req.body.suplier_name.toUpperCase();
+        const inputContact = req.body.contact;
         let createSuplier;
         try {
             createSuplier = await Suplier.create({
-                suplierName: inputName,
-                suplierContact: inputContact,
+                suplier_name: inputSuplierName,
+                contact: inputContact,
             })
         }
         catch (err) {
@@ -87,27 +23,76 @@ class inventoryController {
             res.status(201).json({ success: true, message: "Suplier created", data: createSuplier })
         }
     }
-    static async createOrder(req: Request, res: Response, next: NextFunction) {
+
+    static async createProduct(req: Request, res: Response, next: NextFunction) {
+        const inputSuplierName = req.body.suplier_name.toUpperCase();
+        const inputBrandName = req.body.brand_name.toUpperCase();
+        const inputProductName = req.body.product_name.toUpperCase();
+        const inputImage = req.body.image;
+        const inputUom = req.body.uom;
+        const inputSellPrice = req.body.sellPrice;
         const inputBarcode = req.body.barcode;
-        const inputQuantity = req.body.quantity;
-        const inputDiscount = req.body.discount;
-        const getProduct = await Product.findOne({ barcode: inputBarcode })
-        const suplierId = getProduct?.suplier_id;
-        const brandId = getProduct?.brand_id;
-        const productId = getProduct?.id;
-        const uom = getProduct?.uom;
-        const quantity = inputQuantity;
-        const discount = inputDiscount
-        let createOrder;
+        const inputBuyPrice = req.body.buyPrice;
+        const inputIsAfterTax = req.body.isAfterTax;
+
+        let createProduct: any;
         try {
-            createOrder = await Order.create({
-                suplier_id: suplierId,
-                brand_id: brandId,
-                product_id: productId,
-                uom: uom,
-                quantity: quantity,
-                discount: discount,
+            createProduct = await Product.create({
+                brand_name: inputBrandName,
+                product_name: inputProductName,
+                image: inputImage,
+                uom: inputUom,
+                buyPrice: inputBuyPrice,
+                sellPrice: inputSellPrice,
+                isAfterTax: inputIsAfterTax,
+                barcode: inputBarcode,
             })
+        }
+        catch (err) {
+            next(err)
+        }
+        finally {
+            res.status(201).json({ success: true, message: "Product created", data: createProduct })
+        }
+    }
+
+    static async purchaseOrder(req: Request, res: Response, next: NextFunction) {
+        const inputSuplierName = req.body.suplier_name.toUpperCase();
+        const inputBarcode = req.body.barcode;
+        const getProduct: any = await Product.findOne({ barcode: inputBarcode });
+        const getBrandName: string = getProduct?.brand_name.toUpperCase();
+        const getProductId = getProduct?.id;
+        const getUom = getProduct?.uom;
+        const inputQuantity = req.body.quantity;
+        const inputBuyPrice = req.body.buyPrice;
+        const inputDiscount = req.body.discount;
+        const inputIsAfterTax = req.body.isAfterTax;
+        const getSuplier = await Suplier.findOne({ suplier_name: inputSuplierName });
+        const getSuplierId = getSuplier?.id;
+        const checkBrands = getSuplier?.brands;
+        const checkOrder = await Order.countDocuments({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
+        let brandIsExist: boolean | undefined = checkBrands?.includes(getBrandName);
+        let createOrder: any;
+        let pushBrand: any;
+
+        try {
+            if (checkOrder !== 0) {
+                const listOnProcessOrder = await Order.find({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" })
+                res.status(500).json({success: false, message: "You have an unfinished order, you can force this by edit previous order status first into: force-complete", data: listOnProcessOrder})
+            }
+            createOrder = await Order.create({
+                suplier_id: getSuplierId,
+                product_id: getProductId,
+                brand_name: getBrandName,
+                uom: getUom,
+                buyPrice: inputBuyPrice,
+                discount: inputDiscount,
+                quantity: inputQuantity,
+                isAfterTax: inputIsAfterTax,
+            });
+            if (!brandIsExist) {
+                pushBrand = await Suplier.findByIdAndUpdate(getSuplierId, { $push: { brands: getBrandName } }, { new: true })
+            }
         }
         catch (err) {
             next(err)
@@ -116,33 +101,40 @@ class inventoryController {
             res.status(201).json({ success: true, message: "Order created", data: createOrder })
         }
     }
-    static async confirmDelivery(req: Request, res: Response, next: NextFunction) {
+
+    static async deliveryOrder(req: Request, res: Response, next: NextFunction) {
+        const inputSuplierName = req.body.suplier_name.toUpperCase();
+        const getSuplier = await Suplier.findOne({ suplier_name: inputSuplierName });
+        const getSuplierId = getSuplier?.id;
         const inputArrivedQuantity = req.body.arrivedQuantity;
         const inputBarcode = req.body.barcode;
         const getProduct = await Product.findOne({ barcode: inputBarcode })
-        const productId = getProduct?.id;
+        const getProductId = getProduct?.id;
+        const getOrder: any = await Order.findOne({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
+        const getOrderId = getOrder?.id;
+        const getQuantity: any = getOrder?.quantity;
+        const arrived: number | undefined = getOrder?.arrived;
+        const tryMatchQuantity: number = arrived + inputArrivedQuantity - getQuantity;
 
-        const getOrder = await Order.findOne({ product_id: productId });
-        const orderId = getOrder?.id;
-        const quantity = getOrder?.quantity;
-        const arrived = getOrder?.arrived;
-        const buyPrice = getOrder?.buyPrice;
-        const isAfterTax = getOrder?.isAfterTax;
-        const tryMatchQuantity = arrived + inputArrivedQuantity;
-
-        let createDelivery;
-        let updateProduct;
-        let updateOrderData;
-        let updateOrder;
-        (tryMatchQuantity === quantity) ? updateOrderData = { $inc: { arrived: inputArrivedQuantity }, status: "finish" } : { $inc: { arrived: inputArrivedQuantity } }
+        let createDelivery: any;
+        let updateProduct: any;
+        let updateOrderData: any;
+        let updateOrder: any;
+        if (tryMatchQuantity === 0) {
+            updateOrderData = { $inc: { arrived: inputArrivedQuantity }, status: "complete" }
+        } else if (tryMatchQuantity < 0) {
+            updateOrderData = { $inc: { arrived: inputArrivedQuantity } }
+        } else {
+            res.status(400).json({ success: false, message: "wrong number", data: getQuantity })
+        }
 
         try {
             createDelivery = await Delivery.create({
-                order_id: orderId,
+                order_id: getOrderId,
                 arrivedQuantity: inputArrivedQuantity,
             });
-            updateProduct = await Product.findByIdAndUpdate(productId, { $inc: { stock: inputArrivedQuantity }, buyPrice: buyPrice, isAfterTax: isAfterTax }, { new: true });
-            updateOrder = await Order.findByIdAndUpdate(orderId, updateOrderData, { new: true });
+            updateProduct = await Product.findByIdAndUpdate(getProductId, { $inc: { stock: inputArrivedQuantity } }, { new: true });
+            updateOrder = await Order.findByIdAndUpdate(getOrderId, updateOrderData, { new: true });
         }
         catch (err) {
             console.log("inventory_controller_err: " + err)
@@ -152,6 +144,7 @@ class inventoryController {
             res.status(201).json({ success: true, message: "Delivery created, Order updated, Product updated", data: "Too Much Im Spinning" })
         }
     }
+
     static getAllProduct(req: Request, res: Response, next: NextFunction) {
         Product.find()
             .then((result) => {
@@ -161,11 +154,12 @@ class inventoryController {
                 next(err)
             })
     }
+
     static setProductStatus(req: Request, res: Response, next: NextFunction) {
         const inputStatus = req.body.status
         Product.findById(req.params.product_id, { status: inputStatus }, { new: true })
             .then((result) => {
-                res.status(200).json({ success: true, message: "Product updated:", data: result })
+                res.status(200).json({ success: true, message: "Product status updated:", data: result })
             })
             .catch((err) => {
                 next(err)
