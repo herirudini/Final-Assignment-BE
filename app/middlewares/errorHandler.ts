@@ -36,15 +36,19 @@ export default function errorHandler(err: ErrorRequestHandler, req: Request, res
             break;
         case "unique_email":
             code = 422;
-            message = "This email is already taken! use another!"
+            message = "This email is already taken! Use another!"
             break;
         case "unique_username":
             code = 422;
-            message = "This username is already taken! use another!"
+            message = "This username is already taken! Use another!"
             break;
         case "unique_name":
             code = 422;
-            message = "This name is already taken! use another!"
+            message = "This name is already taken! Use another!"
+            break;
+        case "unique_barcode":
+            code = 422;
+            message = "This barcode is already used! You have probably create this product!"
             break;
         case "invalid_email":
             code = 422;

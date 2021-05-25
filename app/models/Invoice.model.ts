@@ -5,7 +5,6 @@ interface Invoice {
     suplier_id: string,
     orders: string[],
     bill: number,
-    date: object,
 }
 
 interface InvoiceData extends mongoose.Document {
@@ -13,7 +12,6 @@ interface InvoiceData extends mongoose.Document {
     suplier_id: string,
     orders: string[], 
     bill: number,
-    date: object,
 }
 
 interface InvoiceInterface extends mongoose.Model<InvoiceData> {
@@ -25,11 +23,6 @@ const invoiceSchema = new Schema({
     suplier_id: { type: String },
     orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }], 
     bill: { type: Number },
-    date: {
-        day: {type: String},
-        month: {type: String},
-        year: {type: String}
-    },
 }, { timestamps: true });
 
 const Invoice = mongoose.model<InvoiceData, InvoiceInterface>('Invoice', invoiceSchema)
