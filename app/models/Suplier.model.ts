@@ -4,12 +4,14 @@ const validator = require('mongoose-validators')
 interface Suplier {
     suplier_name: string,
     contact: string,
+    address: string,
     brands: string[]
 }
 
 interface SuplierData extends mongoose.Document {
     suplier_name: string, //pt.wingsfood-solokanjeruk
     contact: string, //wings-solokanjeruk@wingsfood.com
+    address: string,
     brands: string[]
 }
 
@@ -21,9 +23,9 @@ const suplierSchema = new Schema({
     suplier_name: { type: String, required: true },
     contact: {
         type: String,
-        validate: validator.isNumeric(),
         required: true
     },
+    address: { type: String },
     brands: [{ type: String }],
 }, { timestamps: true });
 

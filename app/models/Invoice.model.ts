@@ -2,16 +2,16 @@ import mongoose, { Schema } from 'mongoose';
 
 interface Invoice {
     status: string,
-    suplier_id: string
-    orders: object[],
+    suplier_id: string,
+    orders: string[],
     bill: number,
     date: object,
 }
 
 interface InvoiceData extends mongoose.Document {
-    status: string, //on-process, finish
+    status: string, //unpaid, paid
     suplier_id: string,
-    orders: object[], 
+    orders: string[], 
     bill: number,
     date: object,
 }
@@ -21,9 +21,9 @@ interface InvoiceInterface extends mongoose.Model<InvoiceData> {
 }
 
 const invoiceSchema = new Schema({
-    status: {type: String},
+    status: {type: String, default: "unpaid"},
     suplier_id: { type: String },
-    orders: [{ type: Object }], 
+    orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }], 
     bill: { type: Number },
     date: {
         day: {type: String},

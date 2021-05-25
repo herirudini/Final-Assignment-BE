@@ -9,6 +9,7 @@ interface Order {
     buyPrice: number,
     discount: number,
     quantity: number,
+    subTotal: number,
     arrived: number,
     isAfterTax: string,
 }
@@ -22,6 +23,7 @@ interface OrderData extends mongoose.Document {
     buyPrice: number, //harga beli
     discount: number,
     quantity: number,
+    subTotal: number,
     arrived: number, //jika arrived == quantity maka status = finish
     isAfterTax: string,
 }
@@ -39,6 +41,7 @@ const orderSchema = new Schema({
     buyPrice: { type: Number, required: true },
     discount: { type: Number },
     quantity: { type: Number, required: true },
+    subTotal: { type: Number },
     arrived: { type: Number, default: 0 },
     isAfterTax: { type: String, default: "yes" },
 }, { timestamps: true });

@@ -3,17 +3,23 @@ import { Order } from '../models/Order.model'
 import { Suplier } from '../models/Suplier.model'
 import { Product } from '../models/Product.model'
 import { Delivery } from '../models/Delivery.model'
+import { Invoice } from '../models/Invoice.model'
+
 
 
 class inventoryController {
     static async createSuplier(req: Request, res: Response, next: NextFunction) {
         const inputSuplierName = req.body.suplier_name.toUpperCase();
         const inputContact = req.body.contact;
+        const inputBrands = req.body.brands;
+        const inputAddress = req.body.address;
         let createSuplier;
         try {
             createSuplier = await Suplier.create({
                 suplier_name: inputSuplierName,
                 contact: inputContact,
+                address: inputAddress,
+                brands: inputBrands
             })
         }
         catch (err) {
@@ -79,10 +85,17 @@ class inventoryController {
         const getIsAfterTax = getProduct?.isAfterTax;
         const getProductId = getProduct?.id;
 
+        const countDiscount = getBuyPrice * (inputDiscount / 100);
+        const countTotalBuyPrice = getBuyPrice - countDiscount;
+        const countSubTotal = countTotalBuyPrice * inputQuantity
+
         const getSuplier = await Suplier.findOne({ suplier_name: getSuplierName });
         const getSuplierId = getSuplier?.id;
         const checkOrder = await Order.countDocuments({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
+        const checkInvoice = await Invoice.countDocuments({ suplier_id: getSuplierId, status: "unpaid" })
         let createOrder: any;
+        let createInvoice: any;
+        let updateInvoice: any;
 
         try {
             if (checkOrder !== 0) {
@@ -97,6 +110,7 @@ class inventoryController {
                 buyPrice: getBuyPrice,
                 discount: inputDiscount,
                 quantity: inputQuantity,
+                subTotal: countSubTotal,
                 isAfterTax: getIsAfterTax,
             });
         }
@@ -104,6 +118,15 @@ class inventoryController {
             next(err)
         }
         finally {
+            if (checkInvoice == 0) {
+                createInvoice = await Invoice.create({
+                    suplier_id: getSuplierId,
+                    orders: createOrder.id,
+                    bill: countSubTotal,
+                })
+            } else {
+                updateInvoice = await Invoice.findOneAndUpdate({ suplier_id: getSuplierId, status: "unpaid" }, { $push: { orders: createOrder.id }, $inc: { bill: countSubTotal } }, { new: true })
+            };
             res.status(201).json({ success: true, message: "Order created", data: createOrder })
         }
     }

@@ -3,6 +3,8 @@ import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
 import { User } from '../models/User.model'
 import { Suplier } from '../models/Suplier.model'
+import { Product } from '../models/Product.model'
+
 const validator: any = require('validator');
 
 class auth {
@@ -69,6 +71,21 @@ class auth {
         try {
             if (checkSuplierByName != 0) {
                 throw ({ name: 'unique_name' })
+            } else {
+                next()
+            }
+        }
+        catch (err) {
+            console.log(err)
+            next(err)
+        }
+    }
+    static async uniqueDataProduct(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
+        const inputBarcode = req.body.barcode
+        const checkProductByBarcode: any = await Product.countDocuments({ barcode: inputBarcode })
+        try {
+            if (checkProductByBarcode != 0) {
+                throw ({ name: 'unique_barcode' })
             } else {
                 next()
             }
