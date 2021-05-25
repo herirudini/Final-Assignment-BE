@@ -11,7 +11,6 @@ class inventoryController {
     static async createSuplier(req: Request, res: Response, next: NextFunction) {
         const inputSuplierName = req.body.suplier_name.toUpperCase();
         const inputContact = req.body.contact;
-        const inputBrands = req.body.brands;
         const inputAddress = req.body.address;
         let createSuplier;
         try {
@@ -19,7 +18,6 @@ class inventoryController {
                 suplier_name: inputSuplierName,
                 contact: inputContact,
                 address: inputAddress,
-                brands: inputBrands
             })
         }
         catch (err) {
