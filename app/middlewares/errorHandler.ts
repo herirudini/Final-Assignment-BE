@@ -48,7 +48,7 @@ export default function errorHandler(err: ErrorRequestHandler, req: Request, res
             break;
         case "unique_barcode":
             code = 422;
-            message = "This barcode is already used! You have probably create this product!"
+            message = "This barcode is already used! You have probably create this product already!"
             break;
         case "invalid_email":
             code = 422;
