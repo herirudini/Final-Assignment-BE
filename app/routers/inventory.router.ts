@@ -13,25 +13,25 @@ class inventoryRouter {
         this.getAllProduct()
         this.setProductStatus()
     }
-    // private createBrand(): void {
+    // public createBrand(): void {
     //     this.router.post('/order/edit-order', inventoryController.editOrder);
     // }
-    private createSuplier(): void {
+    public createSuplier(): void {
         this.router.post('/suplier', auth.uniqueDataSuplier, inventoryController.createSuplier);
     }
-    private createProduct(): void {
+    public createProduct(): void {
         this.router.post('/product', auth.uniqueDataProduct, inventoryController.createProduct);
     }
-    private purchaseOrder(): void {
+    public purchaseOrder(): void {
         this.router.post('/purchase-order', inventoryController.purchaseOrder);
     }
-    private getAllProduct(): void {
+    public getAllProduct(): void {
         this.router.get('/product', inventoryController.getAllProduct);
     }
-    private setProductStatus(): void {
+    public setProductStatus(): void {
         this.router.patch('/product/:product_id', inventoryController.setProductStatus);
     }
-    private deliveryOrder(): void {
+    public deliveryOrder(): void {
         this.router.post('/delivery-order', inventoryController.deliveryOrder);
     }
 }

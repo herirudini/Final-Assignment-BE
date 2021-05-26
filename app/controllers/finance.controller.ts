@@ -29,7 +29,10 @@ class financeController {
             next(err)
         }
     }
-    static getAllReceipt(req: Request, res: Response, next: NextFunction) {
+    static getCost(req: Request, res: Response, next: NextFunction) {
+
+    }
+    static getIncome(req: Request, res: Response, next: NextFunction) {
 
     }
 }

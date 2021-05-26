@@ -14,23 +14,23 @@ class cashierRouter {
         // this.report() //print invoice" yang akan dilaporkan kedalam format xls
     }
 
-    private getAllProduct(): void {
+    public getAllProduct(): void {
         this.router.get('/product', cashierController.getAllProduct);
     }
-    private addToCart(): void {
+    public addToCart(): void {
         this.router.put('/product', cashierController.addToCart);
     }
-    private addToCartManual(): void {
+    public addToCartManual(): void {
         this.router.put('/product/:product_id', cashierController.addToCartManual);
     }
-    private listCart(): void {
+    public listCart(): void {
         this.router.get('/cart', cashierController.listCart);
     }
-    private cancelItem(): void {
-        this.router.patch('/cart/:cart_id', cashierController.cancelItem);
+    public cancelItem(): void {
+        this.router.patch('/cart/:cart_id', cashierController.cancelItem, cashierController.listCart);
     }
-    private checkOut(): void {
-        this.router.post('/checkout', cashierController.checkOut);
+    public checkOut(): void {
+        this.router.post('/checkout', cashierController.checkOut, cashierController.listCart);
     }
 }
 

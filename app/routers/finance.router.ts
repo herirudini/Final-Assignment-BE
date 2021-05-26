@@ -7,19 +7,26 @@ class financeRouter {
         this.router = Router()
         this.getAllInvoice()
         this.updateInvoiceStatus()
-        this.getAllReceipt()
-        // this.report() //print invoice" yang akan dilaporkan kedalam format xls
+        this.getCost()
+        this.getIncome()
+        this.createReport()
     }
 
 
-    private getAllInvoice(): void {
+    public getAllInvoice(): void {
         this.router.get('/invoice', financeController.getAllInvoice);
     }
-    private updateInvoiceStatus(): void {
+    public updateInvoiceStatus(): void {
         this.router.patch('/invoice/:invoice_id', financeController.updateInvoiceStatus);
     }
-    private getAllReceipt(): void {
-        this.router.get('/receipt', financeController.getAllReceipt);
+    public getCost(): void {
+        this.router.get('/income', financeController.getCost);
+    }
+    public getIncome(): void {
+        this.router.get('/income', financeController.getIncome);
+    }
+    public createReport(): void {
+        this.router.get('/income', financeController.createReport);
     }
 }
 
