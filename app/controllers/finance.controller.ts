@@ -60,25 +60,6 @@ class financeController {
             res.status(200).json({ success: true, message: "sold products:", data: getSoldProduct })
         }
     }
-    static async getTopProduct(req: Request, res: Response, next: NextFunction) {
-        const inputDateFrom: any = req.body.date_from;
-        const inputDateTo: any = req.body.date_to;
-        const dateRange: object = { $gte: inputDateFrom, $lte: inputDateTo }
-        let getTopProduct: any;
-        try {
-            getTopProduct = await Cart.aggregate([
-                { $match: { status: "sold", date: dateRange } },
-                { $group: { _id: '$product_id', total: { $sum: '$quantity' } } },
-                { $sort: { total: -1 } }
-            ])
-        }
-        catch (err) {
-            next(err)
-        }
-        finally {
-            res.status(200).json({ success: true, message: "Top Products:", data: getTopProduct })
-        }
-    }
 }
 
 export default financeController

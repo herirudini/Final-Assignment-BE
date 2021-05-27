@@ -9,39 +9,7 @@ import { Request, Response, NextFunction } from 'express';
 
 
 class userController {
-    static async createUser(req: Request, res: Response) {
-        const role = req.body.role;
-        const username = req.body.new_username;
-        const email = req.body.new_email;
-        const superkey: string = jwt.sign({ pesan: email }, process.env.TOKEN as string)
-        const masterkey = bcrypt.hashSync(superkey, 8);
-        let createUser: any;
-        let mailOptions: any;
-        let sendEmailToUser: any;
-        let linkChangePassword: any;
-        try {
-            if (role == "inventory" || role == "finance" || role == "cashier") {
-                createUser = await User.create({
-                    role: role,
-                    username: username,
-                    email: email,
-                    masterkey: masterkey,
-                })
-                linkChangePassword = `/${createUser.id}/${superkey}`
-                // mailOptions = { from: envEmail, to: email, subject: 'Create Account', text: `https://localhost:3000/login/masterkey/${createUser.id}/${superkey}` };
-            }
-            else {
-                res.status(422).json({ success: false, message: "create user failed! please choose a valid role: inventory/finance/cashier" });
-            }
-        }
-        catch (err) {
-            res.status(422).json({ success: false, message: "create user failed!", data: err });
-        }
-        finally {
-            // sendEmailToUser = transporter.sendMail(mailOptions, (err: any, info: any) => { (err) ? console.log(err) : console.log("Email sent: " + info.responsive) })
-            res.status(201).json({ success: true, message: "create user success", data: createUser, linkChangePassword })
-        }
-    }
+    
     static async login(req: Request, res: Response, next: NextFunction) {
         const user: any = await User.findOne({ email: (<any>req).body.email }).select('+password');
         const passwordIsValid: any = bcrypt.compareSync((<any>req).body.password, user.password);

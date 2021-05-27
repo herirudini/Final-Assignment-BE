@@ -1,10 +1,9 @@
 import { Router } from 'express'
-import userController from '../controllers/user.controller'
 import auth from '../middlewares/authJwt'
 import inventoryRouter from './inventory.router'
 import financeRouter from './finance.router'
 import cashierRouter from './cashier.router'
-import financeController from '../controllers/finance.controller'
+import acongController from '../controllers/acong.controller'
 
 class ownerRouter {
     router: Router
@@ -14,12 +13,11 @@ class ownerRouter {
         this.inventory()
         this.finance()
         this.cashier()
-        this.getOutcome()
-        this.getIncome()
+        this.cashflow()
         this.getTopProduct()
     }
     public createUser(): void {
-        this.router.post('/user', auth.uniqueDataUser, userController.createUser);
+        this.router.post('/user', auth.uniqueDataUser, acongController.createUser);
     }
     public inventory(): void {
         this.router.use(inventoryRouter)
@@ -30,14 +28,11 @@ class ownerRouter {
     public cashier(): void {
         this.router.use(cashierRouter)
     }
-    public getOutcome(): void {
-        this.router.get('/outcome', financeController.getOutcome);
-    }
-    public getIncome(): void {
-        this.router.get('/income', financeController.getIncome);
+    public cashflow(): void {
+        this.router.get('/cashflow', acongController.cashflow)
     }
     public getTopProduct(): void {
-        this.router.get('/top-product', financeController.getTopProduct)
+        this.router.get('/top-product', acongController.getTopProduct)
     }
 }
 
