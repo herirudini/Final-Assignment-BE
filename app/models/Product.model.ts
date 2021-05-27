@@ -45,6 +45,8 @@ const productSchema = new Schema({
     isAfterTax: { type: String },
     barcode: { type: String, required: true }
 }, { timestamps: true });
+productSchema.index({ product_name: 'text', brand_name: 'text', uom: 'text', suplier_name: 'text' },
+    { weights: { product_name: 5, brand_name: 4, uom: 3, suplier_name: 1 } });
 
 const Product = mongoose.model<ProductData, ProductInterface>('Product', productSchema)
 export { Product }

@@ -5,7 +5,7 @@ class cashierRouter {
     router: Router
     constructor() {
         this.router = Router()
-        this.getAllProduct()
+        this.searchProduct()
         this.addToCart()
         this.addToCartManual()
         this.listCart()
@@ -14,8 +14,8 @@ class cashierRouter {
         // this.report() //print invoice" yang akan dilaporkan kedalam format xls
     }
 
-    public getAllProduct(): void {
-        this.router.get('/product', cashierController.getAllProduct);
+    public searchProduct(): void {
+        this.router.get('/product', cashierController.searchProduct);
     }
     public addToCart(): void {
         this.router.put('/product', cashierController.addToCart);

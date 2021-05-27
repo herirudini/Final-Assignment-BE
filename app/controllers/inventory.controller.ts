@@ -172,13 +172,17 @@ class inventoryController {
         }
     }
 
-    static getAllProduct(req: Request, res: Response, next: NextFunction) {
-        Product.find()
+    static searchProduct(req: Request, res: Response) {
+        const keywords: string = req.body.keywords;
+        const filter: string = req.body.filter;
+
+        Product.find({ brand_name: filter, $text: { $search: keywords } },
+            { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })
             .then((result) => {
-                res.status(200).json({ success: true, message: "All Product:", data: result })
+                res.status(200).json({ success: true, message: "Product found: ", data: result })
             })
             .catch((err) => {
-                next(err)
+                res.status(404).json({ success: false, message: "Product not-found", data: err })
             })
     }
 

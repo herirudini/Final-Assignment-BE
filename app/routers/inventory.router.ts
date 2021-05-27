@@ -10,7 +10,7 @@ class inventoryRouter {
         this.createProduct()
         this.purchaseOrder()
         this.deliveryOrder()
-        this.getAllProduct()
+        this.searchProduct()
         this.setProductStatus()
     }
     // public createBrand(): void {
@@ -25,8 +25,8 @@ class inventoryRouter {
     public purchaseOrder(): void {
         this.router.post('/purchase-order', inventoryController.purchaseOrder);
     }
-    public getAllProduct(): void {
-        this.router.get('/product', inventoryController.getAllProduct);
+    public searchProduct(): void {
+        this.router.get('/product', inventoryController.searchProduct);
     }
     public setProductStatus(): void {
         this.router.patch('/product/:product_id', inventoryController.setProductStatus);
