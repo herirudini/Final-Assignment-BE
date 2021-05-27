@@ -40,16 +40,16 @@ class Routes {
     public authentication(): void {
         this.router.use(auth.authentication)
     }
-    private owner(): void {
+    public owner(): void {
         this.router.use(auth.ownerAuth, ownerRouter)
     }
-    private inventory(): void {
+    public inventory(): void {
         this.router.use(auth.inventoryAuth, inventoryRouter)
     }
-    private finance(): void {
+    public finance(): void {
         this.router.use(auth.financeAuth, financeRouter)
     }
-    private cashier(): void {
+    public cashier(): void {
         this.router.use(auth.cashierAuth, cashierRouter)
     }
     public accountDetails(): void {

@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import { Cart } from '../models/Cart.model'
 // import { Receipt } from '../models/Receipt.model'
 import { Invoice } from '../models/Invoice.model'
 
@@ -29,11 +30,54 @@ class financeController {
             next(err)
         }
     }
-    static getCost(req: Request, res: Response, next: NextFunction) {
-
+    static async getOutcome(req: Request, res: Response, next: NextFunction) {
+        const inputDateFrom: any = req.body.date_from;
+        const inputDateTo: any = req.body.date_to;
+        const dateRange: object = { $gte: inputDateFrom, $lte: inputDateTo }
+        let getInvoices: any;
+        try {
+            getInvoices = await Invoice.find({ status: "paid", updatedAt: dateRange })
+        }
+        catch (err) {
+            next(err)
+        }
+        finally {
+            res.status(200).json({ success: true, message: "paid invoices:", data: getInvoices })
+        }
     }
-    static getIncome(req: Request, res: Response, next: NextFunction) {
-
+    static async getIncome(req: Request, res: Response, next: NextFunction) {
+        const inputDateFrom: any = req.body.date_from;
+        const inputDateTo: any = req.body.date_to;
+        const dateRange: object = { $gte: inputDateFrom, $lte: inputDateTo }
+        let getSoldProduct: any;
+        try {
+            getSoldProduct = Cart.find({ status: "sold", date: dateRange })
+        }
+        catch (err) {
+            next(err)
+        }
+        finally {
+            res.status(200).json({ success: true, message: "sold products:", data: getSoldProduct })
+        }
+    }
+    static async getTopProduct(req: Request, res: Response, next: NextFunction) {
+        const inputDateFrom: any = req.body.date_from;
+        const inputDateTo: any = req.body.date_to;
+        const dateRange: object = { $gte: inputDateFrom, $lte: inputDateTo }
+        let getTopProduct: any;
+        try {
+            getTopProduct = await Cart.aggregate([
+                { $match: { status: "sold", date: dateRange } },
+                { $group: { _id: '$product_id', total: { $sum: '$quantity' } } },
+                { $sort: { total: -1 } }
+            ])
+        }
+        catch (err) {
+            next(err)
+        }
+        finally {
+            res.status(200).json({ success: true, message: "Top Products:", data: getTopProduct })
+        }
     }
 }
 

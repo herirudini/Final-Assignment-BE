@@ -25,7 +25,6 @@ class cashierController {
         const getSellPrice = getProduct?.sellPrice;
         const getIsAfterTax = getProduct?.isAfterTax;
         const getStock = getProduct?.stock;
-        const product: string = getBrandName + "_" + getProductName + "_" + getUom;
         const checkCart: any = await Cart.countDocuments({ status: "on-process", product_id: getProductId, admin_id: getUserId });
 
         let countTax: number;
@@ -50,7 +49,9 @@ class cashierController {
             } else if (checkCart == 0) {
                 createCart = await Cart.create({
                     admin_id: getUserId,
-                    product: product,
+                    brand_name: getBrandName,
+                    product_name: getProductName,
+                    uom: getUom,
                     product_id: getProductId,
                     quantity: quantity,
                     price: getSellPrice,
@@ -80,7 +81,6 @@ class cashierController {
         const getSellPrice = getProduct?.sellPrice;
         const getIsAfterTax = getProduct?.isAfterTax;
         const getStock = getProduct?.stock;
-        const product: string = getBrandName + "_" + getProductName + "_" + getUom;
         const checkCart: any = await Cart.countDocuments({ status: "on-process", product_id: inputProductId, admin_id: getUserId });
 
         let countTax: number;
@@ -106,7 +106,9 @@ class cashierController {
                 createCart = await Cart.create({
                     admin_id: getUserId,
                     product_id: inputProductId,
-                    product: product,
+                    brand_name: getBrandName,
+                    product_name: getProductName,
+                    uom: getUom,
                     quantity: quantity,
                     price: getSellPrice,
                     tax: tax,
@@ -156,7 +158,7 @@ class cashierController {
     static async checkOut(req: Request, res: Response, next: NextFunction) {
         const getUserId: string = (<any>req).user_id;
         const getCart: any = await Cart.find({ status: "on-process", admin_id: getUserId });
-        const items: any = await Cart.find({ status: "on-process", admin_id: getUserId }).select('-status -admin_id -product_id')
+        const items: any = await Cart.find({ status: "on-process", admin_id: getUserId }).select('-status -admin_id -product_id -date')
         let totalTax: number = 0;
         let totalPrice: number = 0;
         let subtotal = totalPrice + totalTax
@@ -179,7 +181,7 @@ class cashierController {
             next(err)
         }
         finally {
-            updateStatus = await Cart.updateMany({ status: "on-process", admin_id: getUserId }, { "$set": { status: "success" } });
+            updateStatus = await Cart.updateMany({ status: "on-process", admin_id: getUserId }, { $set: { status: "sold" } });
             next()
         }
     }

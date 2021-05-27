@@ -7,9 +7,6 @@ class financeRouter {
         this.router = Router()
         this.getAllInvoice()
         this.updateInvoiceStatus()
-        this.getCost()
-        this.getIncome()
-        this.createReport()
     }
 
 
@@ -18,15 +15,6 @@ class financeRouter {
     }
     public updateInvoiceStatus(): void {
         this.router.patch('/invoice/:invoice_id', financeController.updateInvoiceStatus);
-    }
-    public getCost(): void {
-        this.router.get('/income', financeController.getCost);
-    }
-    public getIncome(): void {
-        this.router.get('/income', financeController.getIncome);
-    }
-    public createReport(): void {
-        this.router.get('/income', financeController.createReport);
     }
 }
 

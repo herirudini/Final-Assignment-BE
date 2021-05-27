@@ -4,12 +4,14 @@ interface Receipt {
     items: object[],
     tax: number,
     subtotal: number,
+    date: any,
 }
 
 interface ReceiptData extends mongoose.Document {
     items: object[],
     tax: number,
     subtotal: number,
+    date: any,
 }
 
 interface ReceiptInterface extends mongoose.Model<ReceiptData> {
@@ -20,7 +22,8 @@ const receiptSchema = new Schema({
     items: [{ type: Object }],
     tax: { type: Number },
     subtotal: { type: Number },
-}, { timestamps: true });
+    date: { type: Date, default: Date.now },
+});
 
 const Receipt = mongoose.model<ReceiptData, ReceiptInterface>('Receipt', receiptSchema)
 export { Receipt }
