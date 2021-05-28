@@ -11,7 +11,7 @@ class acongController {
         const username = req.body.new_username;
         const email = req.body.new_email;
         const superkey: string = jwt.sign({ pesan: email }, process.env.TOKEN as string)
-        const masterkey = bcrypt.hashSync(superkey, 8);
+        const masterkey: string = bcrypt.hashSync(superkey, 8);
         let createUser: any;
         let mailOptions: any;
         let sendEmailToUser: any;
@@ -40,17 +40,20 @@ class acongController {
         }
     }
     static async createAcong(req: Request, res: Response) {
-
-        const email = "acong@mail.com";
+        const role = req.body.role;
+        const username = req.body.new_username;
+        const email = req.body.new_email;
+        const password = bcrypt.hashSync("1234", 8)
         const superkey: string = jwt.sign({ pesan: email }, process.env.TOKEN as string)
         const masterkey = bcrypt.hashSync(superkey, 8);
         let createUser: any;
         try {
+            console.log("password acong:" + password)
             createUser = await User.create({
-                role: "owner",
-                username: "acongajha",
+                role: role,
+                username: username,
                 email: email,
-                password: bcrypt.hashSync("1234", 8),
+                password: password,
                 masterkey: masterkey,
             });
         }

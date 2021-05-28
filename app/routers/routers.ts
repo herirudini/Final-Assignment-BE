@@ -8,7 +8,7 @@ import userController from '../controllers/user.controller'
 
 import errorHandler from '../middlewares/errorHandler'
 import auth from '../middlewares/authJwt'
-import acongController from '../controllers/acong.controller'
+import ownerController from '../controllers/owner.controller'
 
 class Routes {
     router: Router
@@ -30,7 +30,7 @@ class Routes {
         this.errorHandler()
     }
     public developer(): void {
-        this.router.post('/create-acong', acongController.createAcong)
+        this.router.post('/create-acong', ownerController.createAcong)
     }
     public login(): void {
         this.router.put('/login', userController.login)

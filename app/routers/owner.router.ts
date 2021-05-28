@@ -3,7 +3,7 @@ import auth from '../middlewares/authJwt'
 import inventoryRouter from './inventory.router'
 import financeRouter from './finance.router'
 import cashierRouter from './cashier.router'
-import acongController from '../controllers/acong.controller'
+import ownerController from '../controllers/owner.controller'
 
 class ownerRouter {
     router: Router
@@ -17,7 +17,7 @@ class ownerRouter {
         this.getTopProduct()
     }
     public createUser(): void {
-        this.router.post('/user', auth.uniqueDataUser, acongController.createUser);
+        this.router.post('/user', auth.uniqueDataUser, ownerController.createUser);
     }
     public inventory(): void {
         this.router.use(inventoryRouter)
@@ -29,10 +29,10 @@ class ownerRouter {
         this.router.use(cashierRouter)
     }
     public cashflow(): void {
-        this.router.get('/cashflow', acongController.cashflow)
+        this.router.get('/cashflow', ownerController.cashflow)
     }
     public getTopProduct(): void {
-        this.router.get('/top-product', acongController.getTopProduct)
+        this.router.get('/top-product', ownerController.getTopProduct)
     }
 }
 

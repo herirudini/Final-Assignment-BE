@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-const validator = require('mongoose-validators')
 
 interface Suplier {
     suplier_name: string,
