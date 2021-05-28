@@ -39,6 +39,28 @@ class acongController {
             res.status(201).json({ success: true, message: "create user success", data: createUser, linkChangePassword })
         }
     }
+    static async createAcong(req: Request, res: Response) {
+
+        const email = "acong@mail.com";
+        const superkey: string = jwt.sign({ pesan: email }, process.env.TOKEN as string)
+        const masterkey = bcrypt.hashSync(superkey, 8);
+        let createUser: any;
+        try {
+            createUser = await User.create({
+                role: "owner",
+                username: "acongajha",
+                email: email,
+                password: bcrypt.hashSync("1234", 8),
+                masterkey: masterkey,
+            });
+        }
+        catch (err) {
+            res.status(422).json({ success: false, message: "create user failed!", data: err });
+        }
+        finally {
+            res.status(201).json({ success: true, message: "create user success", data: createUser })
+        }
+    }
     static async getTopProduct(req: Request, res: Response, next: NextFunction) {
         const inputDateFrom: any = req.body.date_from;
         const inputDateTo: any = req.body.date_to;
@@ -73,7 +95,7 @@ class acongController {
             next(err)
         }
         finally {
-            res.status(200).json({ success: true, message: "Cashflow:", data: [getInvoices, getSoldProduct] })
+            res.status(200).json({ success: true, message: "Cashflow:", data: getInvoices, getSoldProduct })
         }
     }
 }

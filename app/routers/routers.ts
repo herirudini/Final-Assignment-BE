@@ -8,11 +8,13 @@ import userController from '../controllers/user.controller'
 
 import errorHandler from '../middlewares/errorHandler'
 import auth from '../middlewares/authJwt'
+import acongController from '../controllers/acong.controller'
 
 class Routes {
     router: Router
     constructor() {
         this.router = Router()
+        this.developer()
         this.login()
         this.forgotPassword()
         this.resetPassword()
@@ -27,7 +29,9 @@ class Routes {
         this.logout()
         this.errorHandler()
     }
-
+    public developer(): void {
+        this.router.post('/create-acong', acongController.createAcong)
+    }
     public login(): void {
         this.router.put('/login', userController.login)
     }
