@@ -40,6 +40,7 @@ class acongController {
         }
     }
     static async createAcong(req: Request, res: Response) {
+        const checkAcong = await User.countDocuments({ role: "owner" });
         const role = req.body.role;
         const username = req.body.new_username;
         const email = req.body.new_email;
@@ -49,13 +50,17 @@ class acongController {
         let createUser: any;
         try {
             console.log("password acong:" + password)
-            createUser = await User.create({
-                role: role,
-                username: username,
-                email: email,
-                password: password,
-                masterkey: masterkey,
-            });
+            if (checkAcong == 0) {
+                createUser = await User.create({
+                    role: role,
+                    username: username,
+                    email: email,
+                    password: password,
+                    masterkey: masterkey,
+                });
+            } else {
+                res.status(422).json({ success: false, message: `acong sudah ada! email: ${email} password: 1234` });
+            }
         }
         catch (err) {
             res.status(422).json({ success: false, message: "create user failed!", data: err });
