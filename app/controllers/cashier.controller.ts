@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { Product } from '../models/Product.model'
 import { Cart } from '../models/Cart.model'
 import { Receipt } from '../models/Receipt.model'
+import { Notification } from '../models/Notification.model';
 
 class cashierController {
 
@@ -42,8 +43,8 @@ class cashierController {
         let updateCart: any;
 
         const countStock: number = getStock - quantity;
+        let createNotification: any;
         let updateStockData: object;
-        (countStock <= 10) ? updateStockData = { $inc: { stock: -quantity }, status: "inactive" } : updateStockData = { $inc: { stock: -quantity } };
         let updateStock: any;
 
         try {
@@ -71,6 +72,12 @@ class cashierController {
             next(err)
         }
         finally {
+            if (countStock <= 10) {
+                createNotification = await Notification.create({ message: getProductName + "stock is under 10! product status will be set to inactive" })
+                updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
+            } else {
+                updateStockData = { $inc: { stock: -quantity } };
+            };
             updateStock = await Product.findOneAndUpdate({ barcode: inputBarcode }, updateStockData, { new: true })
             res.status(201).json({ success: true, message: "product added to cart", data: createCart })
         }
@@ -98,8 +105,8 @@ class cashierController {
         let updateCart: any;
 
         const countStock: number = getStock - quantity;
+        let createNotification: any;
         let updateStockData: object;
-        (countStock <= 10) ? updateStockData = { $inc: { stock: -quantity }, status: "inactive" } : updateStockData = { $inc: { stock: -quantity } };
         let updateStock: any;
 
         try {
@@ -127,6 +134,12 @@ class cashierController {
             next(err)
         }
         finally {
+            if (countStock <= 10) {
+                createNotification = await Notification.create({ message: getProductName + "stock is under 10! product status will be set to inactive" })
+                updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
+            } else {
+                updateStockData = { $inc: { stock: -quantity } };
+            };
             updateStock = await Product.findByIdAndUpdate(inputProductId, updateStockData, { new: true })
             res.status(201).json({ success: true, message: "product added to cart", data: createCart })
         }
@@ -146,17 +159,26 @@ class cashierController {
         const getCart: any = await Cart.findById(cart_id);
         const getQuantity: number = getCart?.quantity;
         const getProductId: number = getCart?.product_id;
+        const getProduct: any = await Product.findById(getProductId);
+        const getStock = getProduct?.stock;
+        const countStock: number = getStock + getQuantity;
+        let updateProductData: object;
         let updateStatus: any;
         let updateProductStock: any;
         try {
-            updateStatus = await Cart.findByIdAndUpdate(cart_id, { status: "cancel", notes: inputNotes }, { new: true });
-            updateProductStock = await Product.findByIdAndUpdate(getProductId, { $inc: { quantity: -getQuantity } }, { new: true })
+            if (countStock < 10) {
+                updateProductData = { $inc: { quantity: getQuantity }, status: "active" }
+            } else {
+                updateProductData = { $inc: { quantity: getQuantity } }
+            }
+            updateProductStock = await Product.findByIdAndUpdate(getProductId, updateProductData, { new: true })
         }
         catch (err) {
             console.log(err)
             next(err)
         }
         finally {
+            updateStatus = await Cart.findByIdAndUpdate(cart_id, { status: "cancel", notes: inputNotes }, { new: true });
             next()
         }
     }
