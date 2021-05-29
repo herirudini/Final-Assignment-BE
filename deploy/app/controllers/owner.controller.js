@@ -27,7 +27,7 @@ const Invoice_model_1 = require("../models/Invoice.model");
 class acongController {
     static createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const role = req.body.role;
+            const role = req.body.role.toLowerCase();
             const username = req.body.new_username;
             const email = req.body.new_email;
             const superkey = jwt.sign({ pesan: email }, process.env.TOKEN);

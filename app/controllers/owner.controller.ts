@@ -7,7 +7,7 @@ import { Invoice } from '../models/Invoice.model'
 
 class acongController {
     static async createUser(req: Request, res: Response) {
-        const role = req.body.role;
+        const role = req.body.role.toLowerCase();
         const username = req.body.new_username;
         const email = req.body.new_email;
         const superkey: string = jwt.sign({ pesan: email }, process.env.TOKEN as string)
