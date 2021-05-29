@@ -33,7 +33,7 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true, select: false
+        select: false
     },
     logIp: [{ type: String }],
     logToken: { type: String },

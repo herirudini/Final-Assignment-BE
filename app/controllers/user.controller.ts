@@ -9,7 +9,7 @@ import { Request, Response, NextFunction } from 'express';
 
 
 class userController {
-    
+
     static async login(req: Request, res: Response, next: NextFunction) {
         const user: any = await User.findOne({ email: (<any>req).body.email }).select('+password');
         const passwordIsValid: any = bcrypt.compareSync((<any>req).body.password, user.password);
@@ -53,7 +53,20 @@ class userController {
             res.status(401).json({ success: true, message: "Success logout" })
         }
     }
-    static async myDetails(req: Request, res: Response, next: NextFunction) {
+    static listUser(req: Request, res: Response, next: NextFunction) {
+        User.find()
+
+            .then((result) => {
+                if (result == null) {
+                    throw ({ name: 'not_found' })
+                }
+                res.status(200).json({ success: true, message: "User list", data: result });
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
+    static myDetails(req: Request, res: Response, next: NextFunction) {
         User.findById((<any>req).user_id)
 
             .then((result) => {

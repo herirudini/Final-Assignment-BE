@@ -57,8 +57,11 @@ class Routes {
     cashier() {
         this.router.use(authJwt_1.default.cashierAuth, cashier_router_1.default);
     }
+    createUser() {
+        this.router.get('/user', authJwt_1.default.uniqueDataUser, user_controller_1.default.listUser);
+    }
     accountDetails() {
-        this.router.get('/user', user_controller_1.default.myDetails);
+        this.router.get('/user/details', user_controller_1.default.myDetails);
     }
     changeEmailOrPhone() {
         this.router.patch('/user/change-email-username', authJwt_1.default.twoStepAuth, authJwt_1.default.uniqueDataUser, user_controller_1.default.changeEmailOrUsername, user_controller_1.default.logout);

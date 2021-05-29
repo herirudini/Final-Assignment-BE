@@ -56,8 +56,11 @@ class Routes {
     public cashier(): void {
         this.router.use(auth.cashierAuth, cashierRouter)
     }
+    public createUser(): void {
+        this.router.get('/user', auth.uniqueDataUser, userController.listUser);
+    }
     public accountDetails(): void {
-        this.router.get('/user', userController.myDetails);
+        this.router.get('/user/details', userController.myDetails);
     }
     public changeEmailOrPhone(): void {
         this.router.patch('/user/change-email-username', auth.twoStepAuth, auth.uniqueDataUser, userController.changeEmailOrUsername, userController.logout);

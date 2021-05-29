@@ -17,7 +17,7 @@ const userSchema = new mongoose_1.Schema({
     },
     password: {
         type: String,
-        required: true, select: false
+        select: false
     },
     logIp: [{ type: String }],
     logToken: { type: String },

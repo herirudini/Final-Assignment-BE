@@ -75,18 +75,28 @@ class userController {
             }
         });
     }
+    static listUser(req, res, next) {
+        User_model_1.User.find()
+            .then((result) => {
+            if (result == null) {
+                throw ({ name: 'not_found' });
+            }
+            res.status(200).json({ success: true, message: "User list", data: result });
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
     static myDetails(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            User_model_1.User.findById(req.user_id)
-                .then((result) => {
-                if (result == null) {
-                    throw ({ name: 'not_found' });
-                }
-                res.status(200).json({ success: true, message: "User data", data: result });
-            })
-                .catch((err) => {
-                next(err);
-            });
+        User_model_1.User.findById(req.user_id)
+            .then((result) => {
+            if (result == null) {
+                throw ({ name: 'not_found' });
+            }
+            res.status(200).json({ success: true, message: "User data", data: result });
+        })
+            .catch((err) => {
+            next(err);
         });
     }
     static changeEmailOrUsername(req, res, next) {
