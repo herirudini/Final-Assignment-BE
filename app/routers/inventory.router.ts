@@ -7,6 +7,7 @@ class inventoryRouter {
         this.router = Router()
         // this.editOrder()
         this.createSuplier()
+        this.listSuplier()
         this.createProduct()
         this.purchaseOrder()
         this.deliveryOrder()
@@ -18,6 +19,9 @@ class inventoryRouter {
     // }
     public createSuplier(): void {
         this.router.post('/suplier', auth.inventoryAuth, auth.uniqueDataSuplier, inventoryController.createSuplier);
+    }
+    public listSuplier(): void {
+        this.router.get('/suplier', auth.inventoryAuth, inventoryController.listSuplier);
     }
     public createProduct(): void {
         this.router.post('/product', auth.inventoryAuth, auth.uniqueDataProduct, inventoryController.createProduct);

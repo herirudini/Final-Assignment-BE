@@ -15,7 +15,7 @@ const orderSchema = new mongoose_1.Schema({
     brand_name: { type: String, required: true },
     uom: { type: String, required: true },
     buyPrice: { type: Number, required: true },
-    discount: { type: Number },
+    discount: { type: Number, default: 0 },
     quantity: { type: Number, required: true },
     subTotal: { type: Number },
     arrived: { type: Number, default: 0 },

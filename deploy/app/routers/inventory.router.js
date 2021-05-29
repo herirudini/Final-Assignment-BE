@@ -11,6 +11,7 @@ class inventoryRouter {
         this.router = express_1.Router();
         // this.editOrder()
         this.createSuplier();
+        this.listSuplier();
         this.createProduct();
         this.purchaseOrder();
         this.deliveryOrder();
@@ -22,6 +23,9 @@ class inventoryRouter {
     // }
     createSuplier() {
         this.router.post('/suplier', authJwt_1.default.inventoryAuth, authJwt_1.default.uniqueDataSuplier, inventory_controller_1.default.createSuplier);
+    }
+    listSuplier() {
+        this.router.get('/suplier', authJwt_1.default.inventoryAuth, inventory_controller_1.default.listSuplier);
     }
     createProduct() {
         this.router.post('/product', authJwt_1.default.inventoryAuth, authJwt_1.default.uniqueDataProduct, inventory_controller_1.default.createProduct);

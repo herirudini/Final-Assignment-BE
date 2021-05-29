@@ -36,17 +36,26 @@ class inventoryController {
             }
         });
     }
+    static listSuplier(req, res, next) {
+        Suplier_model_1.Suplier.find()
+            .then((result) => {
+            res.status(200).json({ success: true, message: "Suplier list:", data: result });
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
     static createProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputSuplierName = req.body.suplier_name.toUpperCase();
             const inputBrandName = req.body.brand_name.toUpperCase();
             const inputProductName = req.body.product_name.toUpperCase();
             const inputImage = req.body.image;
-            const inputUom = req.body.uom;
+            const inputUom = req.body.uom.toUpperCase();
             const inputSellPrice = req.body.sellPrice;
             const inputBarcode = req.body.barcode;
             const inputBuyPrice = req.body.buyPrice;
-            const inputIsAfterTax = req.body.isAfterTax;
+            const inputIsAfterTax = req.body.isAfterTax.toLowerCase();
             const getSuplier = yield Suplier_model_1.Suplier.findOne({ suplier_name: inputSuplierName });
             const getSuplierId = getSuplier === null || getSuplier === void 0 ? void 0 : getSuplier.id;
             const checkBrands = getSuplier === null || getSuplier === void 0 ? void 0 : getSuplier.brands;
@@ -54,26 +63,31 @@ class inventoryController {
             let pushBrand;
             let createProduct;
             try {
-                createProduct = yield Product_model_1.Product.create({
-                    suplier_name: inputSuplierName,
-                    brand_name: inputBrandName,
-                    product_name: inputProductName,
-                    image: inputImage,
-                    uom: inputUom,
-                    buyPrice: inputBuyPrice,
-                    sellPrice: inputSellPrice,
-                    isAfterTax: inputIsAfterTax,
-                    barcode: inputBarcode,
-                });
-                if (!brandIsExist) {
-                    pushBrand = yield Suplier_model_1.Suplier.findByIdAndUpdate(getSuplierId, { $push: { brands: inputBrandName } }, { new: true });
+                if (getSuplierId === undefined) {
+                    res.status(422).json({ success: false, message: "Suplier not found" });
                 }
-                ;
+                else {
+                    createProduct = yield Product_model_1.Product.create({
+                        suplier_name: inputSuplierName,
+                        brand_name: inputBrandName,
+                        product_name: inputProductName,
+                        image: inputImage,
+                        uom: inputUom,
+                        buyPrice: inputBuyPrice,
+                        sellPrice: inputSellPrice,
+                        isAfterTax: inputIsAfterTax,
+                        barcode: inputBarcode,
+                    });
+                }
             }
             catch (err) {
                 next(err);
             }
             finally {
+                if (!brandIsExist) {
+                    pushBrand = yield Suplier_model_1.Suplier.findByIdAndUpdate(getSuplierId, { $push: { brands: inputBrandName } }, { new: true });
+                }
+                ;
                 res.status(201).json({ success: true, message: "Product created", data: createProduct });
             }
         });
@@ -100,28 +114,35 @@ class inventoryController {
             let createOrder;
             let createInvoice;
             let updateInvoice;
+            let discount;
+            (!inputDiscount) ? discount = 0 : discount = inputDiscount;
             try {
                 if (checkOrder !== 0) {
                     const listOnProcessOrder = yield Order_model_1.Order.find({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
                     res.status(500).json({ success: false, message: "You have an unfinished order, you can force this by edit previous order status first into: force-complete", data: listOnProcessOrder });
                 }
-                createOrder = yield Order_model_1.Order.create({
-                    suplier_id: getSuplierId,
-                    product_id: getProductId,
-                    brand_name: getBrandName,
-                    uom: getUom,
-                    buyPrice: getBuyPrice,
-                    discount: inputDiscount,
-                    quantity: inputQuantity,
-                    subTotal: countSubTotal,
-                    isAfterTax: getIsAfterTax,
-                });
+                else {
+                    createOrder = yield Order_model_1.Order.create({
+                        suplier_id: getSuplierId,
+                        product_id: getProductId,
+                        brand_name: getBrandName,
+                        uom: getUom,
+                        buyPrice: getBuyPrice,
+                        discount: discount,
+                        quantity: inputQuantity,
+                        subTotal: countSubTotal,
+                        isAfterTax: getIsAfterTax,
+                    });
+                }
             }
             catch (err) {
                 next(err);
             }
             finally {
-                if (checkInvoice == 0) {
+                if (createOrder.id === undefined) {
+                    console.log("Failed to create order");
+                }
+                else if (checkInvoice == 0) {
                     createInvoice = yield Invoice_model_1.Invoice.create({
                         suplier_id: getSuplierId,
                         orders: createOrder.id,
@@ -180,25 +201,38 @@ class inventoryController {
             }
         });
     }
-    static searchProduct(req, res) {
+    static searchProduct(req, res, next) {
         const keywords = req.body.keywords;
-        const filter = req.body.filter;
-        Product_model_1.Product.find({ brand_name: filter, $text: { $search: keywords } }, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })
+        const brand_name = req.body.brand_name.toUpperCase();
+        Product_model_1.Product.find({ brand_name: brand_name, $text: { $search: keywords } }, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })
             .then((result) => {
             res.status(200).json({ success: true, message: "Product found: ", data: result });
         })
             .catch((err) => {
-            res.status(404).json({ success: false, message: "Product not-found", data: err });
+            next(err);
         });
     }
     static setProductStatus(req, res, next) {
-        const inputStatus = req.body.status.toLowerCase();
-        Product_model_1.Product.findById(req.params.product_id, { status: inputStatus }, { new: true })
-            .then((result) => {
-            res.status(200).json({ success: true, message: "Product status updated:", data: result });
-        })
-            .catch((err) => {
-            next(err);
+        return __awaiter(this, void 0, void 0, function* () {
+            const getProduct = yield Product_model_1.Product.findById(req.params.product_id);
+            const getProductStatus = getProduct === null || getProduct === void 0 ? void 0 : getProduct.status;
+            let newStatus;
+            let updateStatus;
+            try {
+                if (getProductStatus === "inactive") {
+                    newStatus = "active";
+                }
+                else {
+                    newStatus = "inactive";
+                }
+                updateStatus = yield Product_model_1.Product.findByIdAndUpdate(req.params.product_id, { status: newStatus }, { new: true });
+            }
+            catch (err) {
+                next(err);
+            }
+            finally {
+                res.status(200).json({ success: true, message: "Product status updated:", data: updateStatus });
+            }
         });
     }
 }

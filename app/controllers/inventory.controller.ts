@@ -27,17 +27,25 @@ class inventoryController {
             res.status(201).json({ success: true, message: "Suplier created", data: createSuplier })
         }
     }
-
+    static listSuplier(req: Request, res: Response, next: NextFunction) {
+        Suplier.find()
+            .then((result) => {
+                res.status(200).json({ success: true, message: "Suplier list:", data: result })
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
     static async createProduct(req: Request, res: Response, next: NextFunction) {
         const inputSuplierName = req.body.suplier_name.toUpperCase();
         const inputBrandName = req.body.brand_name.toUpperCase();
         const inputProductName = req.body.product_name.toUpperCase();
         const inputImage = req.body.image;
-        const inputUom = req.body.uom;
+        const inputUom = req.body.uom.toUpperCase();
         const inputSellPrice = req.body.sellPrice;
         const inputBarcode = req.body.barcode;
         const inputBuyPrice = req.body.buyPrice;
-        const inputIsAfterTax = req.body.isAfterTax;
+        const inputIsAfterTax = req.body.isAfterTax.toLowerCase();
 
         const getSuplier = await Suplier.findOne({ suplier_name: inputSuplierName });
         const getSuplierId = getSuplier?.id;
@@ -47,25 +55,29 @@ class inventoryController {
 
         let createProduct: any;
         try {
-            createProduct = await Product.create({
-                suplier_name: inputSuplierName,
-                brand_name: inputBrandName,
-                product_name: inputProductName,
-                image: inputImage,
-                uom: inputUom,
-                buyPrice: inputBuyPrice,
-                sellPrice: inputSellPrice,
-                isAfterTax: inputIsAfterTax,
-                barcode: inputBarcode,
-            });
-            if (!brandIsExist) {
-                pushBrand = await Suplier.findByIdAndUpdate(getSuplierId, { $push: { brands: inputBrandName } }, { new: true })
-            };
+            if (getSuplierId === undefined) {
+                res.status(422).json({ success: false, message: "Suplier not found" })
+            } else {
+                createProduct = await Product.create({
+                    suplier_name: inputSuplierName,
+                    brand_name: inputBrandName,
+                    product_name: inputProductName,
+                    image: inputImage,
+                    uom: inputUom,
+                    buyPrice: inputBuyPrice,
+                    sellPrice: inputSellPrice,
+                    isAfterTax: inputIsAfterTax,
+                    barcode: inputBarcode,
+                });
+            }
         }
         catch (err) {
             next(err)
         }
         finally {
+            if (!brandIsExist) {
+                pushBrand = await Suplier.findByIdAndUpdate(getSuplierId, { $push: { brands: inputBrandName } }, { new: true })
+            };
             res.status(201).json({ success: true, message: "Product created", data: createProduct })
         }
     }
@@ -94,29 +106,34 @@ class inventoryController {
         let createOrder: any;
         let createInvoice: any;
         let updateInvoice: any;
+        let discount: number;
+        (!inputDiscount) ? discount = 0 : discount = inputDiscount;
 
         try {
             if (checkOrder !== 0) {
                 const listOnProcessOrder = await Order.find({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" })
                 res.status(500).json({ success: false, message: "You have an unfinished order, you can force this by edit previous order status first into: force-complete", data: listOnProcessOrder })
+            } else {
+                createOrder = await Order.create({
+                    suplier_id: getSuplierId,
+                    product_id: getProductId,
+                    brand_name: getBrandName,
+                    uom: getUom,
+                    buyPrice: getBuyPrice,
+                    discount: discount,
+                    quantity: inputQuantity,
+                    subTotal: countSubTotal,
+                    isAfterTax: getIsAfterTax,
+                });
             }
-            createOrder = await Order.create({
-                suplier_id: getSuplierId,
-                product_id: getProductId,
-                brand_name: getBrandName,
-                uom: getUom,
-                buyPrice: getBuyPrice,
-                discount: inputDiscount,
-                quantity: inputQuantity,
-                subTotal: countSubTotal,
-                isAfterTax: getIsAfterTax,
-            });
         }
         catch (err) {
             next(err)
         }
         finally {
-            if (checkInvoice == 0) {
+            if (createOrder.id === undefined) {
+                console.log("Failed to create order")
+            } else if (checkInvoice == 0) {
                 createInvoice = await Invoice.create({
                     suplier_id: getSuplierId,
                     orders: createOrder.id,
@@ -172,29 +189,39 @@ class inventoryController {
         }
     }
 
-    static searchProduct(req: Request, res: Response) {
+    static searchProduct(req: Request, res: Response, next: NextFunction) {
         const keywords: string = req.body.keywords;
-        const filter: string = req.body.filter;
+        const brand_name: string = req.body.brand_name.toUpperCase();
 
-        Product.find({ brand_name: filter, $text: { $search: keywords } },
+        Product.find({ brand_name: brand_name, $text: { $search: keywords } },
             { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })
             .then((result) => {
                 res.status(200).json({ success: true, message: "Product found: ", data: result })
             })
             .catch((err) => {
-                res.status(404).json({ success: false, message: "Product not-found", data: err })
+                next(err)
             })
     }
 
-    static setProductStatus(req: Request, res: Response, next: NextFunction) {
-        const inputStatus = req.body.status.toLowerCase()
-        Product.findById(req.params.product_id, { status: inputStatus }, { new: true })
-            .then((result) => {
-                res.status(200).json({ success: true, message: "Product status updated:", data: result })
-            })
-            .catch((err) => {
-                next(err)
-            })
+    static async setProductStatus(req: Request, res: Response, next: NextFunction) {
+        const getProduct = await Product.findById(req.params.product_id);
+        const getProductStatus: string | undefined = getProduct?.status;
+        let newStatus: string;
+        let updateStatus: any;
+        try {
+            if (getProductStatus === "inactive") {
+                newStatus = "active"
+            } else {
+                newStatus = "inactive"
+            }
+            updateStatus = await Product.findByIdAndUpdate(req.params.product_id, { status: newStatus }, { new: true })
+        }
+        catch (err) {
+            next(err)
+        }
+        finally {
+            res.status(200).json({ success: true, message: "Product status updated:", data: updateStatus })
+        }
     }
 }
 
