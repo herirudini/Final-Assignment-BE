@@ -187,7 +187,7 @@ class inventoryController {
     }
 
     static setProductStatus(req: Request, res: Response, next: NextFunction) {
-        const inputStatus = req.body.status
+        const inputStatus = req.body.status.toLowerCase()
         Product.findById(req.params.product_id, { status: inputStatus }, { new: true })
             .then((result) => {
                 res.status(200).json({ success: true, message: "Product status updated:", data: result })
