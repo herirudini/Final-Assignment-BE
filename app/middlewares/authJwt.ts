@@ -117,7 +117,7 @@ class auth {
     }
     static async resetPasswordAuth(req: Request, res: Response, next: NextFunction) {
         const userId: string = req.params.user_id;
-        const secretToken: string = req.params.secret_key;
+        const secretToken: string = req.params.superkey;
         const getUser: any = await User.findById(userId).select('+masterkey')
 
         try {

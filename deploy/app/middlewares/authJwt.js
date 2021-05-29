@@ -150,7 +150,7 @@ class auth {
     static resetPasswordAuth(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const userId = req.params.user_id;
-            const secretToken = req.params.secret_key;
+            const secretToken = req.params.superkey;
             const getUser = yield User_model_1.User.findById(userId).select('+masterkey');
             try {
                 if (!secretToken || !userId) {
