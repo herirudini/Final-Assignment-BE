@@ -24,7 +24,6 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const User_model_1 = require("../models/User.model");
 const Suplier_model_1 = require("../models/Suplier.model");
 const Product_model_1 = require("../models/Product.model");
-const validator = require('validator');
 class auth {
     static authentication(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -65,14 +64,10 @@ class auth {
         return __awaiter(this, void 0, void 0, function* () {
             const inputEmail = req.body.new_email;
             const inputUsername = req.body.new_username;
-            const isValidEmail = validator.isEmail(inputEmail);
             const checkUserByEmail = yield User_model_1.User.countDocuments({ email: inputEmail });
             const checkUserByName = yield User_model_1.User.countDocuments({ username: inputUsername });
             try {
-                if (isValidEmail === false) {
-                    throw ({ name: 'invalid_email' });
-                }
-                else if (checkUserByEmail != 0) {
+                if (checkUserByEmail != 0) {
                     throw ({ name: 'unique_email' });
                 }
                 else if (checkUserByName != 0) {
@@ -90,8 +85,9 @@ class auth {
     }
     static uniqueDataSuplier(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const inputSuplierName = req.body.suplierName.toUpperCase();
-            const checkSuplierByName = yield Suplier_model_1.Suplier.countDocuments({ name: inputSuplierName });
+            const inputSuplierName = req.body.suplier_name;
+            const suplierName = inputSuplierName.toUpperCase();
+            const checkSuplierByName = yield Suplier_model_1.Suplier.countDocuments({ name: suplierName });
             try {
                 if (checkSuplierByName != 0) {
                     throw ({ name: 'unique_name' });
@@ -127,8 +123,9 @@ class auth {
     static twoStepAuth(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const getUser = yield User_model_1.User.findById(req.user_id).select('+password');
+            const inputPassword = req.body.password;
             try {
-                if (!req.body.password) {
+                if (!inputPassword) {
                     res.status(402).json({ success: false, message: "Please input password!" });
                 }
                 else {
@@ -176,6 +173,7 @@ class auth {
         return __awaiter(this, void 0, void 0, function* () {
             const author = yield User_model_1.User.findById(req.user_id);
             try {
+                console.log("ownerAuth:");
                 if (!author) {
                     throw ({ name: 'not_found' });
                 }

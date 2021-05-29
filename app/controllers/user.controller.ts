@@ -53,19 +53,6 @@ class userController {
             res.status(401).json({ success: true, message: "Success logout" })
         }
     }
-    static listUser(req: Request, res: Response, next: NextFunction) {
-        User.find()
-
-            .then((result) => {
-                if (result == null) {
-                    throw ({ name: 'not_found' })
-                }
-                res.status(200).json({ success: true, message: "User list", data: result });
-            })
-            .catch((err) => {
-                next(err)
-            })
-    }
     static myDetails(req: Request, res: Response, next: NextFunction) {
         User.findById((<any>req).user_id)
 
@@ -81,13 +68,13 @@ class userController {
     }
     static changeEmailOrUsername(req: Request, res: Response, next: NextFunction) {
         const { new_username, new_email } = req.body;
-        const newData: any = { phone: new_username, email: new_email }
+        const newData: any = { username: new_username, email: new_email }
         for (const key in newData) {
             if (!newData[key]) delete newData[key]
         }
         User.findByIdAndUpdate((<any>req).user_id, newData, { new: true })
             .then((result) => {
-                res.status(200).json({ success: true, message: "Email/Phone changed! You're logged out automatically ", data: result });
+                console.log("Email/Username changed! You're logged out automatically");
                 next()
             })
             .catch((err) => {
@@ -97,7 +84,7 @@ class userController {
     static changePassword(req: Request, res: Response, next: NextFunction) {
         User.findByIdAndUpdate((<any>req).user_id, { password: bcrypt.hashSync(req.body.new_password, 8) }, { new: true }).select('+password')
             .then((result) => {
-                res.status(200).json({ success: true, message: "Password changed! You're logged out automatically" });
+                console.log("Password changed! You're logged out automatically");
                 next()
             })
             .catch((err) => {
@@ -126,8 +113,7 @@ class userController {
     static resetPassword(req: Request, res: Response, next: NextFunction) {
         User.findByIdAndUpdate(req.params.user_id, { password: bcrypt.hashSync(req.body.new_password, 8) }, { new: true }).select('+password')
             .then((result) => {
-                res.status(200).json({ success: true, message: "Password changed! You're logged out automatically" });
-                next()
+                res.status(200).json({ success: true, message: "Password changed! Please login" });
             })
             .catch((err) => {
                 console.log(err)

@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import financeController from '../controllers/finance.controller'
+import auth from '../middlewares/authJwt'
 
 class financeRouter {
     router: Router
@@ -12,16 +13,16 @@ class financeRouter {
     }
 
     public getAllInvoice(): void {
-        this.router.get('/invoice', financeController.getAllInvoice);
+        this.router.get('/invoice', auth.financeAuth, financeController.getAllInvoice);
     }
     public updateInvoiceStatus(): void {
-        this.router.patch('/invoice/:invoice_id', financeController.updateInvoiceStatus);
+        this.router.patch('/invoice/:invoice_id', auth.financeAuth, financeController.updateInvoiceStatus);
     }
     public getOutcome(): void {
-        this.router.get('/outcome', financeController.getOutcome);
+        this.router.get('/outcome', auth.financeAuth, financeController.getOutcome);
     }
     public getIncome(): void {
-        this.router.get('/income', financeController.getIncome);
+        this.router.get('/income', auth.financeAuth, financeController.getIncome);
     }
 }
 

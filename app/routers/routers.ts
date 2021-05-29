@@ -10,7 +10,7 @@ import errorHandler from '../middlewares/errorHandler'
 import auth from '../middlewares/authJwt'
 import ownerController from '../controllers/owner.controller'
 
-class Routes {
+class Routers {
     router: Router
     constructor() {
         this.router = Router()
@@ -24,7 +24,7 @@ class Routes {
         this.finance()
         this.cashier()
         this.accountDetails()
-        this.changeEmailOrPhone()
+        this.changeEmailOrUsername()
         this.changePassword()
         this.logout()
         this.errorHandler()
@@ -45,24 +45,21 @@ class Routes {
         this.router.use(auth.authentication)
     }
     public owner(): void {
-        this.router.use(auth.ownerAuth, ownerRouter)
+        this.router.use(ownerRouter)
     }
     public inventory(): void {
-        this.router.use(auth.inventoryAuth, inventoryRouter)
+        this.router.use(inventoryRouter)
     }
     public finance(): void {
-        this.router.use(auth.financeAuth, financeRouter)
+        this.router.use(financeRouter)
     }
     public cashier(): void {
-        this.router.use(auth.cashierAuth, cashierRouter)
-    }
-    public createUser(): void {
-        this.router.get('/user', auth.uniqueDataUser, userController.listUser);
+        this.router.use(cashierRouter)
     }
     public accountDetails(): void {
         this.router.get('/user/details', userController.myDetails);
     }
-    public changeEmailOrPhone(): void {
+    public changeEmailOrUsername(): void {
         this.router.patch('/user/change-email-username', auth.twoStepAuth, auth.uniqueDataUser, userController.changeEmailOrUsername, userController.logout);
     }
     public changePassword(): void {
@@ -76,4 +73,4 @@ class Routes {
     }
 }
 
-export default new Routes().router
+export default new Routers().router

@@ -1,6 +1,6 @@
 import { Application } from 'express'
 import express from 'express'
-import router from './routers/routers'
+import Routers from './routers/routers'
 import connectDB from '../config/connect-database'
 import dotenv from 'dotenv'
 import cors from 'cors'
@@ -36,7 +36,7 @@ class App {
       });
    }
    protected routes(): void {
-      this.app.use(router)
+      this.app.use(Routers)
    }
 }
 const app = new App().app

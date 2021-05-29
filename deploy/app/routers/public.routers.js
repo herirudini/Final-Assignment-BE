@@ -4,15 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const owner_router_1 = __importDefault(require("./owner.router"));
-const inventory_router_1 = __importDefault(require("./inventory.router"));
-const finance_router_1 = __importDefault(require("./finance.router"));
-const cashier_router_1 = __importDefault(require("./cashier.router"));
 const user_controller_1 = __importDefault(require("../controllers/user.controller"));
 const errorHandler_1 = __importDefault(require("../middlewares/errorHandler"));
 const authJwt_1 = __importDefault(require("../middlewares/authJwt"));
 const owner_controller_1 = __importDefault(require("../controllers/owner.controller"));
-class Routers {
+class publicRoutes {
     constructor() {
         this.router = express_1.Router();
         this.developer();
@@ -20,10 +16,6 @@ class Routers {
         this.forgotPassword();
         this.resetPassword();
         this.authentication();
-        this.owner();
-        this.inventory();
-        this.finance();
-        this.cashier();
         this.accountDetails();
         this.changeEmailOrUsername();
         this.changePassword();
@@ -45,18 +37,6 @@ class Routers {
     authentication() {
         this.router.use(authJwt_1.default.authentication);
     }
-    owner() {
-        this.router.use(owner_router_1.default);
-    }
-    inventory() {
-        this.router.use(inventory_router_1.default);
-    }
-    finance() {
-        this.router.use(finance_router_1.default);
-    }
-    cashier() {
-        this.router.use(cashier_router_1.default);
-    }
     accountDetails() {
         this.router.get('/user/details', user_controller_1.default.myDetails);
     }
@@ -73,4 +53,4 @@ class Routers {
         this.router.use(errorHandler_1.default);
     }
 }
-exports.default = new Routers().router;
+exports.default = new publicRoutes().router;

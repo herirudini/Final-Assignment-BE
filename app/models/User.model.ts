@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+const validator: any = require('mongoose-validators');
 
 interface User {
     role: string,
@@ -29,7 +30,8 @@ const userSchema = new Schema({
     username: { type: String, required: true },
     email: {
         type: String,
-        required: true
+        required: true,
+        validate: validator.isEmail()
     },
     password: {
         type: String,

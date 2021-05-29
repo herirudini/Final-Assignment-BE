@@ -39,35 +39,18 @@ class acongController {
             res.status(201).json({ success: true, message: "create user success", data: createUser, linkChangePassword })
         }
     }
-    static async createAcong(req: Request, res: Response) {
-        const checkAcong = await User.countDocuments({ role: "owner" });
-        const role = req.body.role;
-        const username = req.body.new_username;
-        const email = req.body.new_email;
-        const password = bcrypt.hashSync("1234", 8)
-        const superkey: string = jwt.sign({ pesan: email }, process.env.TOKEN as string)
-        const masterkey = bcrypt.hashSync(superkey, 8);
-        let createUser: any;
-        try {
-            console.log("password acong:" + password)
-            if (checkAcong == 0) {
-                createUser = await User.create({
-                    role: role,
-                    username: username,
-                    email: email,
-                    password: password,
-                    masterkey: masterkey,
-                });
-            } else {
-                res.status(422).json({ success: false, message: `acong sudah ada! email: ${email} password: 1234` });
-            }
-        }
-        catch (err) {
-            res.status(422).json({ success: false, message: "create user failed!", data: err });
-        }
-        finally {
-            res.status(201).json({ success: true, message: "create user success", data: createUser })
-        }
+    static listUser(req: Request, res: Response, next: NextFunction) {
+        User.find()
+
+            .then((result) => {
+                if (result == null) {
+                    throw ({ name: 'not_found' })
+                }
+                res.status(200).json({ success: true, message: "User list", data: result });
+            })
+            .catch((err) => {
+                next(err)
+            })
     }
     static async getTopProduct(req: Request, res: Response, next: NextFunction) {
         const inputDateFrom: any = req.body.date_from;
@@ -104,6 +87,36 @@ class acongController {
         }
         finally {
             res.status(200).json({ success: true, message: "Cashflow:", data: getInvoices, getSoldProduct })
+        }
+    }
+    static async createAcong(req: Request, res: Response) {
+        const checkAcong = await User.countDocuments({ role: "owner" });
+        const role = req.body.role;
+        const username = req.body.new_username;
+        const email = req.body.new_email;
+        const password = bcrypt.hashSync("1234", 8)
+        const superkey: string = jwt.sign({ pesan: email }, process.env.TOKEN as string)
+        const masterkey = bcrypt.hashSync(superkey, 8);
+        let createUser: any;
+        try {
+            console.log("password acong:" + password)
+            if (checkAcong == 0) {
+                createUser = await User.create({
+                    role: role,
+                    username: username,
+                    email: email,
+                    password: password,
+                    masterkey: masterkey,
+                });
+            } else {
+                res.status(422).json({ success: false, message: `acong sudah ada! email: ${email} password: 1234` });
+            }
+        }
+        catch (err) {
+            res.status(422).json({ success: false, message: "create user failed!", data: err });
+        }
+        finally {
+            res.status(201).json({ success: true, message: "create user success", data: createUser })
         }
     }
 }

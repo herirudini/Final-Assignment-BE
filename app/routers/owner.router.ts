@@ -17,7 +17,7 @@ class ownerRouter {
         this.getTopProduct()
     }
     public createUser(): void {
-        this.router.post('/user', auth.uniqueDataUser, ownerController.createUser);
+        this.router.post('/user', auth.ownerAuth, auth.uniqueDataUser, ownerController.createUser);
     }
     public inventory(): void {
         this.router.use(inventoryRouter)
@@ -29,10 +29,10 @@ class ownerRouter {
         this.router.use(cashierRouter)
     }
     public cashflow(): void {
-        this.router.get('/cashflow', ownerController.cashflow)
+        this.router.get('/cashflow', auth.ownerAuth, ownerController.cashflow)
     }
     public getTopProduct(): void {
-        this.router.get('/top-product', ownerController.getTopProduct)
+        this.router.get('/top-product', auth.ownerAuth, ownerController.getTopProduct)
     }
 }
 

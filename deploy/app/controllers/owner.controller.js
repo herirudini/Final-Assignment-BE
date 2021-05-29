@@ -60,37 +60,16 @@ class acongController {
             }
         });
     }
-    static createAcong(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const checkAcong = yield User_model_1.User.countDocuments({ role: "owner" });
-            const role = req.body.role;
-            const username = req.body.new_username;
-            const email = req.body.new_email;
-            const password = bcrypt_1.default.hashSync("1234", 8);
-            const superkey = jwt.sign({ pesan: email }, process.env.TOKEN);
-            const masterkey = bcrypt_1.default.hashSync(superkey, 8);
-            let createUser;
-            try {
-                console.log("password acong:" + password);
-                if (checkAcong == 0) {
-                    createUser = yield User_model_1.User.create({
-                        role: role,
-                        username: username,
-                        email: email,
-                        password: password,
-                        masterkey: masterkey,
-                    });
-                }
-                else {
-                    res.status(422).json({ success: false, message: `acong sudah ada! email: ${email} password: 1234` });
-                }
+    static listUser(req, res, next) {
+        User_model_1.User.find()
+            .then((result) => {
+            if (result == null) {
+                throw ({ name: 'not_found' });
             }
-            catch (err) {
-                res.status(422).json({ success: false, message: "create user failed!", data: err });
-            }
-            finally {
-                res.status(201).json({ success: true, message: "create user success", data: createUser });
-            }
+            res.status(200).json({ success: true, message: "User list", data: result });
+        })
+            .catch((err) => {
+            next(err);
         });
     }
     static getTopProduct(req, res, next) {
@@ -130,6 +109,39 @@ class acongController {
             }
             finally {
                 res.status(200).json({ success: true, message: "Cashflow:", data: getInvoices, getSoldProduct });
+            }
+        });
+    }
+    static createAcong(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const checkAcong = yield User_model_1.User.countDocuments({ role: "owner" });
+            const role = req.body.role;
+            const username = req.body.new_username;
+            const email = req.body.new_email;
+            const password = bcrypt_1.default.hashSync("1234", 8);
+            const superkey = jwt.sign({ pesan: email }, process.env.TOKEN);
+            const masterkey = bcrypt_1.default.hashSync(superkey, 8);
+            let createUser;
+            try {
+                console.log("password acong:" + password);
+                if (checkAcong == 0) {
+                    createUser = yield User_model_1.User.create({
+                        role: role,
+                        username: username,
+                        email: email,
+                        password: password,
+                        masterkey: masterkey,
+                    });
+                }
+                else {
+                    res.status(422).json({ success: false, message: `acong sudah ada! email: ${email} password: 1234` });
+                }
+            }
+            catch (err) {
+                res.status(422).json({ success: false, message: "create user failed!", data: err });
+            }
+            finally {
+                res.status(201).json({ success: true, message: "create user success", data: createUser });
             }
         });
     }

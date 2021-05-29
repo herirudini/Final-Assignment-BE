@@ -21,22 +21,22 @@ class inventoryRouter {
     //     this.router.post('/order/edit-order', inventoryController.editOrder);
     // }
     createSuplier() {
-        this.router.post('/suplier', authJwt_1.default.uniqueDataSuplier, inventory_controller_1.default.createSuplier);
+        this.router.post('/suplier', authJwt_1.default.inventoryAuth, authJwt_1.default.uniqueDataSuplier, inventory_controller_1.default.createSuplier);
     }
     createProduct() {
-        this.router.post('/product', authJwt_1.default.uniqueDataProduct, inventory_controller_1.default.createProduct);
+        this.router.post('/product', authJwt_1.default.inventoryAuth, authJwt_1.default.uniqueDataProduct, inventory_controller_1.default.createProduct);
     }
     purchaseOrder() {
-        this.router.post('/purchase-order', inventory_controller_1.default.purchaseOrder);
+        this.router.post('/purchase-order', authJwt_1.default.inventoryAuth, inventory_controller_1.default.purchaseOrder);
     }
     searchProduct() {
-        this.router.get('/product', inventory_controller_1.default.searchProduct);
+        this.router.get('/product', authJwt_1.default.inventoryAuth, inventory_controller_1.default.searchProduct);
     }
     setProductStatus() {
-        this.router.patch('/product/:product_id', inventory_controller_1.default.setProductStatus);
+        this.router.patch('/product/:product_id', authJwt_1.default.inventoryAuth, inventory_controller_1.default.setProductStatus);
     }
     deliveryOrder() {
-        this.router.post('/delivery-order', inventory_controller_1.default.deliveryOrder);
+        this.router.post('/delivery-order', authJwt_1.default.inventoryAuth, inventory_controller_1.default.deliveryOrder);
     }
 }
 exports.default = new inventoryRouter().router;

@@ -17,22 +17,22 @@ class inventoryRouter {
     //     this.router.post('/order/edit-order', inventoryController.editOrder);
     // }
     public createSuplier(): void {
-        this.router.post('/suplier', auth.uniqueDataSuplier, inventoryController.createSuplier);
+        this.router.post('/suplier', auth.inventoryAuth, auth.uniqueDataSuplier, inventoryController.createSuplier);
     }
     public createProduct(): void {
-        this.router.post('/product', auth.uniqueDataProduct, inventoryController.createProduct);
+        this.router.post('/product', auth.inventoryAuth, auth.uniqueDataProduct, inventoryController.createProduct);
     }
     public purchaseOrder(): void {
-        this.router.post('/purchase-order', inventoryController.purchaseOrder);
+        this.router.post('/purchase-order', auth.inventoryAuth, inventoryController.purchaseOrder);
     }
     public searchProduct(): void {
-        this.router.get('/product', inventoryController.searchProduct);
+        this.router.get('/product', auth.inventoryAuth, inventoryController.searchProduct);
     }
     public setProductStatus(): void {
-        this.router.patch('/product/:product_id', inventoryController.setProductStatus);
+        this.router.patch('/product/:product_id', auth.inventoryAuth, inventoryController.setProductStatus);
     }
     public deliveryOrder(): void {
-        this.router.post('/delivery-order', inventoryController.deliveryOrder);
+        this.router.post('/delivery-order', auth.inventoryAuth, inventoryController.deliveryOrder);
     }
 }
 

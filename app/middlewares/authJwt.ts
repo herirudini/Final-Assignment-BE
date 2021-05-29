@@ -5,8 +5,6 @@ import { User } from '../models/User.model'
 import { Suplier } from '../models/Suplier.model'
 import { Product } from '../models/Product.model'
 
-const validator: any = require('validator');
-
 class auth {
     static async authentication(req: Request, res: Response, next: NextFunction) {
         const access_token: string = (<any>req).headers.access_token;
@@ -43,16 +41,14 @@ class auth {
             next(err)
         }
     }
+
     static async uniqueDataUser(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
         const inputEmail: string = req.body.new_email;
         const inputUsername: string = req.body.new_username;
-        const isValidEmail: boolean = validator.isEmail(inputEmail)
         const checkUserByEmail: any = await User.countDocuments({ email: inputEmail })
         const checkUserByName: any = await User.countDocuments({ username: inputUsername })
         try {
-            if (isValidEmail === false) {
-                throw ({ name: 'invalid_email' })
-            } else if (checkUserByEmail != 0) {
+            if (checkUserByEmail != 0) {
                 throw ({ name: 'unique_email' })
             } else if (checkUserByName != 0) {
                 throw ({ name: 'unique_username' })
@@ -66,7 +62,7 @@ class auth {
         }
     }
     static async uniqueDataSuplier(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
-        const inputSuplierName: string = req.body.suplierName.toUpperCase()
+        const inputSuplierName: string = req.body.suplier_name.toUpperCase()
         const checkSuplierByName: any = await Suplier.countDocuments({ name: inputSuplierName })
         try {
             if (checkSuplierByName != 0) {
@@ -97,9 +93,9 @@ class auth {
     }
     static async twoStepAuth(req: Request, res: Response, next: NextFunction) {
         const getUser: any = await User.findById((<any>req).user_id).select('+password')
-
+        const inputPassword: string = req.body.password;
         try {
-            if (!req.body.password) {
+            if (!inputPassword) {
                 res.status(402).json({ success: false, message: "Please input password!" })
             } else {
                 const match = bcrypt.compareSync(req.body.password, getUser.password);
@@ -140,6 +136,7 @@ class auth {
     static async ownerAuth(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
         const author: any = await User.findById((<any>req).user_id)
         try {
+            console.log("ownerAuth:")
             if (!author) {
                 throw ({ name: 'not_found' })
             } else if (author.role == "owner") {

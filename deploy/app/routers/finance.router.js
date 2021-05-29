@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const finance_controller_1 = __importDefault(require("../controllers/finance.controller"));
+const authJwt_1 = __importDefault(require("../middlewares/authJwt"));
 class financeRouter {
     constructor() {
         this.router = express_1.Router();
@@ -14,16 +15,16 @@ class financeRouter {
         this.getIncome();
     }
     getAllInvoice() {
-        this.router.get('/invoice', finance_controller_1.default.getAllInvoice);
+        this.router.get('/invoice', authJwt_1.default.financeAuth, finance_controller_1.default.getAllInvoice);
     }
     updateInvoiceStatus() {
-        this.router.patch('/invoice/:invoice_id', finance_controller_1.default.updateInvoiceStatus);
+        this.router.patch('/invoice/:invoice_id', authJwt_1.default.financeAuth, finance_controller_1.default.updateInvoiceStatus);
     }
     getOutcome() {
-        this.router.get('/outcome', finance_controller_1.default.getOutcome);
+        this.router.get('/outcome', authJwt_1.default.financeAuth, finance_controller_1.default.getOutcome);
     }
     getIncome() {
-        this.router.get('/income', finance_controller_1.default.getIncome);
+        this.router.get('/income', authJwt_1.default.financeAuth, finance_controller_1.default.getIncome);
     }
 }
 exports.default = new financeRouter().router;

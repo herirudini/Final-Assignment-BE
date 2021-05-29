@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import cashierController from '../controllers/cashier.controller'
+import auth from '../middlewares/authJwt'
 
 class cashierRouter {
     router: Router
@@ -15,22 +16,22 @@ class cashierRouter {
     }
 
     public searchProduct(): void {
-        this.router.get('/product', cashierController.searchProduct);
+        this.router.get('/product', auth.cashierAuth, cashierController.searchProduct);
     }
     public addToCart(): void {
-        this.router.put('/product', cashierController.addToCart);
+        this.router.put('/product', auth.cashierAuth, cashierController.addToCart);
     }
     public addToCartManual(): void {
-        this.router.put('/product/:product_id', cashierController.addToCartManual);
+        this.router.put('/product/:product_id', auth.cashierAuth, cashierController.addToCartManual);
     }
     public listCart(): void {
-        this.router.get('/cart', cashierController.listCart);
+        this.router.get('/cart', auth.cashierAuth, cashierController.listCart);
     }
     public cancelItem(): void {
-        this.router.patch('/cart/:cart_id', cashierController.cancelItem, cashierController.listCart);
+        this.router.patch('/cart/:cart_id', auth.cashierAuth, cashierController.cancelItem, cashierController.listCart);
     }
     public checkOut(): void {
-        this.router.post('/checkout', cashierController.checkOut, cashierController.listCart);
+        this.router.post('/checkout', auth.cashierAuth, cashierController.checkOut, cashierController.listCart);
     }
 }
 
