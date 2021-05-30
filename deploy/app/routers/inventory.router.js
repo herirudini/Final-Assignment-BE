@@ -36,7 +36,7 @@ class inventoryRouter {
         this.router.post('/product', authJwt_1.default.inventoryAuth, authJwt_1.default.uniqueDataProduct, inventory_controller_1.default.createProduct);
     }
     listProduct() {
-        this.router.post('/product', authJwt_1.default.inventoryAuth, inventory_controller_1.default.listProduct);
+        this.router.get('/product', authJwt_1.default.inventoryAuth, inventory_controller_1.default.listProduct);
     }
     searchProduct() {
         this.router.get('/product/search', authJwt_1.default.inventoryAuth, inventory_controller_1.default.searchProduct);

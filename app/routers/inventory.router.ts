@@ -32,7 +32,7 @@ class inventoryRouter {
         this.router.post('/product', auth.inventoryAuth, auth.uniqueDataProduct, inventoryController.createProduct);
     }
     public listProduct(): void {
-        this.router.post('/product', auth.inventoryAuth, inventoryController.listProduct);
+        this.router.get('/product', auth.inventoryAuth, inventoryController.listProduct);
     }
     public searchProduct(): void {
         this.router.get('/product/search', auth.inventoryAuth, inventoryController.searchProduct);
