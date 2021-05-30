@@ -10,6 +10,7 @@ class ownerRouter {
     constructor() {
         this.router = Router()
         this.createUser()
+        this.listUser()
         this.inventory()
         this.finance()
         this.cashier()
@@ -18,6 +19,9 @@ class ownerRouter {
     }
     public createUser(): void {
         this.router.post('/user', auth.ownerAuth, auth.uniqueDataUser, ownerController.createUser);
+    }
+    public listUser(): void {
+        this.router.get('/user', auth.ownerAuth, auth.uniqueDataUser, ownerController.listUser);
     }
     public inventory(): void {
         this.router.use(inventoryRouter)

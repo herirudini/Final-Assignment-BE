@@ -13,6 +13,7 @@ class ownerRouter {
     constructor() {
         this.router = express_1.Router();
         this.createUser();
+        this.listUser();
         this.inventory();
         this.finance();
         this.cashier();
@@ -21,6 +22,9 @@ class ownerRouter {
     }
     createUser() {
         this.router.post('/user', authJwt_1.default.ownerAuth, authJwt_1.default.uniqueDataUser, owner_controller_1.default.createUser);
+    }
+    listUser() {
+        this.router.get('/user', authJwt_1.default.ownerAuth, authJwt_1.default.uniqueDataUser, owner_controller_1.default.listUser);
     }
     inventory() {
         this.router.use(inventory_router_1.default);
