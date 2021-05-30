@@ -94,6 +94,7 @@ class inventoryController {
             const inputBarcode = req.body.barcode;
             const inputBuyPrice = req.body.buyPrice;
             const inputIsAfterTax = req.body.isAfterTax.toLowerCase();
+            const checkProduct = yield Product_model_1.Product.countDocuments({ brand_name: inputBrandName, product_name: inputProductName, uom: inputUom });
             const getSuplier = yield Suplier_model_1.Suplier.findOne({ suplier_name: inputSuplierName });
             const getSuplierId = getSuplier === null || getSuplier === void 0 ? void 0 : getSuplier.id;
             const checkBrands = getSuplier === null || getSuplier === void 0 ? void 0 : getSuplier.brands;
@@ -104,7 +105,7 @@ class inventoryController {
                 if (getSuplierId === undefined) {
                     res.status(422).json({ success: false, message: "Suplier not found" });
                 }
-                else {
+                else if (checkProduct === 0) {
                     createProduct = yield Product_model_1.Product.create({
                         suplier_name: inputSuplierName,
                         brand_name: inputBrandName,
@@ -116,6 +117,9 @@ class inventoryController {
                         isAfterTax: inputIsAfterTax,
                         barcode: inputBarcode,
                     });
+                }
+                else {
+                    res.status(400).json({ success: false, message: "This product has already created! cannot create more than one" });
                 }
             }
             catch (err) {

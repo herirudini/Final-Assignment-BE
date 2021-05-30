@@ -46,7 +46,7 @@ class cashierController {
         let createNotification: any;
         let updateStockData: object;
         let updateStock: any;
-
+        
         try {
             const totalPrice: number = getSellPrice * quantity;
             const tax: number = countTax * quantity;
@@ -66,19 +66,19 @@ class cashierController {
                 })
             } else {
                 updateCart = await Cart.findOneAndUpdate({ status: "on-process", product_id: getProductId, admin_id: getUserId }, { $inc: { quantity: quantity } }, { new: true })
-            }
-        }
-        catch (err) {
-            next(err)
-        }
-        finally {
+            };
             if (countStock <= 10) {
                 createNotification = await Notification.create({ message: getProductName + "stock is under 10! product status will be set to inactive" })
                 updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
             } else {
                 updateStockData = { $inc: { stock: -quantity } };
             };
-            updateStock = await Product.findOneAndUpdate({ barcode: inputBarcode }, updateStockData, { new: true })
+            updateStock = await Product.findOneAndUpdate({ barcode: inputBarcode }, updateStockData, { new: true });
+        }
+        catch (err) {
+            next(err)
+        }
+        finally {
             res.status(201).json({ success: true, message: "product added to cart", data: createCart })
         }
     }
@@ -128,19 +128,19 @@ class cashierController {
                 })
             } else {
                 updateCart = await Cart.findOneAndUpdate({ status: "on-process", product_id: inputProductId, admin_id: getUserId }, { $inc: { quantity: quantity } }, { new: true })
-            }
-        }
-        catch (err) {
-            next(err)
-        }
-        finally {
+            };
             if (countStock <= 10) {
                 createNotification = await Notification.create({ message: getProductName + "stock is under 10! product status will be set to inactive" })
                 updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
             } else {
                 updateStockData = { $inc: { stock: -quantity } };
             };
-            updateStock = await Product.findByIdAndUpdate(inputProductId, updateStockData, { new: true })
+            updateStock = await Product.findByIdAndUpdate(inputProductId, updateStockData, { new: true });
+        }
+        catch (err) {
+            next(err)
+        }
+        finally {
             res.status(201).json({ success: true, message: "product added to cart", data: createCart })
         }
     }
@@ -170,15 +170,15 @@ class cashierController {
                 updateProductData = { $inc: { quantity: getQuantity }, status: "active" }
             } else {
                 updateProductData = { $inc: { quantity: getQuantity } }
-            }
-            updateProductStock = await Product.findByIdAndUpdate(getProductId, updateProductData, { new: true })
+            };
+            updateProductStock = await Product.findByIdAndUpdate(getProductId, updateProductData, { new: true });
+            updateStatus = await Cart.findByIdAndUpdate(cart_id, { status: "cancel", notes: inputNotes }, { new: true });
         }
         catch (err) {
             console.log(err)
             next(err)
         }
         finally {
-            updateStatus = await Cart.findByIdAndUpdate(cart_id, { status: "cancel", notes: inputNotes }, { new: true });
             next()
         }
     }
@@ -201,14 +201,14 @@ class cashierController {
                 items: items,
                 totalTax: totalTax,
                 subtotal: subtotal,
-            })
+            });
+            updateStatus = await Cart.updateMany({ status: "on-process", admin_id: getUserId }, { $set: { status: "sold" } });
         }
         catch (err) {
             console.log("err checkout controller:" + err)
             next(err)
         }
         finally {
-            updateStatus = await Cart.updateMany({ status: "on-process", admin_id: getUserId }, { $set: { status: "sold" } });
             next()
         }
     }

@@ -46,7 +46,7 @@ class userController {
                 }
                 else if (passwordIsValid) { //true email and password
                     signCredentials = yield User_model_1.User.findOneAndUpdate({ email: req.body.email }, credentialsData, { new: true });
-                    res.status(202).json({ success: true, message: "success login", data: signCredentials, AccessToken: token });
+                    res.status(202).json({ success: true, message: "success login", data: signCredentials });
                 }
                 else { //true email, wrong password
                     throw ({ name: 'not_verified' });

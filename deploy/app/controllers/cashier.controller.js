@@ -71,11 +71,7 @@ class cashierController {
                 else {
                     updateCart = yield Cart_model_1.Cart.findOneAndUpdate({ status: "on-process", product_id: getProductId, admin_id: getUserId }, { $inc: { quantity: quantity } }, { new: true });
                 }
-            }
-            catch (err) {
-                next(err);
-            }
-            finally {
+                ;
                 if (countStock <= 10) {
                     createNotification = yield Notification_model_1.Notification.create({ message: getProductName + "stock is under 10! product status will be set to inactive" });
                     updateStockData = { $inc: { stock: -quantity }, status: "inactive" };
@@ -85,6 +81,11 @@ class cashierController {
                 }
                 ;
                 updateStock = yield Product_model_1.Product.findOneAndUpdate({ barcode: inputBarcode }, updateStockData, { new: true });
+            }
+            catch (err) {
+                next(err);
+            }
+            finally {
                 res.status(201).json({ success: true, message: "product added to cart", data: createCart });
             }
         });
@@ -134,11 +135,7 @@ class cashierController {
                 else {
                     updateCart = yield Cart_model_1.Cart.findOneAndUpdate({ status: "on-process", product_id: inputProductId, admin_id: getUserId }, { $inc: { quantity: quantity } }, { new: true });
                 }
-            }
-            catch (err) {
-                next(err);
-            }
-            finally {
+                ;
                 if (countStock <= 10) {
                     createNotification = yield Notification_model_1.Notification.create({ message: getProductName + "stock is under 10! product status will be set to inactive" });
                     updateStockData = { $inc: { stock: -quantity }, status: "inactive" };
@@ -148,6 +145,11 @@ class cashierController {
                 }
                 ;
                 updateStock = yield Product_model_1.Product.findByIdAndUpdate(inputProductId, updateStockData, { new: true });
+            }
+            catch (err) {
+                next(err);
+            }
+            finally {
                 res.status(201).json({ success: true, message: "product added to cart", data: createCart });
             }
         });
@@ -181,14 +183,15 @@ class cashierController {
                 else {
                     updateProductData = { $inc: { quantity: getQuantity } };
                 }
+                ;
                 updateProductStock = yield Product_model_1.Product.findByIdAndUpdate(getProductId, updateProductData, { new: true });
+                updateStatus = yield Cart_model_1.Cart.findByIdAndUpdate(cart_id, { status: "cancel", notes: inputNotes }, { new: true });
             }
             catch (err) {
                 console.log(err);
                 next(err);
             }
             finally {
-                updateStatus = yield Cart_model_1.Cart.findByIdAndUpdate(cart_id, { status: "cancel", notes: inputNotes }, { new: true });
                 next();
             }
         });
@@ -214,13 +217,13 @@ class cashierController {
                     totalTax: totalTax,
                     subtotal: subtotal,
                 });
+                updateStatus = yield Cart_model_1.Cart.updateMany({ status: "on-process", admin_id: getUserId }, { $set: { status: "sold" } });
             }
             catch (err) {
                 console.log("err checkout controller:" + err);
                 next(err);
             }
             finally {
-                updateStatus = yield Cart_model_1.Cart.updateMany({ status: "on-process", admin_id: getUserId }, { $set: { status: "sold" } });
                 next();
             }
         });
