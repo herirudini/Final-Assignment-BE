@@ -129,7 +129,7 @@ class userController {
             }
             finally {
                 linkChangePassword = `/${updateUser.id}/${superkey}`;
-                res.status(201).json({ success: true, message: "chek your email", data: updateUser, linkChangePassword });
+                res.status(201).json({ success: true, message: "chek your email", data: { user: updateUser, link: linkChangePassword } });
             }
         });
     }

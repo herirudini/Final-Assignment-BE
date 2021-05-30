@@ -59,37 +59,28 @@ class inventoryController {
                 { $match: {} },
                 { $group: { _id: '$uom', total: { $sum: '$stock' } } },
             ]);
-            // let data = [];
             try {
-                // let getBrandName = [];
-                // let getProductName = [];
-                // let getUom = [];
-                // for (let i = 0; i < listBrandName.length; i++) {
-                //     let name = listBrandName[i]
-                //     for (let x in name) {
-                //         getBrandName.push(name[x].brand_name)
-                //     }
-                // };
-                // for (let i = 0; i < listProductName.length; i++) {
-                //     let name = listProductName[i]
-                //     for (let x in name) {
-                //         getProductName.push(name[x].product_name)
-                //     }
-                // };
-                // for (let i = 0; i < listUom.length; i++) {
-                //     let name = listUom[i]
-                //     for (let x in name) {
-                //         getUom.push(name[x].uom)
-                //     }
-                // };
-                // data.push(getBrandName, getProductName, getUom)
-                res.status(200).json({ success: true, message: "brand_name, product_name, uom", data: [listBrandName, listProductName, listUom] });
+                let getBrandName = [];
+                let getProductName = [];
+                let getUom = [];
+                for (let i = 0; i < listBrandName.length; i++) {
+                    getBrandName.push(listBrandName[i]._id);
+                }
+                ;
+                for (let i = 0; i < listProductName.length; i++) {
+                    getProductName.push(listProductName[i]._id);
+                }
+                ;
+                for (let i = 0; i < listUom.length; i++) {
+                    getUom.push(listUom[i]._id);
+                }
+                ;
+                let data = { brand_name: getBrandName, product_name: getProductName, uom: getUom };
+                res.status(200).json({ success: true, message: "brand_name, product_name, uom", data: data });
             }
             catch (err) {
                 next(err);
             }
-            // finally {
-            // }
         });
     }
     static createProduct(req, res, next) {

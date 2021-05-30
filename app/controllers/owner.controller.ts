@@ -36,7 +36,7 @@ class acongController {
         }
         finally {
             // sendEmailToUser = transporter.sendMail(mailOptions, (err: any, info: any) => { (err) ? console.log(err) : console.log("Email sent: " + info.responsive) })
-            res.status(201).json({ success: true, message: "create user success", data: createUser, linkChangePassword })
+            res.status(201).json({ success: true, message: "create user success", data: { user: createUser, link: linkChangePassword } })
         }
     }
     static listUser(req: Request, res: Response, next: NextFunction) {
