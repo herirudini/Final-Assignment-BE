@@ -36,6 +36,40 @@ class inventoryController {
                 next(err)
             })
     }
+    static async listNames(req: Request, res: Response, next: NextFunction) {
+        const listBrandName: any = await Product.aggregate([
+            { $match: {} },
+            { $group: { _id: '$brand_name' } },
+        ]);
+        const listProductName: any = await Product.aggregate([
+            { $match: {} },
+            { $group: { _id: '$product_name' } },
+        ]);
+        const listUom: any = await Product.aggregate([
+            { $match: {} },
+            { $group: { _id: '$uom' } },
+        ]);
+        let getBrandName = [];
+        let getProductName = [];
+        let getUom = [];
+        try {
+            for (let i in listBrandName) {
+                getBrandName.push(listBrandName[i].brand_name)
+            };
+            for (let i in listProductName) {
+                getProductName.push(listProductName[i].product_name)
+            }
+            for (let i in listUom) {
+                getUom.push(listUom[i].uom)
+            }
+        }
+        catch (err) {
+            next(err)
+        }
+        finally {
+            res.status(200).json({ success: true, message: "brand_name, product_name, uom", data: getBrandName, getProductName, getUom })
+        }
+    }
     static async createProduct(req: Request, res: Response, next: NextFunction) {
         const inputSuplierName = req.body.suplier_name.toUpperCase();
         const inputBrandName = req.body.brand_name.toUpperCase();
@@ -188,7 +222,15 @@ class inventoryController {
             res.status(201).json({ success: true, message: "Delivery created, Order updated, Product updated", data: "Too Much Im Spinning" })
         }
     }
-
+    static listProduct(req: Request, res: Response, next: NextFunction) {
+        Product.find()
+            .then((result) => {
+                res.status(200).json({ success: true, message: "All Products:", data: result })
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
     static searchProduct(req: Request, res: Response, next: NextFunction) {
         const keywords: string = req.body.keywords;
         const brand_name: string = req.body.brand_name.toUpperCase();

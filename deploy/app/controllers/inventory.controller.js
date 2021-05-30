@@ -45,6 +45,43 @@ class inventoryController {
             next(err);
         });
     }
+    static listNames(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const listBrandName = yield Product_model_1.Product.aggregate([
+                { $match: {} },
+                { $group: { _id: '$brand_name' } },
+            ]);
+            const listProductName = yield Product_model_1.Product.aggregate([
+                { $match: {} },
+                { $group: { _id: '$product_name' } },
+            ]);
+            const listUom = yield Product_model_1.Product.aggregate([
+                { $match: {} },
+                { $group: { _id: '$uom' } },
+            ]);
+            let getBrandName = [];
+            let getProductName = [];
+            let getUom = [];
+            try {
+                for (let i in listBrandName) {
+                    getBrandName.push(listBrandName[i].brand_name);
+                }
+                ;
+                for (let i in listProductName) {
+                    getProductName.push(listProductName[i].product_name);
+                }
+                for (let i in listUom) {
+                    getUom.push(listUom[i].uom);
+                }
+            }
+            catch (err) {
+                next(err);
+            }
+            finally {
+                res.status(200).json({ success: true, message: "brand_name, product_name, uom", data: getBrandName, getProductName, getUom });
+            }
+        });
+    }
     static createProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputSuplierName = req.body.suplier_name.toUpperCase();
@@ -199,6 +236,15 @@ class inventoryController {
             finally {
                 res.status(201).json({ success: true, message: "Delivery created, Order updated, Product updated", data: "Too Much Im Spinning" });
             }
+        });
+    }
+    static listProduct(req, res, next) {
+        Product_model_1.Product.find()
+            .then((result) => {
+            res.status(200).json({ success: true, message: "All Products:", data: result });
+        })
+            .catch((err) => {
+            next(err);
         });
     }
     static searchProduct(req, res, next) {
