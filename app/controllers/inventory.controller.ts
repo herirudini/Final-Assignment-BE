@@ -39,35 +39,46 @@ class inventoryController {
     static async listNames(req: Request, res: Response, next: NextFunction) {
         const listBrandName: any = await Product.aggregate([
             { $match: {} },
-            { $group: { _id: '$brand_name' } },
+            { $group: { _id: '$brand_name', total: { $sum: '$stock' } } },
         ]);
         const listProductName: any = await Product.aggregate([
             { $match: {} },
-            { $group: { _id: '$product_name' } },
+            { $group: { _id: '$product_name', total: { $sum: '$stock' } } },
         ]);
         const listUom: any = await Product.aggregate([
             { $match: {} },
-            { $group: { _id: '$uom' } },
+            { $group: { _id: '$uom', total: { $sum: '$stock' } } },
         ]);
-        let getBrandName = [];
-        let getProductName = [];
-        let getUom = [];
+        let data = [];
         try {
-            for (let i in listBrandName) {
-                getBrandName.push(listBrandName[i].brand_name)
+            let getBrandName = [];
+            let getProductName = [];
+            let getUom = [];
+            for (let i = 0; i < listBrandName.length; i++) {
+                let name = listBrandName[i]
+                for (let x in name) {
+                    getBrandName.push(name[x].brand_name)
+                }
             };
-            for (let i in listProductName) {
-                getProductName.push(listProductName[i].product_name)
-            }
-            for (let i in listUom) {
-                getUom.push(listUom[i].uom)
-            }
+            for (let i = 0; i < listProductName.length; i++) {
+                let name = listProductName[i]
+                for (let x in name) {
+                    getProductName.push(name[x].product_name)
+                }
+            };
+            for (let i = 0; i < listUom.length; i++) {
+                let name = listUom[i]
+                for (let x in name) {
+                    getUom.push(name[x].uom)
+                }
+            };
+            data.push(getBrandName, getProductName, getUom)
         }
         catch (err) {
             next(err)
         }
         finally {
-            res.status(200).json({ success: true, message: "brand_name, product_name, uom", data: getBrandName, getProductName, getUom })
+            res.status(200).json({ success: true, message: "brand_name, product_name, uom", data: data })
         }
     }
     static async createProduct(req: Request, res: Response, next: NextFunction) {
