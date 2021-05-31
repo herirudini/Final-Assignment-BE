@@ -46,12 +46,14 @@ class cashierController {
         let createNotification: any;
         let updateStockData: object;
         let updateStock: any;
-        
+
         try {
             const totalPrice: number = getSellPrice * quantity;
             const tax: number = countTax * quantity;
             if (getProduct.status == "inactive") {
                 res.status(500).json({ success: false, message: "Product Inactive: Produk ini tidak dijual" })
+            } else if (countStock < 0) {
+                res.status(500).json({ success: false, message: "Insufficient stock!" })
             } else if (checkCart == 0) {
                 createCart = await Cart.create({
                     admin_id: getUserId,
@@ -68,7 +70,7 @@ class cashierController {
                 updateCart = await Cart.findOneAndUpdate({ status: "on-process", product_id: getProductId, admin_id: getUserId }, { $inc: { quantity: quantity } }, { new: true })
             };
             if (countStock <= 10) {
-                createNotification = await Notification.create({ message: getProductName + "stock is under 10! product status will be set to inactive" })
+                createNotification = await Notification.create({ message: getProductName + " stock is under 10! product status will be set to inactive" })
                 updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
             } else {
                 updateStockData = { $inc: { stock: -quantity } };
@@ -114,6 +116,8 @@ class cashierController {
             const tax: number = countTax * quantity;
             if (getProduct.status == "inactive") {
                 res.status(500).json({ success: false, message: "Product Inactive: Produk ini tidak dijual" })
+            } else if (countStock < 0) {
+                res.status(500).json({ success: false, message: "Insufficient stock!" })
             } else if (checkCart == 0) {
                 createCart = await Cart.create({
                     admin_id: getUserId,
@@ -130,7 +134,7 @@ class cashierController {
                 updateCart = await Cart.findOneAndUpdate({ status: "on-process", product_id: inputProductId, admin_id: getUserId }, { $inc: { quantity: quantity } }, { new: true })
             };
             if (countStock <= 10) {
-                createNotification = await Notification.create({ message: getProductName + "stock is under 10! product status will be set to inactive" })
+                createNotification = await Notification.create({ message: getProductName + " stock is under 10! product status will be set to inactive" })
                 updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
             } else {
                 updateStockData = { $inc: { stock: -quantity } };

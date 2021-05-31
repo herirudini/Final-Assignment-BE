@@ -36,40 +36,38 @@ class inventoryController {
                 next(err)
             })
     }
-    static async listNames(req: Request, res: Response, next: NextFunction) {
-        const listSuplierName: any = await Suplier.find().select('suplier_name');
-        const listBrandName: any = await Product.aggregate([
-            { $match: {} },
-            { $group: { _id: '$brand_name', total: { $sum: '$stock' } } },
-        ]);
+    static async listBrand(req: Request, res: Response, next: NextFunction) {
+        const inputSuplierName: string = req.body.suplier_name.toUpperCase();
+        const listBrandName: any = await Suplier.findOne({ suplier_name: inputSuplierName }).select('brands -_id');
+        try {
+            res.status(200).json({ success: true, message: "brand list", data: listBrandName })
+        }
+        catch (err) {
+            next(err)
+        }
+    }
+    static async listProductAndUom(req: Request, res: Response, next: NextFunction) {
+        const inputBrandName: string = req.body.brand_name.toUpperCase();
         const listProductName: any = await Product.aggregate([
-            { $match: {} },
-            { $group: { _id: '$product_name', total: { $sum: '$stock' } } },
+            { $match: { brand_name: inputBrandName } },
+            { $group: { _id: '$product_name' } },
         ]);
         const listUom: any = await Product.aggregate([
-            { $match: {} },
-            { $group: { _id: '$uom', total: { $sum: '$stock' } } },
+            { $match: { brand_name: inputBrandName } },
+            { $group: { _id: '$uom' } },
         ]);
+
         try {
-            let getSuplierName = [];
-            let getBrandName = [];
             let getProductName = [];
             let getUom = [];
-            for (let i = 0; i < listSuplierName.length; i++) {
-                getSuplierName.push(listSuplierName[i].suplier_name)
-            }
-            for (let i = 0; i < listBrandName.length; i++) {
-                getBrandName.push(listBrandName[i]._id)
-            };
             for (let i = 0; i < listProductName.length; i++) {
                 getProductName.push(listProductName[i]._id)
             };
             for (let i = 0; i < listUom.length; i++) {
                 getUom.push(listUom[i]._id)
             };
-            let data = { suplier_name: getSuplierName, brand_name: getBrandName, product_name: getProductName, uom: getUom }
-            res.status(200).json({ success: true, message: "suplier_name ,brand_name, product_name, uom", data: data })
-
+            let data = { product_name: getProductName, uom: getUom }
+            res.status(200).json({ success: true, message: "product and uom", data: data })
         }
         catch (err) {
             next(err)
@@ -230,7 +228,7 @@ class inventoryController {
             res.status(201).json({ success: true, message: "Delivery created, Order updated, Product updated", data: "Too Much Im Spinning" })
         }
     }
-    static listProduct(req: Request, res: Response, next: NextFunction) {
+    static getAllProduct(req: Request, res: Response, next: NextFunction) {
         Product.find()
             .then((result) => {
                 res.status(200).json({ success: true, message: "All Products:", data: result })

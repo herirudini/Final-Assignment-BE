@@ -7,9 +7,10 @@ class inventoryRouter {
         this.router = Router()
         this.createSuplier()
         this.listSuplier()
-        this.listNames()
+        this.listBrand()
+        this.listProductAndUom()
         this.createProduct()
-        this.listProduct()
+        this.getAllProduct()
         this.searchProduct()
         this.setProductStatus()
         this.editProduct()
@@ -22,23 +23,26 @@ class inventoryRouter {
     public listSuplier(): void {
         this.router.get('/suplier', auth.inventoryAuth, inventoryController.listSuplier);
     }
-    public listNames(): void {
-        this.router.get('/list-names', auth.inventoryAuth, inventoryController.listNames);
+    public listBrand(): void {
+        this.router.get('/list-brand', auth.inventoryAuth, inventoryController.listBrand);
+    }
+    public listProductAndUom(): void {
+        this.router.get('/list-product-uom', auth.inventoryAuth, inventoryController.listProductAndUom);
     }
     public createProduct(): void {
         this.router.post('/product', auth.inventoryAuth, auth.uniqueDataProduct, inventoryController.createProduct);
     }
-    public listProduct(): void {
-        this.router.get('/product', auth.inventoryAuth, inventoryController.listProduct);
+    public getAllProduct(): void {
+        this.router.get('/product', auth.inventoryAuth, inventoryController.getAllProduct);
     }
     public searchProduct(): void {
         this.router.get('/product/search', auth.inventoryAuth, inventoryController.searchProduct);
     }
     public setProductStatus(): void {
-        this.router.patch('/product/status/:product_id', auth.inventoryAuth, inventoryController.setProductStatus, inventoryController.listProduct);
+        this.router.patch('/product/status/:product_id', auth.inventoryAuth, inventoryController.setProductStatus, inventoryController.getAllProduct);
     }
     public editProduct(): void {
-        this.router.patch('/product/edit/:product_id', auth.inventoryAuth, inventoryController.editProduct, inventoryController.listProduct);
+        this.router.patch('/product/edit/:product_id', auth.inventoryAuth, inventoryController.editProduct, inventoryController.getAllProduct);
     }
     public purchaseOrder(): void {
         this.router.post('/purchase-order', auth.inventoryAuth, inventoryController.purchaseOrder);

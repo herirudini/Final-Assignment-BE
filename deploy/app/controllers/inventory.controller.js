@@ -45,33 +45,32 @@ class inventoryController {
             next(err);
         });
     }
-    static listNames(req, res, next) {
+    static listBrand(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const listSuplierName = yield Suplier_model_1.Suplier.find().select('suplier_name');
-            const listBrandName = yield Product_model_1.Product.aggregate([
-                { $match: {} },
-                { $group: { _id: '$brand_name', total: { $sum: '$stock' } } },
-            ]);
+            const inputSuplierName = req.body.suplier_name.toUpperCase();
+            const listBrandName = yield Suplier_model_1.Suplier.findOne({ suplier_name: inputSuplierName }).select('brands -_id');
+            try {
+                res.status(200).json({ success: true, message: "brand list", data: listBrandName });
+            }
+            catch (err) {
+                next(err);
+            }
+        });
+    }
+    static listProductAndUom(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const inputBrandName = req.body.brand_name.toUpperCase();
             const listProductName = yield Product_model_1.Product.aggregate([
-                { $match: {} },
-                { $group: { _id: '$product_name', total: { $sum: '$stock' } } },
+                { $match: { brand_name: inputBrandName } },
+                { $group: { _id: '$product_name' } },
             ]);
             const listUom = yield Product_model_1.Product.aggregate([
-                { $match: {} },
-                { $group: { _id: '$uom', total: { $sum: '$stock' } } },
+                { $match: { brand_name: inputBrandName } },
+                { $group: { _id: '$uom' } },
             ]);
             try {
-                let getSuplierName = [];
-                let getBrandName = [];
                 let getProductName = [];
                 let getUom = [];
-                for (let i = 0; i < listSuplierName.length; i++) {
-                    getSuplierName.push(listSuplierName[i].suplier_name);
-                }
-                for (let i = 0; i < listBrandName.length; i++) {
-                    getBrandName.push(listBrandName[i]._id);
-                }
-                ;
                 for (let i = 0; i < listProductName.length; i++) {
                     getProductName.push(listProductName[i]._id);
                 }
@@ -80,8 +79,8 @@ class inventoryController {
                     getUom.push(listUom[i]._id);
                 }
                 ;
-                let data = { suplier_name: getSuplierName, brand_name: getBrandName, product_name: getProductName, uom: getUom };
-                res.status(200).json({ success: true, message: "suplier_name ,brand_name, product_name, uom", data: data });
+                let data = { product_name: getProductName, uom: getUom };
+                res.status(200).json({ success: true, message: "product and uom", data: data });
             }
             catch (err) {
                 next(err);
@@ -248,7 +247,7 @@ class inventoryController {
             }
         });
     }
-    static listProduct(req, res, next) {
+    static getAllProduct(req, res, next) {
         Product_model_1.Product.find()
             .then((result) => {
             res.status(200).json({ success: true, message: "All Products:", data: result });

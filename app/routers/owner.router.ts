@@ -11,9 +11,6 @@ class ownerRouter {
         this.router = Router()
         this.createUser()
         this.listUser()
-        this.inventory()
-        this.finance()
-        this.cashier()
         this.cashflow()
         this.getTopProduct()
     }
@@ -22,15 +19,6 @@ class ownerRouter {
     }
     public listUser(): void {
         this.router.get('/user', auth.ownerAuth, auth.uniqueDataUser, ownerController.listUser);
-    }
-    public inventory(): void {
-        this.router.use(inventoryRouter)
-    }
-    public finance(): void {
-        this.router.use(financeRouter)
-    }
-    public cashier(): void {
-        this.router.use(cashierRouter)
     }
     public cashflow(): void {
         this.router.get('/cashflow', auth.ownerAuth, ownerController.cashflow)

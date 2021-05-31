@@ -11,9 +11,10 @@ class inventoryRouter {
         this.router = express_1.Router();
         this.createSuplier();
         this.listSuplier();
-        this.listNames();
+        this.listBrand();
+        this.listProductAndUom();
         this.createProduct();
-        this.listProduct();
+        this.getAllProduct();
         this.searchProduct();
         this.setProductStatus();
         this.editProduct();
@@ -26,23 +27,26 @@ class inventoryRouter {
     listSuplier() {
         this.router.get('/suplier', authJwt_1.default.inventoryAuth, inventory_controller_1.default.listSuplier);
     }
-    listNames() {
-        this.router.get('/list-names', authJwt_1.default.inventoryAuth, inventory_controller_1.default.listNames);
+    listBrand() {
+        this.router.get('/list-brand', authJwt_1.default.inventoryAuth, inventory_controller_1.default.listBrand);
+    }
+    listProductAndUom() {
+        this.router.get('/list-product-uom', authJwt_1.default.inventoryAuth, inventory_controller_1.default.listProductAndUom);
     }
     createProduct() {
         this.router.post('/product', authJwt_1.default.inventoryAuth, authJwt_1.default.uniqueDataProduct, inventory_controller_1.default.createProduct);
     }
-    listProduct() {
-        this.router.get('/product', authJwt_1.default.inventoryAuth, inventory_controller_1.default.listProduct);
+    getAllProduct() {
+        this.router.get('/product', authJwt_1.default.inventoryAuth, inventory_controller_1.default.getAllProduct);
     }
     searchProduct() {
         this.router.get('/product/search', authJwt_1.default.inventoryAuth, inventory_controller_1.default.searchProduct);
     }
     setProductStatus() {
-        this.router.patch('/product/status/:product_id', authJwt_1.default.inventoryAuth, inventory_controller_1.default.setProductStatus, inventory_controller_1.default.listProduct);
+        this.router.patch('/product/status/:product_id', authJwt_1.default.inventoryAuth, inventory_controller_1.default.setProductStatus, inventory_controller_1.default.getAllProduct);
     }
     editProduct() {
-        this.router.patch('/product/edit/:product_id', authJwt_1.default.inventoryAuth, inventory_controller_1.default.editProduct, inventory_controller_1.default.listProduct);
+        this.router.patch('/product/edit/:product_id', authJwt_1.default.inventoryAuth, inventory_controller_1.default.editProduct, inventory_controller_1.default.getAllProduct);
     }
     purchaseOrder() {
         this.router.post('/purchase-order', authJwt_1.default.inventoryAuth, inventory_controller_1.default.purchaseOrder);

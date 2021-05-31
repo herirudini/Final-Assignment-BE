@@ -55,6 +55,9 @@ class cashierController {
                 if (getProduct.status == "inactive") {
                     res.status(500).json({ success: false, message: "Product Inactive: Produk ini tidak dijual" });
                 }
+                else if (countStock < 0) {
+                    res.status(500).json({ success: false, message: "Insufficient stock!" });
+                }
                 else if (checkCart == 0) {
                     createCart = yield Cart_model_1.Cart.create({
                         admin_id: getUserId,
@@ -73,7 +76,7 @@ class cashierController {
                 }
                 ;
                 if (countStock <= 10) {
-                    createNotification = yield Notification_model_1.Notification.create({ message: getProductName + "stock is under 10! product status will be set to inactive" });
+                    createNotification = yield Notification_model_1.Notification.create({ message: getProductName + " stock is under 10! product status will be set to inactive" });
                     updateStockData = { $inc: { stock: -quantity }, status: "inactive" };
                 }
                 else {
@@ -119,6 +122,9 @@ class cashierController {
                 if (getProduct.status == "inactive") {
                     res.status(500).json({ success: false, message: "Product Inactive: Produk ini tidak dijual" });
                 }
+                else if (countStock < 0) {
+                    res.status(500).json({ success: false, message: "Insufficient stock!" });
+                }
                 else if (checkCart == 0) {
                     createCart = yield Cart_model_1.Cart.create({
                         admin_id: getUserId,
@@ -137,7 +143,7 @@ class cashierController {
                 }
                 ;
                 if (countStock <= 10) {
-                    createNotification = yield Notification_model_1.Notification.create({ message: getProductName + "stock is under 10! product status will be set to inactive" });
+                    createNotification = yield Notification_model_1.Notification.create({ message: getProductName + " stock is under 10! product status will be set to inactive" });
                     updateStockData = { $inc: { stock: -quantity }, status: "inactive" };
                 }
                 else {
