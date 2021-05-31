@@ -281,7 +281,7 @@ class inventoryController {
         const inputUom = req.body.uom.toUpperCase();
         const inputSellPrice = req.body.sellPrice;
         const inputBuyPrice = req.body.buyPrice;
-        const checkProduct = await Product.countDocuments({ brand_name: inputBrandName, product_name: inputProductName, uom: inputUom });
+        const checkProduct = await Product.countDocuments({ id: { $ne: productId }, brand_name: inputBrandName, product_name: inputProductName, uom: inputUom });
         const data: any = { brand_name: inputBrandName, product_name: inputProductName, image: inputImage, uom: inputUom, sellPrice: inputSellPrice, buyPrice: inputBuyPrice };
         let updateProduct: any;
         for (const key in data) {
