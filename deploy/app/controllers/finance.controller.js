@@ -22,17 +22,27 @@ class financeController {
             next(err);
         });
     }
+    static getInvoiceBySuplier(req, res, next) {
+        const inputSuplierName = req.body.suplier_name;
+        Invoice_model_1.Invoice.find({ suplier_name: inputSuplierName }).populate('orders')
+            .then((result) => {
+            res.status(200).json({ success: true, message: "All Invoices: ", data: result });
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
     static updateInvoiceStatus(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const getSuplierId = req.params.invoice_id;
-            const checkInvoice = yield Invoice_model_1.Invoice.countDocuments({ suplier_id: getSuplierId, status: "unpaid" });
+            const getId = req.params.invoice_id;
+            const checkInvoice = yield Invoice_model_1.Invoice.countDocuments({ _id: getId, status: "unpaid" });
             let updateStatus;
             try {
                 if (checkInvoice == 0) {
-                    res.status(400).json({ success: false, message: "No pending invoice for this suplier" });
+                    throw ({ name: "not_found" });
                 }
                 else {
-                    updateStatus = yield Invoice_model_1.Invoice.findOneAndUpdate({ suplier_id: getSuplierId, status: "unpaid" }, { status: "paid" }, { new: true });
+                    updateStatus = yield Invoice_model_1.Invoice.findOneAndUpdate({ _id: getId, status: "unpaid" }, { status: "paid" }, { new: true });
                 }
             }
             catch (err) {

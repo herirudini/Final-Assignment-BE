@@ -13,17 +13,27 @@ class financeController {
                 next(err)
             })
     }
+    static getInvoiceBySuplier(req: Request, res: Response, next: NextFunction) {
+        const inputSuplierName: string = req.body.suplier_name;
+        Invoice.find({ suplier_name: inputSuplierName }).populate('orders')
+            .then((result) => {
+                res.status(200).json({ success: true, message: "All Invoices: ", data: result })
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
     static async updateInvoiceStatus(req: Request, res: Response, next: NextFunction) {
 
-        const getSuplierId = req.params.invoice_id
-        const checkInvoice = await Invoice.countDocuments({ suplier_id: getSuplierId, status: "unpaid" })
+        const getId = req.params.invoice_id
+        const checkInvoice = await Invoice.countDocuments({ _id: getId, status: "unpaid" })
         let updateStatus;
 
         try {
             if (checkInvoice == 0) {
-                res.status(400).json({ success: false, message: "No pending invoice for this suplier" })
+                throw ({ name: "not_found" })
             } else {
-                updateStatus = await Invoice.findOneAndUpdate({ suplier_id: getSuplierId, status: "unpaid" }, { status: "paid" }, { new: true })
+                updateStatus = await Invoice.findOneAndUpdate({ _id: getId, status: "unpaid" }, { status: "paid" }, { new: true })
             }
         }
         catch (err) {

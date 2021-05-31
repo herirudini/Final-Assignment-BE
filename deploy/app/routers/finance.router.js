@@ -17,8 +17,11 @@ class financeRouter {
     getAllInvoice() {
         this.router.get('/invoice', authJwt_1.default.financeAuth, finance_controller_1.default.getAllInvoice);
     }
+    getInvoiceBySuplier() {
+        this.router.get('/invoice/suplier', authJwt_1.default.financeAuth, finance_controller_1.default.getInvoiceBySuplier);
+    }
     updateInvoiceStatus() {
-        this.router.patch('/invoice/:invoice_id', authJwt_1.default.financeAuth, finance_controller_1.default.updateInvoiceStatus);
+        this.router.patch('/invoice/status/:invoice_id', authJwt_1.default.financeAuth, finance_controller_1.default.updateInvoiceStatus);
     }
     getOutcome() {
         this.router.get('/outcome', authJwt_1.default.financeAuth, finance_controller_1.default.getOutcome);

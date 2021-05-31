@@ -15,8 +15,11 @@ class financeRouter {
     public getAllInvoice(): void {
         this.router.get('/invoice', auth.financeAuth, financeController.getAllInvoice);
     }
+    public getInvoiceBySuplier(): void {
+        this.router.get('/invoice/suplier', auth.financeAuth, financeController.getInvoiceBySuplier);
+    }
     public updateInvoiceStatus(): void {
-        this.router.patch('/invoice/:invoice_id', auth.financeAuth, financeController.updateInvoiceStatus);
+        this.router.patch('/invoice/status/:invoice_id', auth.financeAuth, financeController.updateInvoiceStatus);
     }
     public getOutcome(): void {
         this.router.get('/outcome', auth.financeAuth, financeController.getOutcome);
