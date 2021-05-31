@@ -37,6 +37,7 @@ class inventoryController {
             })
     }
     static async listNames(req: Request, res: Response, next: NextFunction) {
+        const listSuplierName: any = await Suplier.find().select('suplier_name');
         const listBrandName: any = await Product.aggregate([
             { $match: {} },
             { $group: { _id: '$brand_name', total: { $sum: '$stock' } } },
@@ -50,9 +51,13 @@ class inventoryController {
             { $group: { _id: '$uom', total: { $sum: '$stock' } } },
         ]);
         try {
+            let getSuplierName = [];
             let getBrandName = [];
             let getProductName = [];
             let getUom = [];
+            for (let i = 0; i < listSuplierName.length; i++) {
+                getSuplierName.push(listSuplierName[i].suplier_name)
+            }
             for (let i = 0; i < listBrandName.length; i++) {
                 getBrandName.push(listBrandName[i]._id)
             };
@@ -62,8 +67,8 @@ class inventoryController {
             for (let i = 0; i < listUom.length; i++) {
                 getUom.push(listUom[i]._id)
             };
-            let data = { brand_name: getBrandName, product_name: getProductName, uom: getUom }
-            res.status(200).json({ success: true, message: "brand_name, product_name, uom", data: data })
+            let data = { suplier_name: getSuplierName, brand_name: getBrandName, product_name: getProductName, uom: getUom }
+            res.status(200).json({ success: true, message: "suplier_name ,brand_name, product_name, uom", data: data })
 
         }
         catch (err) {
@@ -105,7 +110,7 @@ class inventoryController {
                     barcode: inputBarcode,
                 });
             } else {
-                res.status(400).json({ success: false, message: "This product has already created! cannot create more than one" })
+                res.status(400).json({ success: false, message: "This product already exists! cannot be the same" })
             }
         }
         catch (err) {
@@ -247,7 +252,6 @@ class inventoryController {
                 next(err)
             })
     }
-
     static async setProductStatus(req: Request, res: Response, next: NextFunction) {
         const getProduct = await Product.findById(req.params.product_id);
         const getProductStatus: string | undefined = getProduct?.status;
@@ -265,7 +269,40 @@ class inventoryController {
             next(err)
         }
         finally {
-            res.status(200).json({ success: true, message: "Product status updated:", data: updateStatus })
+            console.log("Success set product status")
+            next()
+        }
+    }
+    static async editProduct(req: Request, res: Response, next: NextFunction) {
+        const productId: string = req.params.product_id;
+        const inputBrandName = req.body.brand_name.toUpperCase();
+        const inputProductName = req.body.product_name.toUpperCase();
+        const inputImage = req.body.image;
+        const inputUom = req.body.uom.toUpperCase();
+        const inputSellPrice = req.body.sellPrice;
+        const inputBuyPrice = req.body.buyPrice;
+        const checkProduct = await Product.countDocuments({ brand_name: inputBrandName, product_name: inputProductName, uom: inputUom });
+        const data: any = { brand_name: inputBrandName, product_name: inputProductName, image: inputImage, uom: inputUom, sellPrice: inputSellPrice, buyPrice: inputBuyPrice };
+        let updateProduct: any;
+        for (const key in data) {
+            if (!data[key]) {
+                delete data[key]
+            }
+        }
+        try {
+            if (checkProduct == 0) {
+                updateProduct = await Product.findByIdAndUpdate(productId, data, { new: true })
+            } else {
+                res.status(400).json({ success: false, message: "This product already exists! cannot be the same" })
+            }
+        }
+        catch (err) {
+            console.log("edit product err:" + err)
+            next(err)
+        }
+        finally {
+            console.log("Success edit product")
+            next()
         }
     }
 }

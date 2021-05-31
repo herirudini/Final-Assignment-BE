@@ -5,7 +5,6 @@ class inventoryRouter {
     router: Router
     constructor() {
         this.router = Router()
-        // this.editOrder()
         this.createSuplier()
         this.listSuplier()
         this.listNames()
@@ -13,12 +12,10 @@ class inventoryRouter {
         this.listProduct()
         this.searchProduct()
         this.setProductStatus()
+        this.editProduct()
         this.purchaseOrder()
         this.deliveryOrder()
     }
-    // public createBrand(): void {
-    //     this.router.post('/order/edit-order', inventoryController.editOrder);
-    // }
     public createSuplier(): void {
         this.router.post('/suplier', auth.inventoryAuth, auth.uniqueDataSuplier, inventoryController.createSuplier);
     }
@@ -38,7 +35,10 @@ class inventoryRouter {
         this.router.get('/product/search', auth.inventoryAuth, inventoryController.searchProduct);
     }
     public setProductStatus(): void {
-        this.router.patch('/product/status/:product_id', auth.inventoryAuth, inventoryController.setProductStatus);
+        this.router.patch('/product/status/:product_id', auth.inventoryAuth, inventoryController.setProductStatus, inventoryController.listProduct);
+    }
+    public editProduct(): void {
+        this.router.patch('/product/edit/:product_id', auth.inventoryAuth, inventoryController.editProduct, inventoryController.listProduct);
     }
     public purchaseOrder(): void {
         this.router.post('/purchase-order', auth.inventoryAuth, inventoryController.purchaseOrder);

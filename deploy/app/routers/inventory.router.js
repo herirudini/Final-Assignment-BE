@@ -9,7 +9,6 @@ const authJwt_1 = __importDefault(require("../middlewares/authJwt"));
 class inventoryRouter {
     constructor() {
         this.router = express_1.Router();
-        // this.editOrder()
         this.createSuplier();
         this.listSuplier();
         this.listNames();
@@ -17,12 +16,10 @@ class inventoryRouter {
         this.listProduct();
         this.searchProduct();
         this.setProductStatus();
+        this.editProduct();
         this.purchaseOrder();
         this.deliveryOrder();
     }
-    // public createBrand(): void {
-    //     this.router.post('/order/edit-order', inventoryController.editOrder);
-    // }
     createSuplier() {
         this.router.post('/suplier', authJwt_1.default.inventoryAuth, authJwt_1.default.uniqueDataSuplier, inventory_controller_1.default.createSuplier);
     }
@@ -42,7 +39,10 @@ class inventoryRouter {
         this.router.get('/product/search', authJwt_1.default.inventoryAuth, inventory_controller_1.default.searchProduct);
     }
     setProductStatus() {
-        this.router.patch('/product/status/:product_id', authJwt_1.default.inventoryAuth, inventory_controller_1.default.setProductStatus);
+        this.router.patch('/product/status/:product_id', authJwt_1.default.inventoryAuth, inventory_controller_1.default.setProductStatus, inventory_controller_1.default.listProduct);
+    }
+    editProduct() {
+        this.router.patch('/product/edit/:product_id', authJwt_1.default.inventoryAuth, inventory_controller_1.default.editProduct, inventory_controller_1.default.listProduct);
     }
     purchaseOrder() {
         this.router.post('/purchase-order', authJwt_1.default.inventoryAuth, inventory_controller_1.default.purchaseOrder);
