@@ -57,11 +57,10 @@ class acongController {
         const inputDateTo: any = req.body.date_to;
         const dateFrom = inputDateFrom + "T00:00:00.0000"
         const dateTo = inputDateTo + "T23:59:59.0000"
-        const dateRange: object = { $gte: dateFrom, $lte: dateTo }
         let getTopProduct: any;
         try {
             getTopProduct = await Cart.aggregate([
-                { $match: { status: "sold", updatedAt: dateRange } },
+                { $match: { status: "sold" } },
                 { $group: { _id: '$product_id', total: { $sum: '$quantity' } } },
                 { $sort: { total: -1 } }
             ])
@@ -81,16 +80,15 @@ class acongController {
         const dateRange: object = { $gte: dateFrom, $lte: dateTo }
         let getSoldProduct: any;
         let getInvoices: any;
-
+        let data: object;
         try {
-            getSoldProduct = Cart.find({ status: "sold", updatedAt: dateRange })
+            getSoldProduct = await Cart.find({ status: "sold", updatedAt: dateRange })
             getInvoices = await Invoice.find({ status: "paid", updatedAt: dateRange })
+            data = { outcome: getInvoices, income: getSoldProduct }
+            res.status(200).json({ success: true, message: "Cashflow:", data: data })
         }
         catch (err) {
             next(err)
-        }
-        finally {
-            res.status(200).json({ success: true, message: "Cashflow:", data: getInvoices, getSoldProduct })
         }
     }
     static async createAcong(req: Request, res: Response) {

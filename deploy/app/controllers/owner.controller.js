@@ -78,11 +78,10 @@ class acongController {
             const inputDateTo = req.body.date_to;
             const dateFrom = inputDateFrom + "T00:00:00.0000";
             const dateTo = inputDateTo + "T23:59:59.0000";
-            const dateRange = { $gte: dateFrom, $lte: dateTo };
             let getTopProduct;
             try {
                 getTopProduct = yield Cart_model_1.Cart.aggregate([
-                    { $match: { status: "sold", updatedAt: dateRange } },
+                    { $match: { status: "sold" } },
                     { $group: { _id: '$product_id', total: { $sum: '$quantity' } } },
                     { $sort: { total: -1 } }
                 ]);
@@ -104,15 +103,15 @@ class acongController {
             const dateRange = { $gte: dateFrom, $lte: dateTo };
             let getSoldProduct;
             let getInvoices;
+            let data;
             try {
-                getSoldProduct = Cart_model_1.Cart.find({ status: "sold", updatedAt: dateRange });
+                getSoldProduct = yield Cart_model_1.Cart.find({ status: "sold", updatedAt: dateRange });
                 getInvoices = yield Invoice_model_1.Invoice.find({ status: "paid", updatedAt: dateRange });
+                data = { outcome: getInvoices, income: getSoldProduct };
+                res.status(200).json({ success: true, message: "Cashflow:", data: data });
             }
             catch (err) {
                 next(err);
-            }
-            finally {
-                res.status(200).json({ success: true, message: "Cashflow:", data: getInvoices, getSoldProduct });
             }
         });
     }
