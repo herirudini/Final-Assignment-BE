@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 
 interface Order {
     status: string,
-    suplier_id: string,
+    suplier_name: string,
     product_id: string,
     brand_name: string,
     uom: string,
@@ -16,7 +16,7 @@ interface Order {
 
 interface OrderData extends mongoose.Document {
     status: string, //requested, accepted (sudah di acc jadi invoice), completed (barang sudah sampai semua)
-    suplier_id: string, //pt.wingsfood-solokanjeruk
+    suplier_name: string, //pt.wingsfood-solokanjeruk
     product_id: string, //karisoto
     brand_name: string, //misedap
     uom: string, //karton-40x1
@@ -34,7 +34,7 @@ interface OrderInterface extends mongoose.Model<OrderData> {
 
 const orderSchema = new Schema({
     status: { type: String, default: "on-process" },
-    suplier_id: { type: Schema.Types.ObjectId, ref: 'Suplier', required: true },
+    suplier_name: { type: Schema.Types.ObjectId, ref: 'Suplier', required: true },
     product_id: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
     brand_name: { type: String, required: true },
     uom: { type: String, required: true },

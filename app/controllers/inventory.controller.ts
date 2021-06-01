@@ -86,14 +86,14 @@ class inventoryController {
         const checkProduct = await Product.countDocuments({ brand_name: inputBrandName, product_name: inputProductName, uom: inputUom })
 
         const getSuplier = await Suplier.findOne({ suplier_name: inputSuplierName });
-        const getSuplierId = getSuplier?.id;
+        const getSuplierName = getSuplier?.id;
         const checkBrands = getSuplier?.brands;
         let brandIsExist: boolean | undefined = checkBrands?.includes(inputBrandName);
         let pushBrand: any;
 
         let createProduct: any;
         try {
-            if (getSuplierId === undefined) {
+            if (getSuplierName === undefined) {
                 res.status(422).json({ success: false, message: "Suplier not found" })
             } else if (checkProduct === 0) {
                 createProduct = await Product.create({
@@ -116,7 +116,7 @@ class inventoryController {
         }
         finally {
             if (!brandIsExist) {
-                pushBrand = await Suplier.findByIdAndUpdate(getSuplierId, { $push: { brands: inputBrandName } }, { new: true })
+                pushBrand = await Suplier.findByIdAndUpdate(getSuplierName, { $push: { brands: inputBrandName } }, { new: true })
             };
             res.status(201).json({ success: true, message: "Product created", data: createProduct })
         }
@@ -139,10 +139,8 @@ class inventoryController {
         const countTotalBuyPrice = getBuyPrice - countDiscount;
         const countSubTotal = countTotalBuyPrice * inputQuantity
 
-        const getSuplier = await Suplier.findOne({ suplier_name: getSuplierName });
-        const getSuplierId = getSuplier?.id;
-        const checkOrder = await Order.countDocuments({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
-        const checkInvoice = await Invoice.countDocuments({ suplier_id: getSuplierId, status: "unpaid" })
+        const checkOrder = await Order.countDocuments({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
+        const checkInvoice = await Invoice.countDocuments({ suplier_name: getSuplierName, status: "unpaid" })
         let createOrder: any;
         let createInvoice: any;
         let updateInvoice: any;
@@ -151,11 +149,11 @@ class inventoryController {
 
         try {
             if (checkOrder !== 0) {
-                const listOnProcessOrder = await Order.find({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" })
+                const listOnProcessOrder = await Order.find({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" })
                 res.status(500).json({ success: false, message: "You have an unfinished order, you can force this by edit previous order status first into: force-complete", data: listOnProcessOrder })
             } else {
                 createOrder = await Order.create({
-                    suplier_id: getSuplierId,
+                    suplier_name: getSuplierName,
                     product_id: getProductId,
                     brand_name: getBrandName,
                     uom: getUom,
@@ -175,12 +173,12 @@ class inventoryController {
                 console.log("Failed to create order")
             } else if (checkInvoice == 0) {
                 createInvoice = await Invoice.create({
-                    suplier_id: getSuplierId,
+                    suplier_name: getSuplierName,
                     orders: createOrder.id,
                     bill: countSubTotal,
                 })
             } else {
-                updateInvoice = await Invoice.findOneAndUpdate({ suplier_id: getSuplierId, status: "unpaid" }, { $push: { orders: createOrder.id }, $inc: { bill: countSubTotal } }, { new: true })
+                updateInvoice = await Invoice.findOneAndUpdate({ suplier_name: getSuplierName, status: "unpaid" }, { $push: { orders: createOrder.id }, $inc: { bill: countSubTotal } }, { new: true })
             };
             res.status(201).json({ success: true, message: "Order created", data: createOrder })
         }
@@ -192,9 +190,7 @@ class inventoryController {
         const getProduct = await Product.findOne({ barcode: inputBarcode })
         const getProductId = getProduct?.id;
         const getSuplierName = getProduct?.suplier_name;
-        const getSuplier = await Suplier.findOne({ suplier_name: getSuplierName });
-        const getSuplierId = getSuplier?.id;
-        const getOrder: any = await Order.findOne({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
+        const getOrder: any = await Order.findOne({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
         const getOrderId = getOrder?.id;
         const getQuantity: any = getOrder?.quantity;
         const arrived: number | undefined = getOrder?.arrived;

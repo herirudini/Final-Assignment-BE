@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { Cart } from '../models/Cart.model'
 // import { Receipt } from '../models/Receipt.model'
 import { Invoice } from '../models/Invoice.model'
+import { Suplier } from '../models/Suplier.model'
 
 class financeController {
     static getAllInvoice(req: Request, res: Response, next: NextFunction) {
@@ -13,18 +14,29 @@ class financeController {
                 next(err)
             })
     }
-    static getInvoiceBySuplier(req: Request, res: Response, next: NextFunction) {
-        const inputSuplierName: string = req.body.suplier_name;
-        Invoice.find({ suplier_name: inputSuplierName }).populate('orders')
+    static async getInvoiceBySuplier(req: Request, res: Response, next: NextFunction) {
+        const inputSuplierName: string = req.body.suplier_name.toUpperCase();
+        let listInvoice: any;
+        try {
+            listInvoice = await Invoice.find({ suplier_name: inputSuplierName }).populate('orders')
+            res.status(200).json({ success: true, message: "All Invoices: ", data: listInvoice })
+        }
+        catch (err) {
+            next(err)
+        }
+    }
+    static async getInvoiceById(req: Request, res: Response, next: NextFunction) {
+        const getInvoiceId = req.params.invoice_id;
+        Invoice.findById(getInvoiceId).populate('orders')
             .then((result) => {
-                res.status(200).json({ success: true, message: "All Invoices: ", data: result })
+                res.status(200).json({ success: true, message: "Invoices details: ", data: result })
+
             })
             .catch((err) => {
                 next(err)
             })
     }
     static async updateInvoiceStatus(req: Request, res: Response, next: NextFunction) {
-
         const getId = req.params.invoice_id
         const checkInvoice = await Invoice.countDocuments({ _id: getId, status: "unpaid" })
         let updateStatus;

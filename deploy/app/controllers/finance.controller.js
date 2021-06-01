@@ -23,13 +23,28 @@ class financeController {
         });
     }
     static getInvoiceBySuplier(req, res, next) {
-        const inputSuplierName = req.body.suplier_name;
-        Invoice_model_1.Invoice.find({ suplier_name: inputSuplierName }).populate('orders')
-            .then((result) => {
-            res.status(200).json({ success: true, message: "All Invoices: ", data: result });
-        })
-            .catch((err) => {
-            next(err);
+        return __awaiter(this, void 0, void 0, function* () {
+            const inputSuplierName = req.body.suplier_name.toUpperCase();
+            let listInvoice;
+            try {
+                listInvoice = yield Invoice_model_1.Invoice.find({ suplier_name: inputSuplierName }).populate('orders');
+                res.status(200).json({ success: true, message: "All Invoices: ", data: listInvoice });
+            }
+            catch (err) {
+                next(err);
+            }
+        });
+    }
+    static getInvoiceById(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const getInvoiceId = req.params.invoice_id;
+            Invoice_model_1.Invoice.findById(getInvoiceId).populate('orders')
+                .then((result) => {
+                res.status(200).json({ success: true, message: "Invoices details: ", data: result });
+            })
+                .catch((err) => {
+                next(err);
+            });
         });
     }
     static updateInvoiceStatus(req, res, next) {

@@ -10,6 +10,8 @@ class financeRouter {
     constructor() {
         this.router = express_1.Router();
         this.getAllInvoice();
+        this.getInvoiceBySuplier();
+        this.getInvoiceById();
         this.updateInvoiceStatus();
         this.getOutcome();
         this.getIncome();
@@ -20,8 +22,11 @@ class financeRouter {
     getInvoiceBySuplier() {
         this.router.get('/invoice/suplier', authJwt_1.default.financeAuth, finance_controller_1.default.getInvoiceBySuplier);
     }
+    getInvoiceById() {
+        this.router.get('/invoice/suplier/:invoice_id', authJwt_1.default.financeAuth, finance_controller_1.default.getInvoiceById);
+    }
     updateInvoiceStatus() {
-        this.router.patch('/invoice/status/:invoice_id', authJwt_1.default.financeAuth, finance_controller_1.default.updateInvoiceStatus);
+        this.router.patch('/invoice/suplier/:invoice_id', authJwt_1.default.financeAuth, finance_controller_1.default.updateInvoiceStatus);
     }
     getOutcome() {
         this.router.get('/outcome', authJwt_1.default.financeAuth, finance_controller_1.default.getOutcome);

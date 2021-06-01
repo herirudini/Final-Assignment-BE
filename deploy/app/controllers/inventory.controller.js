@@ -100,13 +100,13 @@ class inventoryController {
             const inputIsAfterTax = req.body.isAfterTax.toLowerCase();
             const checkProduct = yield Product_model_1.Product.countDocuments({ brand_name: inputBrandName, product_name: inputProductName, uom: inputUom });
             const getSuplier = yield Suplier_model_1.Suplier.findOne({ suplier_name: inputSuplierName });
-            const getSuplierId = getSuplier === null || getSuplier === void 0 ? void 0 : getSuplier.id;
+            const getSuplierName = getSuplier === null || getSuplier === void 0 ? void 0 : getSuplier.id;
             const checkBrands = getSuplier === null || getSuplier === void 0 ? void 0 : getSuplier.brands;
             let brandIsExist = checkBrands === null || checkBrands === void 0 ? void 0 : checkBrands.includes(inputBrandName);
             let pushBrand;
             let createProduct;
             try {
-                if (getSuplierId === undefined) {
+                if (getSuplierName === undefined) {
                     res.status(422).json({ success: false, message: "Suplier not found" });
                 }
                 else if (checkProduct === 0) {
@@ -131,7 +131,7 @@ class inventoryController {
             }
             finally {
                 if (!brandIsExist) {
-                    pushBrand = yield Suplier_model_1.Suplier.findByIdAndUpdate(getSuplierId, { $push: { brands: inputBrandName } }, { new: true });
+                    pushBrand = yield Suplier_model_1.Suplier.findByIdAndUpdate(getSuplierName, { $push: { brands: inputBrandName } }, { new: true });
                 }
                 ;
                 res.status(201).json({ success: true, message: "Product created", data: createProduct });
@@ -153,10 +153,8 @@ class inventoryController {
             const countDiscount = getBuyPrice * (inputDiscount / 100);
             const countTotalBuyPrice = getBuyPrice - countDiscount;
             const countSubTotal = countTotalBuyPrice * inputQuantity;
-            const getSuplier = yield Suplier_model_1.Suplier.findOne({ suplier_name: getSuplierName });
-            const getSuplierId = getSuplier === null || getSuplier === void 0 ? void 0 : getSuplier.id;
-            const checkOrder = yield Order_model_1.Order.countDocuments({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
-            const checkInvoice = yield Invoice_model_1.Invoice.countDocuments({ suplier_id: getSuplierId, status: "unpaid" });
+            const checkOrder = yield Order_model_1.Order.countDocuments({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
+            const checkInvoice = yield Invoice_model_1.Invoice.countDocuments({ suplier_name: getSuplierName, status: "unpaid" });
             let createOrder;
             let createInvoice;
             let updateInvoice;
@@ -164,12 +162,12 @@ class inventoryController {
             (!inputDiscount) ? discount = 0 : discount = inputDiscount;
             try {
                 if (checkOrder !== 0) {
-                    const listOnProcessOrder = yield Order_model_1.Order.find({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
+                    const listOnProcessOrder = yield Order_model_1.Order.find({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
                     res.status(500).json({ success: false, message: "You have an unfinished order, you can force this by edit previous order status first into: force-complete", data: listOnProcessOrder });
                 }
                 else {
                     createOrder = yield Order_model_1.Order.create({
-                        suplier_id: getSuplierId,
+                        suplier_name: getSuplierName,
                         product_id: getProductId,
                         brand_name: getBrandName,
                         uom: getUom,
@@ -190,13 +188,13 @@ class inventoryController {
                 }
                 else if (checkInvoice == 0) {
                     createInvoice = yield Invoice_model_1.Invoice.create({
-                        suplier_id: getSuplierId,
+                        suplier_name: getSuplierName,
                         orders: createOrder.id,
                         bill: countSubTotal,
                     });
                 }
                 else {
-                    updateInvoice = yield Invoice_model_1.Invoice.findOneAndUpdate({ suplier_id: getSuplierId, status: "unpaid" }, { $push: { orders: createOrder.id }, $inc: { bill: countSubTotal } }, { new: true });
+                    updateInvoice = yield Invoice_model_1.Invoice.findOneAndUpdate({ suplier_name: getSuplierName, status: "unpaid" }, { $push: { orders: createOrder.id }, $inc: { bill: countSubTotal } }, { new: true });
                 }
                 ;
                 res.status(201).json({ success: true, message: "Order created", data: createOrder });
@@ -210,9 +208,7 @@ class inventoryController {
             const getProduct = yield Product_model_1.Product.findOne({ barcode: inputBarcode });
             const getProductId = getProduct === null || getProduct === void 0 ? void 0 : getProduct.id;
             const getSuplierName = getProduct === null || getProduct === void 0 ? void 0 : getProduct.suplier_name;
-            const getSuplier = yield Suplier_model_1.Suplier.findOne({ suplier_name: getSuplierName });
-            const getSuplierId = getSuplier === null || getSuplier === void 0 ? void 0 : getSuplier.id;
-            const getOrder = yield Order_model_1.Order.findOne({ suplier_id: getSuplierId, product_id: getProductId, status: "on-process" });
+            const getOrder = yield Order_model_1.Order.findOne({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
             const getOrderId = getOrder === null || getOrder === void 0 ? void 0 : getOrder.id;
             const getQuantity = getOrder === null || getOrder === void 0 ? void 0 : getOrder.quantity;
             const arrived = getOrder === null || getOrder === void 0 ? void 0 : getOrder.arrived;
