@@ -59,6 +59,8 @@ class financeController {
                 else {
                     updateStatus = yield Invoice_model_1.Invoice.findOneAndUpdate({ _id: getId, status: "unpaid" }, { status: "paid" }, { new: true });
                 }
+                ;
+                res.status(200).json({ success: true, message: "Invoice Updated!", data: updateStatus });
             }
             catch (err) {
                 next(err);

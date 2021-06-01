@@ -46,7 +46,8 @@ class financeController {
                 throw ({ name: "not_found" })
             } else {
                 updateStatus = await Invoice.findOneAndUpdate({ _id: getId, status: "unpaid" }, { status: "paid" }, { new: true })
-            }
+            };
+            res.status(200).json({ success: true, message: "Invoice Updated!", data: updateStatus })
         }
         catch (err) {
             next(err)

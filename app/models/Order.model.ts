@@ -34,7 +34,7 @@ interface OrderInterface extends mongoose.Model<OrderData> {
 
 const orderSchema = new Schema({
     status: { type: String, default: "on-process" },
-    suplier_name: { type: Schema.Types.ObjectId, ref: 'Suplier', required: true },
+    suplier_name: { type: String, required: true },
     product_id: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
     brand_name: { type: String, required: true },
     uom: { type: String, required: true },
