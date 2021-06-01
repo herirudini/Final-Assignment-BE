@@ -20,7 +20,6 @@ const cartSchema = new mongoose_1.Schema({
     tax: { type: Number },
     totalPrice: { type: Number },
     notes: { type: String, select: false },
-    date: { type: Date, default: Date.now },
-});
+}, { timestamps: true });
 const Cart = mongoose_1.default.model('Cart', cartSchema);
 exports.Cart = Cart;

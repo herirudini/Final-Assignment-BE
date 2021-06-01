@@ -71,7 +71,9 @@ class financeController {
         return __awaiter(this, void 0, void 0, function* () {
             const inputDateFrom = req.body.date_from;
             const inputDateTo = req.body.date_to;
-            const dateRange = { $gte: inputDateFrom, $lte: inputDateTo };
+            const dateFrom = inputDateFrom + "T00:00:00.0000";
+            const dateTo = inputDateTo + "T23:59:59.0000";
+            const dateRange = { $gte: dateFrom, $lte: dateTo };
             let getInvoices;
             try {
                 getInvoices = yield Invoice_model_1.Invoice.find({ status: "paid", updatedAt: dateRange });
@@ -88,10 +90,12 @@ class financeController {
         return __awaiter(this, void 0, void 0, function* () {
             const inputDateFrom = req.body.date_from;
             const inputDateTo = req.body.date_to;
-            const dateRange = { $gte: inputDateFrom, $lte: inputDateTo };
+            const dateFrom = inputDateFrom + "T00:00:00.0000";
+            const dateTo = inputDateTo + "T23:59:59.0000";
+            const dateRange = { $gte: dateFrom, $lte: dateTo };
             let getSoldProduct;
             try {
-                getSoldProduct = Cart_model_1.Cart.find({ status: "sold", date: dateRange });
+                getSoldProduct = yield Cart_model_1.Cart.find({ status: "sold", updatedAt: dateRange });
             }
             catch (err) {
                 next(err);

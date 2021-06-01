@@ -55,11 +55,13 @@ class acongController {
     static async getTopProduct(req: Request, res: Response, next: NextFunction) {
         const inputDateFrom: any = req.body.date_from;
         const inputDateTo: any = req.body.date_to;
-        const dateRange: object = { $gte: inputDateFrom, $lte: inputDateTo }
+        const dateFrom = inputDateFrom + "T00:00:00.0000"
+        const dateTo = inputDateTo + "T23:59:59.0000"
+        const dateRange: object = { $gte: dateFrom, $lte: dateTo }
         let getTopProduct: any;
         try {
             getTopProduct = await Cart.aggregate([
-                { $match: { status: "sold", date: dateRange } },
+                { $match: { status: "sold", updatedAt: dateRange } },
                 { $group: { _id: '$product_id', total: { $sum: '$quantity' } } },
                 { $sort: { total: -1 } }
             ])
@@ -74,12 +76,14 @@ class acongController {
     static async cashflow(req: Request, res: Response, next: NextFunction) {
         const inputDateFrom: any = req.body.date_from;
         const inputDateTo: any = req.body.date_to;
-        const dateRange: object = { $gte: inputDateFrom, $lte: inputDateTo }
+        const dateFrom = inputDateFrom + "T00:00:00.0000"
+        const dateTo = inputDateTo + "T23:59:59.0000"
+        const dateRange: object = { $gte: dateFrom, $lte: dateTo }
         let getSoldProduct: any;
         let getInvoices: any;
 
         try {
-            getSoldProduct = Cart.find({ status: "sold", date: dateRange })
+            getSoldProduct = Cart.find({ status: "sold", updatedAt: dateRange })
             getInvoices = await Invoice.find({ status: "paid", updatedAt: dateRange })
         }
         catch (err) {

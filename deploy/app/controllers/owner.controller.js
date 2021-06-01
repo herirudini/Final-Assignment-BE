@@ -76,11 +76,13 @@ class acongController {
         return __awaiter(this, void 0, void 0, function* () {
             const inputDateFrom = req.body.date_from;
             const inputDateTo = req.body.date_to;
-            const dateRange = { $gte: inputDateFrom, $lte: inputDateTo };
+            const dateFrom = inputDateFrom + "T00:00:00.0000";
+            const dateTo = inputDateTo + "T23:59:59.0000";
+            const dateRange = { $gte: dateFrom, $lte: dateTo };
             let getTopProduct;
             try {
                 getTopProduct = yield Cart_model_1.Cart.aggregate([
-                    { $match: { status: "sold", date: dateRange } },
+                    { $match: { status: "sold", updatedAt: dateRange } },
                     { $group: { _id: '$product_id', total: { $sum: '$quantity' } } },
                     { $sort: { total: -1 } }
                 ]);
@@ -97,11 +99,13 @@ class acongController {
         return __awaiter(this, void 0, void 0, function* () {
             const inputDateFrom = req.body.date_from;
             const inputDateTo = req.body.date_to;
-            const dateRange = { $gte: inputDateFrom, $lte: inputDateTo };
+            const dateFrom = inputDateFrom + "T00:00:00.0000";
+            const dateTo = inputDateTo + "T23:59:59.0000";
+            const dateRange = { $gte: dateFrom, $lte: dateTo };
             let getSoldProduct;
             let getInvoices;
             try {
-                getSoldProduct = Cart_model_1.Cart.find({ status: "sold", date: dateRange });
+                getSoldProduct = Cart_model_1.Cart.find({ status: "sold", updatedAt: dateRange });
                 getInvoices = yield Invoice_model_1.Invoice.find({ status: "paid", updatedAt: dateRange });
             }
             catch (err) {

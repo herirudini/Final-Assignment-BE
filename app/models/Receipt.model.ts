@@ -2,14 +2,14 @@ import mongoose, { Schema } from 'mongoose';
 
 interface Receipt {
     items: object[],
-    tax: number,
+    totalTax: number,
     subtotal: number,
     date: any,
 }
 
 interface ReceiptData extends mongoose.Document {
     items: object[],
-    tax: number,
+    totalTax: number,
     subtotal: number,
     date: any,
 }
@@ -20,7 +20,7 @@ interface ReceiptInterface extends mongoose.Model<ReceiptData> {
 
 const receiptSchema = new Schema({
     items: [{ type: Object }],
-    tax: { type: Number },
+    totalTax: { type: Number },
     subtotal: { type: Number },
     date: { type: Date, default: Date.now },
 });

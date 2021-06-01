@@ -48,6 +48,7 @@ class cashierController {
             let createNotification;
             let updateStockData;
             let updateStock;
+            let data;
             try {
                 const totalPrice = getSellPrice * quantity;
                 const tax = countTax * quantity;
@@ -69,9 +70,11 @@ class cashierController {
                         tax: tax,
                         totalPrice: totalPrice,
                     });
+                    data = createCart;
                 }
                 else {
-                    updateCart = yield Cart_model_1.Cart.findOneAndUpdate({ status: "on-process", product_id: getProductId, admin_id: getUserId }, { $inc: { quantity: quantity } }, { new: true });
+                    updateCart = yield Cart_model_1.Cart.findOneAndUpdate({ status: "on-process", product_id: getProductId, admin_id: getUserId }, { $inc: { quantity: quantity, totalPrice: totalPrice, tax: tax } }, { new: true });
+                    data = updateCart;
                 }
                 ;
                 if (countStock <= 10) {
@@ -88,7 +91,7 @@ class cashierController {
                 next(err);
             }
             finally {
-                res.status(201).json({ success: true, message: "product added to cart", data: createCart });
+                res.status(201).json({ success: true, message: "product added to cart", data: data });
             }
         });
     }
@@ -115,6 +118,7 @@ class cashierController {
             let createNotification;
             let updateStockData;
             let updateStock;
+            let data;
             try {
                 const totalPrice = getSellPrice * quantity;
                 const tax = countTax * quantity;
@@ -136,9 +140,11 @@ class cashierController {
                         tax: tax,
                         totalPrice: totalPrice,
                     });
+                    data = createCart;
                 }
                 else {
                     updateCart = yield Cart_model_1.Cart.findOneAndUpdate({ status: "on-process", product_id: inputProductId, admin_id: getUserId }, { $inc: { quantity: quantity } }, { new: true });
+                    data = updateCart;
                 }
                 ;
                 if (countStock <= 10) {
@@ -155,7 +161,7 @@ class cashierController {
                 next(err);
             }
             finally {
-                res.status(201).json({ success: true, message: "product added to cart", data: createCart });
+                res.status(201).json({ success: true, message: "product added to cart", data: data });
             }
         });
     }
@@ -172,25 +178,31 @@ class cashierController {
         return __awaiter(this, void 0, void 0, function* () {
             const cart_id = req.params.cart_id;
             const inputNotes = req.body.notes;
-            const getCart = yield Cart_model_1.Cart.findById(cart_id);
+            const getCart = yield Cart_model_1.Cart.findOne({ _id: cart_id, status: "on-process" });
             const getQuantity = getCart === null || getCart === void 0 ? void 0 : getCart.quantity;
             const getProductId = getCart === null || getCart === void 0 ? void 0 : getCart.product_id;
             const getProduct = yield Product_model_1.Product.findById(getProductId);
             const getStock = getProduct === null || getProduct === void 0 ? void 0 : getProduct.stock;
             const countStock = getStock + getQuantity;
             let updateProductData;
+            let updateProduct;
             let updateStatus;
-            let updateProductStock;
+            if (countStock > 10) {
+                updateProductData = { $inc: { stock: getQuantity }, status: "active" };
+            }
+            else {
+                updateProductData = { $inc: { stock: getQuantity } };
+            }
+            ;
             try {
-                if (countStock < 10) {
-                    updateProductData = { $inc: { quantity: getQuantity }, status: "active" };
+                if (getProductId == undefined) {
+                    res.status(400).json({ success: false, message: "wrong cart id" });
                 }
                 else {
-                    updateProductData = { $inc: { quantity: getQuantity } };
+                    console.log("item canceled, product stock updated");
+                    updateProduct = yield Product_model_1.Product.findByIdAndUpdate(getProductId, updateProductData, { new: true });
+                    updateStatus = yield Cart_model_1.Cart.findByIdAndUpdate(cart_id, { status: "cancel", notes: inputNotes }, { new: true });
                 }
-                ;
-                updateProductStock = yield Product_model_1.Product.findByIdAndUpdate(getProductId, updateProductData, { new: true });
-                updateStatus = yield Cart_model_1.Cart.findByIdAndUpdate(cart_id, { status: "cancel", notes: inputNotes }, { new: true });
             }
             catch (err) {
                 console.log(err);
@@ -207,20 +219,19 @@ class cashierController {
             const getCart = yield Cart_model_1.Cart.find({ status: "on-process", admin_id: getUserId });
             const items = yield Cart_model_1.Cart.find({ status: "on-process", admin_id: getUserId }).select('-status -admin_id -product_id -date');
             let totalTax = 0;
-            let totalPrice = 0;
-            let subtotal = totalPrice + totalTax;
+            let subTotal = 0;
             let createReceipt;
             let updateStatus;
             try {
-                for (let i in getCart) {
-                    totalPrice += getCart[i].totalPrice;
+                for (let i = 0; i < getCart.length; i++) {
+                    subTotal += getCart[i].totalPrice + getCart[i].tax;
                     totalTax += getCart[i].tax;
                 }
                 ;
                 createReceipt = yield Receipt_model_1.Receipt.create({
                     items: items,
                     totalTax: totalTax,
-                    subtotal: subtotal,
+                    subtotal: subTotal,
                 });
                 updateStatus = yield Cart_model_1.Cart.updateMany({ status: "on-process", admin_id: getUserId }, { $set: { status: "sold" } });
             }
@@ -229,7 +240,8 @@ class cashierController {
                 next(err);
             }
             finally {
-                next();
+                console.log("Success checkout");
+                res.status(201).json({ success: true, message: "receipt created", data: createReceipt });
             }
         });
     }

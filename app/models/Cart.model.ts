@@ -46,8 +46,7 @@ const cartSchema = new Schema({
     tax: { type: Number },
     totalPrice: { type: Number },
     notes: { type: String, select: false },
-    date: { type: Date, default: Date.now },
-});
+}, { timestamps: true });
 
 const Cart = mongoose.model<CartData, CartInterface>('Cart', cartSchema)
 export { Cart }

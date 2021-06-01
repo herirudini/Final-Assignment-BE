@@ -10,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const receiptSchema = new mongoose_1.Schema({
     items: [{ type: Object }],
-    tax: { type: Number },
+    totalTax: { type: Number },
     subtotal: { type: Number },
     date: { type: Date, default: Date.now },
 });
