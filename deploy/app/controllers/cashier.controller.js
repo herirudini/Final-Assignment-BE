@@ -14,15 +14,14 @@ const Cart_model_1 = require("../models/Cart.model");
 const Receipt_model_1 = require("../models/Receipt.model");
 const Notification_model_1 = require("../models/Notification.model");
 class cashierController {
-    static searchProduct(req, res) {
+    static searchProduct(req, res, next) {
         const keywords = req.body.keywords;
-        const filter = req.body.filter;
-        Product_model_1.Product.find({ brand_name: filter, $text: { $search: keywords } }, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })
+        Product_model_1.Product.find({ status: "active", $text: { $search: keywords } }, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })
             .then((result) => {
             res.status(200).json({ success: true, message: "Product found: ", data: result });
         })
             .catch((err) => {
-            res.status(404).json({ success: false, message: "Product not-found", data: err });
+            next(err);
         });
     }
     static addToCart(req, res, next) {

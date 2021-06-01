@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const finance_controller_1 = __importDefault(require("../controllers/finance.controller"));
-const authJwt_1 = __importDefault(require("../middlewares/authJwt"));
 class financeRouter {
     constructor() {
         this.router = express_1.Router();
@@ -17,22 +16,22 @@ class financeRouter {
         this.getIncome();
     }
     getAllInvoice() {
-        this.router.get('/invoice', authJwt_1.default.financeAuth, finance_controller_1.default.getAllInvoice);
+        this.router.get('/invoice', finance_controller_1.default.getAllInvoice);
     }
     getInvoiceBySuplier() {
-        this.router.get('/invoice/suplier', authJwt_1.default.financeAuth, finance_controller_1.default.getInvoiceBySuplier);
+        this.router.get('/invoice/suplier', finance_controller_1.default.getInvoiceBySuplier);
     }
     getInvoiceById() {
-        this.router.get('/invoice/suplier/:invoice_id', authJwt_1.default.financeAuth, finance_controller_1.default.getInvoiceById);
+        this.router.get('/invoice/suplier/:invoice_id', finance_controller_1.default.getInvoiceById);
     }
     updateInvoiceStatus() {
-        this.router.patch('/invoice/suplier/:invoice_id', authJwt_1.default.financeAuth, finance_controller_1.default.updateInvoiceStatus);
+        this.router.patch('/invoice/suplier/:invoice_id', finance_controller_1.default.updateInvoiceStatus);
     }
     getOutcome() {
-        this.router.get('/outcome', authJwt_1.default.financeAuth, finance_controller_1.default.getOutcome);
+        this.router.get('/outcome', finance_controller_1.default.getOutcome);
     }
     getIncome() {
-        this.router.get('/income', authJwt_1.default.financeAuth, finance_controller_1.default.getIncome);
+        this.router.get('/income', finance_controller_1.default.getIncome);
     }
 }
 exports.default = new financeRouter().router;

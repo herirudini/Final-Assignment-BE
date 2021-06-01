@@ -15,16 +15,16 @@ class ownerRouter {
         this.getTopProduct()
     }
     public createUser(): void {
-        this.router.post('/user', auth.ownerAuth, auth.uniqueDataUser, ownerController.createUser);
+        this.router.post('/create-user', auth.uniqueDataUser, ownerController.createUser);
     }
     public listUser(): void {
-        this.router.get('/user', auth.ownerAuth, auth.uniqueDataUser, ownerController.listUser);
+        this.router.get('/list-user', auth.uniqueDataUser, ownerController.listUser);
     }
     public cashflow(): void {
-        this.router.get('/cashflow', auth.ownerAuth, ownerController.cashflow)
+        this.router.get('/cashflow', ownerController.cashflow)
     }
     public getTopProduct(): void {
-        this.router.get('/top-product', auth.ownerAuth, ownerController.getTopProduct)
+        this.router.get('/top-product', ownerController.getTopProduct)
     }
 }
 

@@ -45,16 +45,16 @@ class Routers {
         this.router.use(auth.authentication)
     }
     public owner(): void {
-        this.router.use(ownerRouter)
+        this.router.use('/owner', auth.ownerAuth, ownerRouter)
     }
     public inventory(): void {
-        this.router.use(inventoryRouter)
+        this.router.use('/inventory', auth.inventoryAuth, inventoryRouter)
     }
     public finance(): void {
-        this.router.use(financeRouter)
+        this.router.use('/finance', auth.financeAuth, financeRouter)
     }
     public cashier(): void {
-        this.router.use(cashierRouter)
+        this.router.use('/cashier', auth.cashierAuth, cashierRouter)
     }
     public accountDetails(): void {
         this.router.get('/user/details', userController.myDetails);

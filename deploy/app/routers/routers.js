@@ -46,16 +46,16 @@ class Routers {
         this.router.use(authJwt_1.default.authentication);
     }
     owner() {
-        this.router.use(owner_router_1.default);
+        this.router.use('/owner', authJwt_1.default.ownerAuth, owner_router_1.default);
     }
     inventory() {
-        this.router.use(inventory_router_1.default);
+        this.router.use('/inventory', authJwt_1.default.inventoryAuth, inventory_router_1.default);
     }
     finance() {
-        this.router.use(finance_router_1.default);
+        this.router.use('/finance', authJwt_1.default.financeAuth, finance_router_1.default);
     }
     cashier() {
-        this.router.use(cashier_router_1.default);
+        this.router.use('/cashier', authJwt_1.default.cashierAuth, cashier_router_1.default);
     }
     accountDetails() {
         this.router.get('/user/details', user_controller_1.default.myDetails);

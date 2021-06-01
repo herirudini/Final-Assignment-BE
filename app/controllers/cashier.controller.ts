@@ -6,17 +6,16 @@ import { Notification } from '../models/Notification.model';
 
 class cashierController {
 
-    static searchProduct(req: Request, res: Response) {
+    static searchProduct(req: Request, res: Response, next: NextFunction) {
         const keywords: string = req.body.keywords;
-        const filter: string = req.body.filter;
 
-        Product.find({ brand_name: filter, $text: { $search: keywords } },
+        Product.find({ status: "active", $text: { $search: keywords } },
             { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })
             .then((result) => {
                 res.status(200).json({ success: true, message: "Product found: ", data: result })
             })
             .catch((err) => {
-                res.status(404).json({ success: false, message: "Product not-found", data: err })
+                next(err)
             })
     }
     static async addToCart(req: Request, res: Response, next: NextFunction) {

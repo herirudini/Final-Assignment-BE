@@ -6,32 +6,31 @@ class cashierRouter {
     router: Router
     constructor() {
         this.router = Router()
-        this.searchProduct()
         this.addToCart()
+        this.searchProduct()
         this.addToCartManual()
         this.listCart()
         this.cancelItem()
         this.checkOut()
         // this.report() //print invoice" yang akan dilaporkan kedalam format xls
     }
-
-    public searchProduct(): void {
-        this.router.get('/product', auth.cashierAuth, cashierController.searchProduct);
-    }
     public addToCart(): void {
-        this.router.put('/product', auth.cashierAuth, cashierController.addToCart);
+        this.router.put('/product', cashierController.addToCart);
+    }
+    public searchProduct(): void {
+        this.router.get('/product', cashierController.searchProduct);
     }
     public addToCartManual(): void {
-        this.router.put('/product/:product_id', auth.cashierAuth, cashierController.addToCartManual);
+        this.router.put('/product/:product_id', cashierController.addToCartManual);
     }
     public listCart(): void {
-        this.router.get('/cart', auth.cashierAuth, cashierController.listCart);
+        this.router.get('/cart', cashierController.listCart);
     }
     public cancelItem(): void {
-        this.router.patch('/cart/:cart_id', auth.cashierAuth, cashierController.cancelItem, cashierController.listCart);
+        this.router.patch('/cart/:cart_id', cashierController.cancelItem, cashierController.listCart);
     }
     public checkOut(): void {
-        this.router.post('/checkout', auth.cashierAuth, cashierController.checkOut, cashierController.listCart);
+        this.router.post('/checkout', cashierController.checkOut, cashierController.listCart);
     }
 }
 

@@ -15,16 +15,16 @@ class ownerRouter {
         this.getTopProduct();
     }
     createUser() {
-        this.router.post('/user', authJwt_1.default.ownerAuth, authJwt_1.default.uniqueDataUser, owner_controller_1.default.createUser);
+        this.router.post('/create-user', authJwt_1.default.uniqueDataUser, owner_controller_1.default.createUser);
     }
     listUser() {
-        this.router.get('/user', authJwt_1.default.ownerAuth, authJwt_1.default.uniqueDataUser, owner_controller_1.default.listUser);
+        this.router.get('/list-user', authJwt_1.default.uniqueDataUser, owner_controller_1.default.listUser);
     }
     cashflow() {
-        this.router.get('/cashflow', authJwt_1.default.ownerAuth, owner_controller_1.default.cashflow);
+        this.router.get('/cashflow', owner_controller_1.default.cashflow);
     }
     getTopProduct() {
-        this.router.get('/top-product', authJwt_1.default.ownerAuth, owner_controller_1.default.getTopProduct);
+        this.router.get('/top-product', owner_controller_1.default.getTopProduct);
     }
 }
 exports.default = new ownerRouter().router;
