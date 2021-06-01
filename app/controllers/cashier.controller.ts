@@ -57,9 +57,7 @@ class cashierController {
             } else if (checkCart == 0) {
                 createCart = await Cart.create({
                     admin_id: getUserId,
-                    brand_name: getBrandName,
-                    product_name: getProductName,
-                    uom: getUom,
+                    product: getBrandName + "_" + getProductName + "_" + getUom,
                     product_id: getProductId,
                     quantity: quantity,
                     price: getSellPrice,
@@ -123,10 +121,8 @@ class cashierController {
             } else if (checkCart == 0) {
                 createCart = await Cart.create({
                     admin_id: getUserId,
+                    product: getBrandName + "_" + getProductName + "_" + getUom,
                     product_id: inputProductId,
-                    brand_name: getBrandName,
-                    product_name: getProductName,
-                    uom: getUom,
                     quantity: quantity,
                     price: getSellPrice,
                     tax: tax,

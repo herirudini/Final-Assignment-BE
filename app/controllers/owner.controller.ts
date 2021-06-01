@@ -62,8 +62,8 @@ class acongController {
         let getTopProduct: any;
         try {
             getTopProduct = await Cart.aggregate([
-                { $match: { status: "sold", updatedAt: dateRange } },
-                { $group: { _id: '$product_id', total: { $sum: '$quantity' } } },
+                { $match: { status: "sold", date: dateRange } },
+                { $group: { _id: '$product', total: { $sum: '$quantity' } } },
                 { $sort: { total: -1 } }
             ])
         }
