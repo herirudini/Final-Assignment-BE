@@ -78,10 +78,11 @@ class acongController {
             const inputDateTo = req.body.date_to;
             const dateFrom = inputDateFrom + "T00:00:00.0000";
             const dateTo = inputDateTo + "T23:59:59.0000";
+            const dateRange = { $gte: new Date(dateFrom), $lte: new Date(dateTo) };
             let getTopProduct;
             try {
                 getTopProduct = yield Cart_model_1.Cart.aggregate([
-                    { $match: { status: "sold" } },
+                    { $match: { status: "sold", updatedAt: dateRange } },
                     { $group: { _id: '$product_id', total: { $sum: '$quantity' } } },
                     { $sort: { total: -1 } }
                 ]);
