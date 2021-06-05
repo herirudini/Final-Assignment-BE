@@ -24,19 +24,32 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const jwt = __importStar(require("jsonwebtoken"));
 const Cart_model_1 = require("../models/Cart.model");
 const Invoice_model_1 = require("../models/Invoice.model");
+const nodemailer = require('nodemailer');
 class acongController {
     static createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const inputOriginUrl = req.body.originUrl;
             const role = req.body.role.toLowerCase();
             const username = req.body.new_username;
             const email = req.body.new_email;
             const superkey = jwt.sign({ pesan: email }, process.env.TOKEN);
             const masterkey = bcrypt_1.default.hashSync(superkey, 8);
+            const usermailer = process.env.USERMAILER;
+            const passmailer = process.env.PASSMAILER;
             let createUser;
             let mailOptions;
             let sendEmailToUser;
             let linkChangePassword;
             try {
+                console.log("usermailer:", usermailer, passmailer);
+                const transporter = nodemailer.createTransport({
+                    host: "smtp.mailtrap.io",
+                    port: 2525,
+                    auth: {
+                        user: usermailer,
+                        pass: passmailer
+                    }
+                });
                 if (role == "inventory" || role == "finance" || role == "cashier") {
                     createUser = yield User_model_1.User.create({
                         role: role,
@@ -44,8 +57,17 @@ class acongController {
                         email: email,
                         masterkey: masterkey,
                     });
-                    linkChangePassword = `/${createUser.id}/${superkey}`;
-                    // mailOptions = { from: envEmail, to: email, subject: 'Create Account', text: `https://localhost:3000/login/masterkey/${createUser.id}/${superkey}` };
+                    linkChangePassword = inputOriginUrl + `/${createUser.id}/${superkey}`;
+                    mailOptions = {
+                        from: '"Acong Kelontong" <acongkelontong@gmail.com>',
+                        to: email,
+                        subject: "Reset Password",
+                        text: `Dear ${username}, please click the link below to reset your password
+                    ${linkChangePassword}
+                    `
+                    };
+                    sendEmailToUser = transporter.sendMail(mailOptions, (err, info) => { (err) ? console.log(err) : console.log("Email sent: " + info.responsive); });
+                    console.log(sendEmailToUser, inputOriginUrl);
                 }
                 else {
                     res.status(422).json({ success: false, message: "create user failed! please choose a valid role: inventory/finance/cashier" });
@@ -55,8 +77,7 @@ class acongController {
                 res.status(422).json({ success: false, message: "create user failed!", data: err });
             }
             finally {
-                // sendEmailToUser = transporter.sendMail(mailOptions, (err: any, info: any) => { (err) ? console.log(err) : console.log("Email sent: " + info.responsive) })
-                res.status(201).json({ success: true, message: "create user success", data: { user: createUser, link: linkChangePassword } });
+                res.status(201).json({ success: true, message: "create user success", data: createUser });
             }
         });
     }
