@@ -2,11 +2,7 @@ import { User } from '../models/User.model';
 import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-// const nodemailer: any = require('nodemailer');
-// const envEmail: any = process.env.EMAIL as string;
-// const envEmailPass: any = process.env.EMAIL_PASS as string;
-// const transporter: any = nodemailer.createTransport({ service: 'gmail', auth: { user: envEmail, pass: envEmailPass } })
-
+const nodemailer: any = require('nodemailer');
 
 class userController {
 
@@ -94,20 +90,45 @@ class userController {
     }
     static async forgotPassword(req: Request, res: Response) {
         const inputEmail = req.body.email;
+        const getUser = await User.findOne({ email: inputEmail });
+        const getUserName = getUser?.username;
         const superkey: string = jwt.sign({ pesan: inputEmail }, process.env.TOKEN as string)
         const masterkey = bcrypt.hashSync(superkey, 8);
-        let linkChangePassword: string;
+        const usermailer: string = process.env.USERMAILER as string;
+        const passmailer: string = process.env.PASSMAILER as string;
+        const hostmailer: string = process.env.HOSTMAILER as string;
+        const portmailer: string = process.env.PORTMAILER as string;
+        let linkChangePassword
+        let mailOptions: any;
+        let sendEmailToUser: any;
         let updateUser: any;
 
         try {
+            linkChangePassword = `/${updateUser.id}/${superkey}`;
+            const transporter = nodemailer.createTransport({
+                host: parseInt(hostmailer),
+                port: portmailer,
+                auth: {
+                    user: usermailer,
+                    pass: passmailer
+                }
+            });
+            mailOptions = {
+                from: '"Acong Kelontong" <acongkelontong@gmail.com>',
+                to: inputEmail,
+                subject: "Reset Password",
+                text: `Dear ${getUserName}, please click the link below to reset your password
+                ${linkChangePassword}
+                `
+            };
+            sendEmailToUser = transporter.sendMail(mailOptions, (err: any, info: any) => { (err) ? console.log(err) : console.log("Email sent: " + info.responsive) });
             updateUser = await User.findOneAndUpdate({ email: inputEmail }, { masterkey: masterkey, }, { new: true })
         }
         catch (err) {
             res.status(422).json({ success: false, message: "forgotPassword update user failed!", data: err });
         }
         finally {
-            linkChangePassword = `/${updateUser.id}/${superkey}`
-            res.status(201).json({ success: true, message: "chek your email", data: { user: updateUser, link: linkChangePassword } })
+            res.status(201).json({ success: true, message: "chek your email" })
         }
     }
     static resetPassword(req: Request, res: Response, next: NextFunction) {

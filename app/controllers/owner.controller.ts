@@ -16,6 +16,8 @@ class acongController {
         const masterkey: string = bcrypt.hashSync(superkey, 8);
         const usermailer: string = process.env.USERMAILER as string;
         const passmailer: string = process.env.PASSMAILER as string;
+        const hostmailer: string = process.env.HOSTMAILER as string;
+        const portmailer: string = process.env.PORTMAILER as string;
         let createUser: any;
         let mailOptions: any;
         let sendEmailToUser: any;
@@ -24,8 +26,8 @@ class acongController {
         try {
             console.log("usermailer:", usermailer, passmailer)
             const transporter = nodemailer.createTransport({
-                host: "smtp.mailtrap.io",
-                port: 2525,
+                host: parseInt(hostmailer),
+                port: portmailer,
                 auth: {
                     user: usermailer,
                     pass: passmailer

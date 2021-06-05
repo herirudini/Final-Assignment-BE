@@ -22,10 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const User_model_1 = require("../models/User.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jwt = __importStar(require("jsonwebtoken"));
-// const nodemailer: any = require('nodemailer');
-// const envEmail: any = process.env.EMAIL as string;
-// const envEmailPass: any = process.env.EMAIL_PASS as string;
-// const transporter: any = nodemailer.createTransport({ service: 'gmail', auth: { user: envEmail, pass: envEmailPass } })
+const nodemailer = require('nodemailer');
 class userController {
     static login(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -117,19 +114,44 @@ class userController {
     static forgotPassword(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputEmail = req.body.email;
+            const getUser = yield User_model_1.User.findOne({ email: inputEmail });
+            const getUserName = getUser === null || getUser === void 0 ? void 0 : getUser.username;
             const superkey = jwt.sign({ pesan: inputEmail }, process.env.TOKEN);
             const masterkey = bcrypt_1.default.hashSync(superkey, 8);
+            const usermailer = process.env.USERMAILER;
+            const passmailer = process.env.PASSMAILER;
+            const hostmailer = process.env.HOSTMAILER;
+            const portmailer = process.env.PORTMAILER;
             let linkChangePassword;
+            let mailOptions;
+            let sendEmailToUser;
             let updateUser;
             try {
+                linkChangePassword = `/${updateUser.id}/${superkey}`;
+                const transporter = nodemailer.createTransport({
+                    host: parseInt(hostmailer),
+                    port: portmailer,
+                    auth: {
+                        user: usermailer,
+                        pass: passmailer
+                    }
+                });
+                mailOptions = {
+                    from: '"Acong Kelontong" <acongkelontong@gmail.com>',
+                    to: inputEmail,
+                    subject: "Reset Password",
+                    text: `Dear ${getUserName}, please click the link below to reset your password
+                ${linkChangePassword}
+                `
+                };
+                sendEmailToUser = transporter.sendMail(mailOptions, (err, info) => { (err) ? console.log(err) : console.log("Email sent: " + info.responsive); });
                 updateUser = yield User_model_1.User.findOneAndUpdate({ email: inputEmail }, { masterkey: masterkey, }, { new: true });
             }
             catch (err) {
                 res.status(422).json({ success: false, message: "forgotPassword update user failed!", data: err });
             }
             finally {
-                linkChangePassword = `/${updateUser.id}/${superkey}`;
-                res.status(201).json({ success: true, message: "chek your email", data: { user: updateUser, link: linkChangePassword } });
+                res.status(201).json({ success: true, message: "chek your email" });
             }
         });
     }
