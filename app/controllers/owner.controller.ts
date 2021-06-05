@@ -4,9 +4,16 @@ import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { Cart } from '../models/Cart.model'
 import { Invoice } from '../models/Invoice.model'
+const nodemailer = require('nodemailer')
+const transporter = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: '2525',
+    auth: { user: '9279439d316f97', pass: '7d804816754deb' } //user = email account, pass = password. ini pakai mailtrap, user = username
+});
 
 class acongController {
     static async createUser(req: Request, res: Response) {
+        const inputOriginUrl = req.body.originUrl;
         const role = req.body.role.toLowerCase();
         const username = req.body.new_username;
         const email = req.body.new_email;
@@ -16,6 +23,7 @@ class acongController {
         let mailOptions: any;
         let sendEmailToUser: any;
         let linkChangePassword: any;
+
         try {
             if (role == "inventory" || role == "finance" || role == "cashier") {
                 createUser = await User.create({
@@ -24,8 +32,16 @@ class acongController {
                     email: email,
                     masterkey: masterkey,
                 })
-                linkChangePassword = `/${createUser.id}/${superkey}`
-                // mailOptions = { from: envEmail, to: email, subject: 'Create Account', text: `https://localhost:3000/login/masterkey/${createUser.id}/${superkey}` };
+                linkChangePassword = inputOriginUrl + `/${createUser.id}/${superkey}`;
+                mailOptions = {
+                    from: "Acong Kelontong",
+                    to: email,
+                    subject: "Reset Password",
+                    text: `Dear ${username}, please click the link below to reset your password
+                    ${linkChangePassword}
+                    `
+                };
+                sendEmailToUser = transporter.sendMail(mailOptions, (err: any, info: any) => { (err) ? console.log(err) : console.log("Email sent: " + info.responsive) });
             }
             else {
                 res.status(422).json({ success: false, message: "create user failed! please choose a valid role: inventory/finance/cashier" });
@@ -35,7 +51,6 @@ class acongController {
             res.status(422).json({ success: false, message: "create user failed!", data: err });
         }
         finally {
-            // sendEmailToUser = transporter.sendMail(mailOptions, (err: any, info: any) => { (err) ? console.log(err) : console.log("Email sent: " + info.responsive) })
             res.status(201).json({ success: true, message: "create user success", data: { user: createUser, link: linkChangePassword } })
         }
     }
