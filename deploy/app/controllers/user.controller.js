@@ -111,7 +111,7 @@ class userController {
             next(err);
         });
     }
-    static forgotPassword(req, res) {
+    static forgetPassword(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputEmail = req.body.email;
             const getUser = yield User_model_1.User.findOne({ email: inputEmail });

@@ -37,7 +37,7 @@ class Routers {
         this.router.put('/login', user_controller_1.default.login);
     }
     forgotPassword() {
-        this.router.put('/login/forgot-password', user_controller_1.default.forgotPassword);
+        this.router.put('/login/forget-password', user_controller_1.default.forgetPassword);
     }
     resetPassword() {
         this.router.patch('/login/reset-password/:user_id/:superkey', authJwt_1.default.resetPasswordAuth, user_controller_1.default.resetPassword);

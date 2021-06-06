@@ -88,7 +88,7 @@ class userController {
                 next(err)
             })
     }
-    static async forgotPassword(req: Request, res: Response) {
+    static async forgetPassword(req: Request, res: Response) {
         const inputEmail = req.body.email;
         const getUser = await User.findOne({ email: inputEmail });
         const getUserName = getUser?.username;

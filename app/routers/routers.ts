@@ -36,7 +36,7 @@ class Routers {
         this.router.put('/login', userController.login)
     }
     public forgotPassword(): void {
-        this.router.put('/login/forgot-password', userController.forgotPassword)
+        this.router.put('/login/forget-password', userController.forgetPassword)
     }
     public resetPassword(): void { //create password for new user or forget password resetPassword
         this.router.patch('/login/reset-password/:user_id/:superkey', auth.resetPasswordAuth, userController.resetPassword);
