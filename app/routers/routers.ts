@@ -66,7 +66,7 @@ class Routers {
         this.router.patch('/user/change-password', auth.twoStepAuth, userController.changePassword, userController.logout);
     }
     public logout(): void {
-        this.router.patch('/logout', userController.logout)
+        this.router.delete('/logout', userController.logout)
     }
     public errorHandler(): void {
         this.router.use(errorHandler);

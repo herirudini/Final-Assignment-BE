@@ -67,7 +67,7 @@ class Routers {
         this.router.patch('/user/change-password', authJwt_1.default.twoStepAuth, user_controller_1.default.changePassword, user_controller_1.default.logout);
     }
     logout() {
-        this.router.patch('/logout', user_controller_1.default.logout);
+        this.router.delete('/logout', user_controller_1.default.logout);
     }
     errorHandler() {
         this.router.use(errorHandler_1.default);
