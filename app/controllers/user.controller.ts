@@ -106,8 +106,8 @@ class userController {
         try {
             linkChangePassword = `/${updateUser.id}/${superkey}`;
             const transporter = nodemailer.createTransport({
-                host: parseInt(hostmailer),
-                port: portmailer,
+                host: hostmailer,
+                port: parseInt(portmailer),
                 auth: {
                     user: usermailer,
                     pass: passmailer

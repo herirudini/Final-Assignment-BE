@@ -26,8 +26,8 @@ class acongController {
         try {
             console.log("usermailer:", usermailer, passmailer)
             const transporter = nodemailer.createTransport({
-                host: parseInt(hostmailer),
-                port: portmailer,
+                host: hostmailer,
+                port: parseInt(portmailer),
                 auth: {
                     user: usermailer,
                     pass: passmailer
