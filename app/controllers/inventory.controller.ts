@@ -193,6 +193,7 @@ class inventoryController {
         const getProduct = await Product.findOne({ barcode: inputBarcode })
         const getProductId = getProduct?.id;
         const getSuplierName = getProduct?.suplier_name;
+        const checkOrder: any = await Order.countDocuments({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
         const getOrder: any = await Order.findOne({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
         const getOrderId = getOrder?.id;
         const getQuantity: any = getOrder?.quantity;
@@ -204,7 +205,9 @@ class inventoryController {
         let updateProduct: any;
 
         try {
-            if (tryMatchQuantity > 0) {
+            if (checkOrder == 0) {
+                res.status(404).json({ success: false, message: "there is no on-process order on this product" })
+            } else if (tryMatchQuantity > 0) {
                 res.status(422).json({ success: false, message: "Wrong input arrived quanitity, count carefully", data: getOrder })
             } else if (tryMatchQuantity == 0) {
                 updateOrder = await Order.findByIdAndUpdate(getOrderId, { $inc: { arrived: inputArrivedQuantity }, status: "complete" }, { new: true });

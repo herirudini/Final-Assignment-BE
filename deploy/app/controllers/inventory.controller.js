@@ -211,6 +211,7 @@ class inventoryController {
             const getProduct = yield Product_model_1.Product.findOne({ barcode: inputBarcode });
             const getProductId = getProduct === null || getProduct === void 0 ? void 0 : getProduct.id;
             const getSuplierName = getProduct === null || getProduct === void 0 ? void 0 : getProduct.suplier_name;
+            const checkOrder = yield Order_model_1.Order.countDocuments({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
             const getOrder = yield Order_model_1.Order.findOne({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
             const getOrderId = getOrder === null || getOrder === void 0 ? void 0 : getOrder.id;
             const getQuantity = getOrder === null || getOrder === void 0 ? void 0 : getOrder.quantity;
@@ -220,7 +221,10 @@ class inventoryController {
             let createDelivery;
             let updateProduct;
             try {
-                if (tryMatchQuantity > 0) {
+                if (checkOrder == 0) {
+                    res.status(404).json({ success: false, message: "there is no on-process order on this product" });
+                }
+                else if (tryMatchQuantity > 0) {
                     res.status(422).json({ success: false, message: "Wrong input arrived quanitity, count carefully", data: getOrder });
                 }
                 else if (tryMatchQuantity == 0) {
