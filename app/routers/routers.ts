@@ -16,7 +16,7 @@ class Routers {
         this.router = Router()
         this.developer()
         this.login()
-        this.forgotPassword()
+        this.forgetPassword()
         this.resetPassword()
         this.authentication()
         this.owner()
@@ -35,7 +35,7 @@ class Routers {
     public login(): void {
         this.router.put('/login', userController.login)
     }
-    public forgotPassword(): void {
+    public forgetPassword(): void {
         this.router.put('/login/forget-password', userController.forgetPassword)
     }
     public resetPassword(): void { //create password for new user or forget password resetPassword

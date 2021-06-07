@@ -17,7 +17,7 @@ class Routers {
         this.router = express_1.Router();
         this.developer();
         this.login();
-        this.forgotPassword();
+        this.forgetPassword();
         this.resetPassword();
         this.authentication();
         this.owner();
@@ -36,7 +36,7 @@ class Routers {
     login() {
         this.router.put('/login', user_controller_1.default.login);
     }
-    forgotPassword() {
+    forgetPassword() {
         this.router.put('/login/forget-password', user_controller_1.default.forgetPassword);
     }
     resetPassword() {
