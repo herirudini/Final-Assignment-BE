@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Product_model_1 = require("../models/Product.model");
 const Cart_model_1 = require("../models/Cart.model");
 const Receipt_model_1 = require("../models/Receipt.model");
-const Notification_model_1 = require("../models/Notification.model");
 class cashierController {
     static searchProduct(req, res, next) {
         const keywords = req.body.keywords;
@@ -45,7 +44,6 @@ class cashierController {
             let createCart;
             let updateCart;
             const countStock = getStock - quantity;
-            let createNotification;
             let updateStockData;
             let updateStock;
             let data;
@@ -76,7 +74,6 @@ class cashierController {
                 }
                 ;
                 if (countStock <= 10) {
-                    createNotification = yield Notification_model_1.Notification.create({ message: getProductName + " stock is under 10! product status will be set to inactive" });
                     updateStockData = { $inc: { stock: -quantity }, status: "inactive" };
                 }
                 else {
@@ -113,7 +110,6 @@ class cashierController {
             let createCart;
             let updateCart;
             const countStock = getStock - quantity;
-            let createNotification;
             let updateStockData;
             let updateStock;
             let data;
@@ -144,7 +140,6 @@ class cashierController {
                 }
                 ;
                 if (countStock <= 10) {
-                    createNotification = yield Notification_model_1.Notification.create({ message: getProductName + " stock is under 10! product status will be set to inactive" });
                     updateStockData = { $inc: { stock: -quantity }, status: "inactive" };
                 }
                 else {

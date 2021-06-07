@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express'
 import { Product } from '../models/Product.model'
 import { Cart } from '../models/Cart.model'
 import { Receipt } from '../models/Receipt.model'
-import { Notification } from '../models/Notification.model';
 
 class cashierController {
 
@@ -42,7 +41,6 @@ class cashierController {
         let updateCart: any;
 
         const countStock: number = getStock - quantity;
-        let createNotification: any;
         let updateStockData: object;
         let updateStock: any;
         let data: any;
@@ -70,7 +68,6 @@ class cashierController {
                 data = updateCart;
             };
             if (countStock <= 10) {
-                createNotification = await Notification.create({ message: getProductName + " stock is under 10! product status will be set to inactive" })
                 updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
             } else {
                 updateStockData = { $inc: { stock: -quantity } };
@@ -107,7 +104,6 @@ class cashierController {
         let updateCart: any;
 
         const countStock: number = getStock - quantity;
-        let createNotification: any;
         let updateStockData: object;
         let updateStock: any;
         let data: any;
@@ -134,7 +130,6 @@ class cashierController {
                 data = updateCart;
             };
             if (countStock <= 10) {
-                createNotification = await Notification.create({ message: getProductName + " stock is under 10! product status will be set to inactive" })
                 updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
             } else {
                 updateStockData = { $inc: { stock: -quantity } };
