@@ -93,7 +93,7 @@ class userController {
         }
         User_model_1.User.findByIdAndUpdate(req.user_id, newData, { new: true })
             .then((result) => {
-            console.log("Email/Username changed! You're logged out automatically");
+            res.status(200).json({ success: true, message: "Success change user data", data: result });
             next();
         })
             .catch((err) => {
@@ -103,7 +103,7 @@ class userController {
     static changePassword(req, res, next) {
         User_model_1.User.findByIdAndUpdate(req.user_id, { password: bcrypt_1.default.hashSync(req.body.new_password, 8) }, { new: true }).select('+password')
             .then((result) => {
-            console.log("Password changed! You're logged out automatically");
+            res.status(200).json({ success: true, message: "Success change user password", data: result });
             next();
         })
             .catch((err) => {
@@ -114,8 +114,10 @@ class userController {
     static forgetPassword(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputEmail = req.body.email;
+            const inputOriginUrl = req.body.originUrl;
             const getUser = yield User_model_1.User.findOne({ email: inputEmail });
             const getUserName = getUser === null || getUser === void 0 ? void 0 : getUser.username;
+            const getUserId = getUser === null || getUser === void 0 ? void 0 : getUser.id;
             const superkey = jwt.sign({ pesan: inputEmail }, process.env.TOKEN);
             const masterkey = bcrypt_1.default.hashSync(superkey, 8);
             const usermailer = process.env.USERMAILER;
@@ -127,7 +129,7 @@ class userController {
             let sendEmailToUser;
             let updateUser;
             try {
-                linkChangePassword = `/${updateUser.id}/${superkey}`;
+                linkChangePassword = inputOriginUrl + `/${getUserId}/${superkey}`;
                 const transporter = nodemailer.createTransport({
                     host: hostmailer,
                     port: parseInt(portmailer),

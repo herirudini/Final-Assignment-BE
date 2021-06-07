@@ -61,10 +61,10 @@ class Routers {
         this.router.get('/user/details', user_controller_1.default.myDetails);
     }
     changeEmailOrUsername() {
-        this.router.patch('/user/change-email-username', authJwt_1.default.twoStepAuth, authJwt_1.default.uniqueDataUser, user_controller_1.default.changeEmailOrUsername, user_controller_1.default.logout);
+        this.router.patch('/user/change-email-username', authJwt_1.default.twoStepAuth, authJwt_1.default.uniqueDataUser, user_controller_1.default.changeEmailOrUsername);
     }
     changePassword() {
-        this.router.patch('/user/change-password', authJwt_1.default.twoStepAuth, user_controller_1.default.changePassword, user_controller_1.default.logout);
+        this.router.patch('/user/change-password', authJwt_1.default.twoStepAuth, user_controller_1.default.changePassword);
     }
     logout() {
         this.router.delete('/logout', user_controller_1.default.logout);

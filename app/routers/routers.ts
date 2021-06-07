@@ -60,10 +60,10 @@ class Routers {
         this.router.get('/user/details', userController.myDetails);
     }
     public changeEmailOrUsername(): void {
-        this.router.patch('/user/change-email-username', auth.twoStepAuth, auth.uniqueDataUser, userController.changeEmailOrUsername, userController.logout);
+        this.router.patch('/user/change-email-username', auth.twoStepAuth, auth.uniqueDataUser, userController.changeEmailOrUsername);
     }
     public changePassword(): void {
-        this.router.patch('/user/change-password', auth.twoStepAuth, userController.changePassword, userController.logout);
+        this.router.patch('/user/change-password', auth.twoStepAuth, userController.changePassword);
     }
     public logout(): void {
         this.router.delete('/logout', userController.logout)

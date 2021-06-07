@@ -70,7 +70,7 @@ class userController {
         }
         User.findByIdAndUpdate((<any>req).user_id, newData, { new: true })
             .then((result) => {
-                console.log("Email/Username changed! You're logged out automatically");
+                res.status(200).json({ success: true, message: "Success change user data", data: result })
                 next()
             })
             .catch((err) => {
@@ -80,7 +80,7 @@ class userController {
     static changePassword(req: Request, res: Response, next: NextFunction) {
         User.findByIdAndUpdate((<any>req).user_id, { password: bcrypt.hashSync(req.body.new_password, 8) }, { new: true }).select('+password')
             .then((result) => {
-                console.log("Password changed! You're logged out automatically");
+                res.status(200).json({ success: true, message: "Success change user password", data: result })
                 next()
             })
             .catch((err) => {
@@ -90,8 +90,10 @@ class userController {
     }
     static async forgetPassword(req: Request, res: Response) {
         const inputEmail = req.body.email;
+        const inputOriginUrl = req.body.originUrl;
         const getUser = await User.findOne({ email: inputEmail });
         const getUserName = getUser?.username;
+        const getUserId = getUser?.id;
         const superkey: string = jwt.sign({ pesan: inputEmail }, process.env.TOKEN as string)
         const masterkey = bcrypt.hashSync(superkey, 8);
         const usermailer: string = process.env.USERMAILER as string;
@@ -104,7 +106,7 @@ class userController {
         let updateUser: any;
 
         try {
-            linkChangePassword = `/${updateUser.id}/${superkey}`;
+            linkChangePassword = inputOriginUrl + `/${getUserId}/${superkey}`;
             const transporter = nodemailer.createTransport({
                 host: hostmailer,
                 port: parseInt(portmailer),
