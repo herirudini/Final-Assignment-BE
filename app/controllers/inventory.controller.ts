@@ -128,6 +128,7 @@ class inventoryController {
         const inputQuantity = req.body.quantity;
 
         const getProduct: any = await Product.findOne({ barcode: inputBarcode });
+        const getProductName: string = getProduct?.product_name;
         const getBrandName: string = getProduct?.brand_name;
         const getSuplierName: string = getProduct?.suplier_name;
         const getUom = getProduct?.uom;
@@ -149,12 +150,13 @@ class inventoryController {
 
         try {
             if (checkOrder !== 0) {
-                const listOnProcessOrder = await Order.find({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" })
-                res.status(500).json({ success: false, message: "You have an unfinished order, you can force this by edit previous order status first into: force-complete", data: listOnProcessOrder })
+                const getOrder = await Order.findOne({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" })
+                res.status(422).json({ success: false, message: "You have an unfinished order, you can force this by edit previous order status first into: force-complete", data: getOrder })
             } else {
                 createOrder = await Order.create({
                     suplier_name: getSuplierName,
                     product_id: getProductId,
+                    product_name: getProductName,
                     brand_name: getBrandName,
                     uom: getUom,
                     buyPrice: getBuyPrice,
@@ -187,6 +189,7 @@ class inventoryController {
     static async deliveryOrder(req: Request, res: Response, next: NextFunction) {
         const inputArrivedQuantity = req.body.arrivedQuantity;
         const inputBarcode = req.body.barcode;
+        const getUserId = (<any>req).user_id;
         const getProduct = await Product.findOne({ barcode: inputBarcode })
         const getProductId = getProduct?.id;
         const getSuplierName = getProduct?.suplier_name;
@@ -196,32 +199,29 @@ class inventoryController {
         const arrived: number | undefined = getOrder?.arrived;
         const tryMatchQuantity: number = arrived + inputArrivedQuantity - getQuantity;
 
+        let updateOrder: any;
         let createDelivery: any;
         let updateProduct: any;
-        let updateOrderData: any;
-        let updateOrder: any;
-        if (tryMatchQuantity === 0) {
-            updateOrderData = { $inc: { arrived: inputArrivedQuantity }, status: "complete" }
-        } else if (tryMatchQuantity < 0) {
-            updateOrderData = { $inc: { arrived: inputArrivedQuantity } }
-        } else {
-            res.status(400).json({ success: false, message: "Wrong input arrived quanitity, count carefully", data: getOrder })
-        }
 
         try {
+            if (tryMatchQuantity > 0) {
+                res.status(422).json({ success: false, message: "Wrong input arrived quanitity, count carefully", data: getOrder })
+            } else if (tryMatchQuantity == 0) {
+                updateOrder = await Order.findByIdAndUpdate(getOrderId, { $inc: { arrived: inputArrivedQuantity }, status: "complete" }, { new: true });
+            } else {
+                updateOrder = await Order.findByIdAndUpdate(getOrderId, { $inc: { arrived: inputArrivedQuantity } }, { new: true });
+            };
             createDelivery = await Delivery.create({
                 order_id: getOrderId,
                 arrivedQuantity: inputArrivedQuantity,
+                admin_id: getUserId
             });
             updateProduct = await Product.findByIdAndUpdate(getProductId, { $inc: { stock: inputArrivedQuantity } }, { new: true });
-            updateOrder = await Order.findByIdAndUpdate(getOrderId, updateOrderData, { new: true });
+            res.status(201).json({ success: true, message: "Delivery created, Order updated, Product updated", data: createDelivery });
         }
         catch (err) {
             console.log("inventory_controller_err: " + err)
             next(err)
-        }
-        finally {
-            res.status(201).json({ success: true, message: "Delivery created, Order updated, Product updated", data: "Too Much Im Spinning" })
         }
     }
     static getAllProduct(req: Request, res: Response, next: NextFunction) {

@@ -11,6 +11,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const deliverySchema = new mongoose_1.Schema({
     order_id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Order' },
     arrivedQuantity: { type: Number, default: 0 },
+    admin_id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User' },
 }, { timestamps: true });
 const Delivery = mongoose_1.default.model('Delivery', deliverySchema);
 exports.Delivery = Delivery;

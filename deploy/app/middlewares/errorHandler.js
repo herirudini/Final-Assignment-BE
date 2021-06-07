@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function errorHandler(err, req, res, next) {
-    let code;
     let name = err.name;
+    let code;
     let message;
     switch (name) {
         case "missing_token":

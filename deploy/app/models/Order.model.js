@@ -12,6 +12,7 @@ const orderSchema = new mongoose_1.Schema({
     status: { type: String, default: "on-process" },
     suplier_name: { type: String, required: true },
     product_id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Product', required: true },
+    product_name: { type: String, required: true },
     brand_name: { type: String, required: true },
     uom: { type: String, required: true },
     buyPrice: { type: Number, required: true },

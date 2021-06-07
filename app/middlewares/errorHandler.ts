@@ -1,8 +1,8 @@
 import { ErrorRequestHandler, Request, Response, NextFunction } from 'express'
 
 export default function errorHandler(err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) {
-    let code;
     let name = err.name;
+    let code;
     let message;
 
     switch (name) {

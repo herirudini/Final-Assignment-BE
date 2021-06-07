@@ -144,6 +144,7 @@ class inventoryController {
             const inputDiscount = req.body.discount;
             const inputQuantity = req.body.quantity;
             const getProduct = yield Product_model_1.Product.findOne({ barcode: inputBarcode });
+            const getProductName = getProduct === null || getProduct === void 0 ? void 0 : getProduct.product_name;
             const getBrandName = getProduct === null || getProduct === void 0 ? void 0 : getProduct.brand_name;
             const getSuplierName = getProduct === null || getProduct === void 0 ? void 0 : getProduct.suplier_name;
             const getUom = getProduct === null || getProduct === void 0 ? void 0 : getProduct.uom;
@@ -162,13 +163,14 @@ class inventoryController {
             (!inputDiscount) ? discount = 0 : discount = inputDiscount;
             try {
                 if (checkOrder !== 0) {
-                    const listOnProcessOrder = yield Order_model_1.Order.find({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
-                    res.status(500).json({ success: false, message: "You have an unfinished order, you can force this by edit previous order status first into: force-complete", data: listOnProcessOrder });
+                    const getOrder = yield Order_model_1.Order.findOne({ suplier_name: getSuplierName, product_id: getProductId, status: "on-process" });
+                    res.status(422).json({ success: false, message: "You have an unfinished order, you can force this by edit previous order status first into: force-complete", data: getOrder });
                 }
                 else {
                     createOrder = yield Order_model_1.Order.create({
                         suplier_name: getSuplierName,
                         product_id: getProductId,
+                        product_name: getProductName,
                         brand_name: getBrandName,
                         uom: getUom,
                         buyPrice: getBuyPrice,
@@ -205,6 +207,7 @@ class inventoryController {
         return __awaiter(this, void 0, void 0, function* () {
             const inputArrivedQuantity = req.body.arrivedQuantity;
             const inputBarcode = req.body.barcode;
+            const getUserId = req.user_id;
             const getProduct = yield Product_model_1.Product.findOne({ barcode: inputBarcode });
             const getProductId = getProduct === null || getProduct === void 0 ? void 0 : getProduct.id;
             const getSuplierName = getProduct === null || getProduct === void 0 ? void 0 : getProduct.suplier_name;
@@ -213,33 +216,31 @@ class inventoryController {
             const getQuantity = getOrder === null || getOrder === void 0 ? void 0 : getOrder.quantity;
             const arrived = getOrder === null || getOrder === void 0 ? void 0 : getOrder.arrived;
             const tryMatchQuantity = arrived + inputArrivedQuantity - getQuantity;
+            let updateOrder;
             let createDelivery;
             let updateProduct;
-            let updateOrderData;
-            let updateOrder;
-            if (tryMatchQuantity === 0) {
-                updateOrderData = { $inc: { arrived: inputArrivedQuantity }, status: "complete" };
-            }
-            else if (tryMatchQuantity < 0) {
-                updateOrderData = { $inc: { arrived: inputArrivedQuantity } };
-            }
-            else {
-                res.status(400).json({ success: false, message: "Wrong input arrived quanitity, count carefully", data: getOrder });
-            }
             try {
+                if (tryMatchQuantity > 0) {
+                    res.status(422).json({ success: false, message: "Wrong input arrived quanitity, count carefully", data: getOrder });
+                }
+                else if (tryMatchQuantity == 0) {
+                    updateOrder = yield Order_model_1.Order.findByIdAndUpdate(getOrderId, { $inc: { arrived: inputArrivedQuantity }, status: "complete" }, { new: true });
+                }
+                else {
+                    updateOrder = yield Order_model_1.Order.findByIdAndUpdate(getOrderId, { $inc: { arrived: inputArrivedQuantity } }, { new: true });
+                }
+                ;
                 createDelivery = yield Delivery_model_1.Delivery.create({
                     order_id: getOrderId,
                     arrivedQuantity: inputArrivedQuantity,
+                    admin_id: getUserId
                 });
                 updateProduct = yield Product_model_1.Product.findByIdAndUpdate(getProductId, { $inc: { stock: inputArrivedQuantity } }, { new: true });
-                updateOrder = yield Order_model_1.Order.findByIdAndUpdate(getOrderId, updateOrderData, { new: true });
+                res.status(201).json({ success: true, message: "Delivery created, Order updated, Product updated", data: createDelivery });
             }
             catch (err) {
                 console.log("inventory_controller_err: " + err);
                 next(err);
-            }
-            finally {
-                res.status(201).json({ success: true, message: "Delivery created, Order updated, Product updated", data: "Too Much Im Spinning" });
             }
         });
     }
