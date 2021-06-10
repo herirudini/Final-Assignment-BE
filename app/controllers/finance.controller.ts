@@ -64,8 +64,7 @@ class financeController {
             getInvoices = await Invoice.find({ status: "paid", updatedAt: dateRange })
         }
         catch (err) {
-            console.log(err)
-            res.status(500).json({success: false, message: "gagal maning", err})
+            next(err)
         }
         finally {
             res.status(200).json({ success: true, message: "paid invoices:", data: getInvoices })

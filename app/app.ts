@@ -5,6 +5,9 @@ import connectDB from '../config/connect-database'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import path from 'path'
+import formData from 'express-form-data'
+import os from 'os'
+
 const bodyParser = require('body-parser')
 
 class App {
@@ -20,6 +23,10 @@ class App {
    protected plugin(): void {
       this.app.use(express.json());
       this.app.use(express.urlencoded({ extended: false }));
+      this.app.use(formData.parse({ uploadDir: os.tmpdir(), autoClean: true }));
+      this.app.use(formData.format());
+      this.app.use(formData.stream());
+      this.app.use(formData.union());
       // this.app.use(bodyParser.json());
       // this.app.use(bodyParser.urlencoded({ extended: false }));
       this.app.use('../assets/product-images', express.static(path.join('images')));

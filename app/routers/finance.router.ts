@@ -27,10 +27,10 @@ class financeRouter {
         this.router.patch('/invoice/suplier/:invoice_id', financeController.updateInvoiceStatus);
     }
     public getOutcome(): void {
-        this.router.put('/outcome', financeController.getOutcome);
+        this.router.get('/outcome', financeController.getOutcome);
     }
     public getIncome(): void {
-        this.router.put('/income', financeController.getIncome);
+        this.router.get('/income', financeController.getIncome);
     }
 }
 

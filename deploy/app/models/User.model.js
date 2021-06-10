@@ -23,7 +23,6 @@ const userSchema = new mongoose_1.Schema({
         default: null
     },
     logIp: [{ type: String }],
-    logToken: { type: String },
     masterkey: { type: String, select: false }
 }, { timestamps: true });
 const User = mongoose_1.default.model('User', userSchema);

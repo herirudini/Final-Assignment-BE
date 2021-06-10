@@ -7,7 +7,6 @@ interface User {
     email: string,
     password: string,
     logIp: any[],
-    logToken: string,
     masterkey: string
 }
 
@@ -17,7 +16,6 @@ interface UserData extends mongoose.Document {
     email: string,
     password: string,
     logIp: any[],
-    logToken: string,
     masterkey: string
 }
 
@@ -39,7 +37,6 @@ const userSchema = new Schema({
         default: null
     },
     logIp: [{ type: String }],
-    logToken: { type: String },
     masterkey: { type: String, select: false }
 }, { timestamps: true });
 
