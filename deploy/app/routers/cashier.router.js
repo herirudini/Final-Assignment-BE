@@ -14,8 +14,7 @@ class cashierRouter {
         this.listCart();
         this.cancelItem();
         this.checkOut();
-        this.listReceipt();
-        // this.report() //print invoice" yang akan dilaporkan kedalam format xls
+        // this.listReceipt()
     }
     addToCart() {
         this.router.post('/product', cashier_controller_1.default.addToCart);
