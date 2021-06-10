@@ -32,7 +32,7 @@ class userController {
             const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
             const logIp = user.logIp;
             let ipExist = logIp.includes(ip);
-            let signCredentials;
+            let updateCredentials;
             try {
                 // console.log(typeof(logIp))
                 console.log("login Controller Ip exist?: " + ipExist);
@@ -40,11 +40,11 @@ class userController {
                     throw ({ name: 'not_verified' });
                 }
                 else if (passwordIsValid && ipExist == true) { //true email and password
-                    signCredentials = yield User_model_1.User.findOneAndUpdate({ email: req.body.email }, { $push: { logIp: ip } }, { new: true });
-                    res.status(202).json({ success: true, message: "success login", data: signCredentials, token });
+                    updateCredentials = yield User_model_1.User.findOneAndUpdate({ email: req.body.email }, { $push: { logIp: ip } }, { new: true });
+                    res.status(202).json({ success: true, message: "success login", data: user, token });
                 }
                 else if (passwordIsValid && ipExist == false) {
-                    res.status(202).json({ success: true, message: "success login", data: signCredentials, token });
+                    res.status(202).json({ success: true, message: "success login", data: user, token });
                 }
                 else { //true email, wrong password
                     throw ({ name: 'not_verified' });
@@ -59,10 +59,10 @@ class userController {
     static logout(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
-            let signCredentials;
+            let updateCredentials;
             try {
                 console.log("berhasil masuk logout controller");
-                signCredentials = yield User_model_1.User.findByIdAndUpdate(req.user_id, { $pull: { logIp: ip }, logToken: "" }, { new: true });
+                updateCredentials = yield User_model_1.User.findByIdAndUpdate(req.user_id, { $pull: { logIp: ip } }, { new: true });
             }
             catch (err) {
                 console.log(err);

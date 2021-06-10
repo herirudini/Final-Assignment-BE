@@ -13,7 +13,7 @@ class userController {
         const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
         const logIp = user.logIp;
         let ipExist = logIp.includes(ip)
-        let signCredentials: any;
+        let updateCredentials: any;
 
         try {
             // console.log(typeof(logIp))
@@ -21,10 +21,10 @@ class userController {
             if (!user) { //wrong email
                 throw ({ name: 'not_verified' })
             } else if (passwordIsValid && ipExist == true) { //true email and password
-                signCredentials = await User.findOneAndUpdate({ email: req.body.email }, { $push: { logIp: ip } }, { new: true });
-                res.status(202).json({ success: true, message: "success login", data: signCredentials, token })
+                updateCredentials = await User.findOneAndUpdate({ email: req.body.email }, { $push: { logIp: ip } }, { new: true });
+                res.status(202).json({ success: true, message: "success login", data: user, token })
             } else if (passwordIsValid && ipExist == false) {
-                res.status(202).json({ success: true, message: "success login", data: signCredentials, token })
+                res.status(202).json({ success: true, message: "success login", data: user, token })
             } else { //true email, wrong password
                 throw ({ name: 'not_verified' })
             }
@@ -36,10 +36,10 @@ class userController {
     }
     static async logout(req: Request, res: Response, next: NextFunction) {
         const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
-        let signCredentials: any;
+        let updateCredentials: any;
         try {
             console.log("berhasil masuk logout controller")
-            signCredentials = await User.findByIdAndUpdate((<any>req).user_id, { $pull: { logIp: ip }, logToken: "" }, { new: true });
+            updateCredentials = await User.findByIdAndUpdate((<any>req).user_id, { $pull: { logIp: ip } }, { new: true });
         }
         catch (err) {
             console.log(err)
