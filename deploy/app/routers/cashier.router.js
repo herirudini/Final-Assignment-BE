@@ -29,7 +29,7 @@ class cashierRouter {
         this.router.get('/cart', cashier_controller_1.default.listCart);
     }
     cancelItem() {
-        this.router.patch('/cart/:cart_id', cashier_controller_1.default.cancelItem, cashier_controller_1.default.listCart);
+        this.router.put('/cart/:cart_id', cashier_controller_1.default.cancelItem, cashier_controller_1.default.listCart);
     }
     checkOut() {
         this.router.post('/checkout', cashier_controller_1.default.checkOut, cashier_controller_1.default.listCart);

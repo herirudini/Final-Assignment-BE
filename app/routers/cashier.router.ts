@@ -27,7 +27,7 @@ class cashierRouter {
         this.router.get('/cart', cashierController.listCart);
     }
     public cancelItem(): void {
-        this.router.patch('/cart/:cart_id', cashierController.cancelItem, cashierController.listCart);
+        this.router.put('/cart/:cart_id', cashierController.cancelItem, cashierController.listCart);
     }
     public checkOut(): void {
         this.router.post('/checkout', cashierController.checkOut, cashierController.listCart);
