@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import inventoryController from '../controllers/inventory.controller'
 import auth from '../middlewares/authJwt'
+import multer from '../middlewares/storage'
+
 class inventoryRouter {
     router: Router
     constructor() {
@@ -30,7 +32,7 @@ class inventoryRouter {
         this.router.get('/list-product-uom', inventoryController.listProductAndUom);
     }
     public createProduct(): void {
-        this.router.post('/product', auth.uniqueDataProduct, inventoryController.createProduct);
+        this.router.post('/product', auth.uniqueDataProduct, multer, inventoryController.createProduct);
     }
     public getAllProduct(): void {
         this.router.get('/product', inventoryController.getAllProduct);
