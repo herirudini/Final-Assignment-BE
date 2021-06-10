@@ -79,7 +79,7 @@ class financeController {
                 getInvoices = yield Invoice_model_1.Invoice.find({ status: "paid", updatedAt: dateRange });
             }
             catch (err) {
-                next(err);
+                res.status(500).json({ success: false, message: "gagal maning", err });
             }
             finally {
                 res.status(200).json({ success: true, message: "paid invoices:", data: getInvoices });

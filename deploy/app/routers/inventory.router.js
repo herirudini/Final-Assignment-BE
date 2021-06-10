@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const inventory_controller_1 = __importDefault(require("../controllers/inventory.controller"));
 const authJwt_1 = __importDefault(require("../middlewares/authJwt"));
+const storage_1 = __importDefault(require("../middlewares/storage"));
 class inventoryRouter {
     constructor() {
         this.router = express_1.Router();
@@ -34,7 +35,7 @@ class inventoryRouter {
         this.router.get('/list-product-uom', inventory_controller_1.default.listProductAndUom);
     }
     createProduct() {
-        this.router.post('/product', authJwt_1.default.uniqueDataProduct, inventory_controller_1.default.createProduct);
+        this.router.post('/product', authJwt_1.default.uniqueDataProduct, storage_1.default, inventory_controller_1.default.createProduct);
     }
     getAllProduct() {
         this.router.get('/product', inventory_controller_1.default.getAllProduct);

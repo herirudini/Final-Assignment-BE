@@ -42,11 +42,11 @@ class auth {
                         req.user_id = decoded.id;
                     });
                     const author = yield User_model_1.User.findById(req.user_id);
-                    const logToken = author.logToken;
+                    // const logToken = author.logToken;
                     const logIp = author.logIp;
                     let ipExist = logIp.includes(ip);
-                    if (ipExist == false || logToken != access_token) {
-                        throw ({ name: 'invalid_token' });
+                    if (ipExist == false) {
+                        throw ({ name: 'unauthorized' });
                     }
                     else {
                         console.log("berhasil lewat Authentication");

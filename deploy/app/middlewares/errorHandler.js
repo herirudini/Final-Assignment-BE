@@ -57,6 +57,6 @@ function errorHandler(err, req, res, next) {
             code = 500;
             message = "Internal Server Error";
     }
-    res.status(code).json({ success: false, message });
+    res.status(code).json({ success: false, message, err });
 }
 exports.default = errorHandler;

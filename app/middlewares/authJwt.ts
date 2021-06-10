@@ -24,12 +24,12 @@ class auth {
                     (<any>req).user_id = decoded.id;
                 })
                 const author: any = await User.findById((<any>req).user_id);
-                const logToken = author.logToken;
+                // const logToken = author.logToken;
                 const logIp = author.logIp;
                 let ipExist = logIp.includes(ip)
 
-                if (ipExist == false || logToken != access_token) {
-                    throw ({ name: 'invalid_token' })
+                if (ipExist == false) {
+                    throw ({ name: 'unauthorized' })
                 } else {
                     console.log("berhasil lewat Authentication")
                     next();
