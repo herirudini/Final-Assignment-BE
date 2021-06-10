@@ -58,5 +58,5 @@ export default function errorHandler(err: ErrorRequestHandler, req: Request, res
             code = 500
             message = "Internal Server Error"
     }
-    res.status(code).json({ success: false, message, data: err })
+    res.status(code).json({ success: false, message, err })
 }
