@@ -41,7 +41,7 @@ class inventoryRouter {
         this.router.get('/product', inventory_controller_1.default.getAllProduct);
     }
     searchProduct() {
-        this.router.get('/product/search', inventory_controller_1.default.searchProduct);
+        this.router.put('/product/search', inventory_controller_1.default.searchProduct);
     }
     setProductStatus() {
         this.router.patch('/product/status/:product_id', inventory_controller_1.default.setProductStatus, inventory_controller_1.default.getAllProduct);

@@ -15,10 +15,10 @@ class cashierRouter {
         // this.report() //print invoice" yang akan dilaporkan kedalam format xls
     }
     public addToCart(): void {
-        this.router.put('/product', cashierController.addToCart);
+        this.router.post('/product', cashierController.addToCart);
     }
     public searchProduct(): void {
-        this.router.get('/product', cashierController.searchProduct);
+        this.router.put('/product', cashierController.searchProduct);
     }
     public addToCartManual(): void {
         this.router.put('/product/:product_id', cashierController.addToCartManual);

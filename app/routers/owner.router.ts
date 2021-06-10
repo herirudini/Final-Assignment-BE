@@ -21,7 +21,7 @@ class ownerRouter {
         this.router.get('/list-user', auth.uniqueDataUser, ownerController.listUser);
     }
     public cashflow(): void {
-        this.router.get('/cashflow', ownerController.cashflow)
+        this.router.put('/cashflow', ownerController.cashflow)
     }
     public getTopProduct(): void {
         this.router.get('/top-product', ownerController.getTopProduct)

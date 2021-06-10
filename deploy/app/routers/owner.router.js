@@ -21,7 +21,7 @@ class ownerRouter {
         this.router.get('/list-user', authJwt_1.default.uniqueDataUser, owner_controller_1.default.listUser);
     }
     cashflow() {
-        this.router.get('/cashflow', owner_controller_1.default.cashflow);
+        this.router.put('/cashflow', owner_controller_1.default.cashflow);
     }
     getTopProduct() {
         this.router.get('/top-product', owner_controller_1.default.getTopProduct);
