@@ -216,6 +216,15 @@ class cashierController {
             res.status(201).json({ success: true, message: "receipt created", data: createReceipt })
         }
     }
+    static listReceipt(req: Request, res: Response, next: NextFunction) {
+        Receipt.find()
+            .then((result) => {
+                res.status(200).json({ success: true, message: "All receipt: ", data: result })
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
 }
 
 export default cashierController

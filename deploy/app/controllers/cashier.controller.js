@@ -236,5 +236,14 @@ class cashierController {
             }
         });
     }
+    static listReceipt(req, res, next) {
+        Receipt_model_1.Receipt.find()
+            .then((result) => {
+            res.status(200).json({ success: true, message: "All receipt: ", data: result });
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
 }
 exports.default = cashierController;

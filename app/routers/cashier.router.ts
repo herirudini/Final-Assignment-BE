@@ -12,6 +12,7 @@ class cashierRouter {
         this.listCart()
         this.cancelItem()
         this.checkOut()
+        this.listReceipt()
         // this.report() //print invoice" yang akan dilaporkan kedalam format xls
     }
     public addToCart(): void {
@@ -31,6 +32,9 @@ class cashierRouter {
     }
     public checkOut(): void {
         this.router.post('/checkout', cashierController.checkOut, cashierController.listCart);
+    }
+    public listReceipt(): void {
+        this.router.get('/receipt', cashierController.listReceipt);
     }
 }
 
