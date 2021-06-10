@@ -54,8 +54,8 @@ class financeController {
         }
     }
     static async getOutcome(req: Request, res: Response, next: NextFunction) {
-        const inputDateFrom: any = req.body.date_from;
-        const inputDateTo: any = req.body.date_to;
+        const inputDateFrom: string = req.body.date_from;
+        const inputDateTo: string = req.body.date_to;
         const dateFrom = inputDateFrom + "T00:00:00.0000"
         const dateTo = inputDateTo + "T23:59:59.0000"
         const dateRange: object = { $gte: dateFrom, $lte: dateTo }
@@ -64,6 +64,7 @@ class financeController {
             getInvoices = await Invoice.find({ status: "paid", updatedAt: dateRange })
         }
         catch (err) {
+            console.log(err)
             res.status(500).json({success: false, message: "gagal maning", err})
         }
         finally {

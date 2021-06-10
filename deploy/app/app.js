@@ -9,7 +9,7 @@ const connect_database_1 = __importDefault(require("../config/connect-database")
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 class App {
     constructor() {
         dotenv_1.default.config();
@@ -19,9 +19,10 @@ class App {
         this.routes();
     }
     plugin() {
-        this.app.use(express_1.default.urlencoded({ extended: true }));
         this.app.use(express_1.default.json());
-        this.app.use(bodyParser.json());
+        this.app.use(express_1.default.urlencoded({ extended: false }));
+        // this.app.use(bodyParser.json());
+        // this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use('../assets/product-images', express_1.default.static(path_1.default.join('images')));
         connect_database_1.default();
     }

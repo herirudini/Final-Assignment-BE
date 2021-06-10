@@ -5,7 +5,7 @@ import connectDB from '../config/connect-database'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import path from 'path'
-import bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 
 class App {
    public app: Application
@@ -18,9 +18,10 @@ class App {
    }
 
    protected plugin(): void {
-      this.app.use(express.urlencoded({ extended: true }))
       this.app.use(express.json());
-      this.app.use(bodyParser.json());
+      this.app.use(express.urlencoded({ extended: false }));
+      // this.app.use(bodyParser.json());
+      // this.app.use(bodyParser.urlencoded({ extended: false }));
       this.app.use('../assets/product-images', express.static(path.join('images')));
       connectDB();
    }

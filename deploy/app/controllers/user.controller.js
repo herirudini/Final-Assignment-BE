@@ -33,17 +33,18 @@ class userController {
             const logIp = user.logIp;
             let ipExist = logIp.includes(ip);
             let signCredentials;
-            let credentialsData;
-            ipExist ? credentialsData = { logToken: token } : credentialsData = { $push: { logIp: ip }, logToken: token };
             try {
                 // console.log(typeof(logIp))
                 console.log("login Controller Ip exist?: " + ipExist);
                 if (!user) { //wrong email
                     throw ({ name: 'not_verified' });
                 }
-                else if (passwordIsValid) { //true email and password
-                    signCredentials = yield User_model_1.User.findOneAndUpdate({ email: req.body.email }, credentialsData, { new: true });
-                    res.status(202).json({ success: true, message: "success login", data: signCredentials });
+                else if (passwordIsValid && ipExist == true) { //true email and password
+                    signCredentials = yield User_model_1.User.findOneAndUpdate({ email: req.body.email }, { $push: { logIp: ip } }, { new: true });
+                    res.status(202).json({ success: true, message: "success login", data: signCredentials, token });
+                }
+                else if (passwordIsValid && ipExist == false) {
+                    res.status(202).json({ success: true, message: "success login", data: signCredentials, token });
                 }
                 else { //true email, wrong password
                     throw ({ name: 'not_verified' });
