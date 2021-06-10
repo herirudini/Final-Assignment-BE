@@ -28,10 +28,10 @@ class financeRouter {
         this.router.patch('/invoice/suplier/:invoice_id', finance_controller_1.default.updateInvoiceStatus);
     }
     getOutcome() {
-        this.router.put('/outcome', finance_controller_1.default.getOutcome);
+        this.router.get('/outcome', finance_controller_1.default.getOutcome);
     }
     getIncome() {
-        this.router.put('/income', finance_controller_1.default.getIncome);
+        this.router.get('/income', finance_controller_1.default.getIncome);
     }
 }
 exports.default = new financeRouter().router;
