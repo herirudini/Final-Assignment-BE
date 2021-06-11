@@ -35,7 +35,7 @@ class inventoryRouter {
         this.router.put('/list-product-uom', inventory_controller_1.default.listProductAndUomByBrandName);
     }
     createProduct() {
-        this.router.put('/product', authJwt_1.default.uniqueDataProduct, storage_1.default, inventory_controller_1.default.createProduct);
+        this.router.post('/product', authJwt_1.default.uniqueDataProduct, storage_1.default, inventory_controller_1.default.createProduct);
     }
     getAllProduct() {
         this.router.get('/product', inventory_controller_1.default.getAllProduct);
