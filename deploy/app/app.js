@@ -16,9 +16,18 @@ class App {
     constructor() {
         dotenv_1.default.config();
         this.app = express_1.default();
-        this.plugin();
         this.cors();
+        this.plugin();
         this.routes();
+    }
+    cors() {
+        this.app.use(cors_1.default());
+        this.app.use((req, res, next) => {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+            res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
+            next();
+        });
     }
     plugin() {
         this.app.use(express_1.default.json());
@@ -31,15 +40,6 @@ class App {
         // this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use('../assets/product-images', express_1.default.static(path_1.default.join('images')));
         connect_database_1.default();
-    }
-    cors() {
-        this.app.use(cors_1.default());
-        this.app.use((req, res, next) => {
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-            res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
-            next();
-        });
     }
     routes() {
         this.app.use(routers_1.default);

@@ -15,22 +15,9 @@ class App {
    constructor() {
       dotenv.config()
       this.app = express()
-      this.plugin()
       this.cors()
+      this.plugin()
       this.routes()
-   }
-
-   protected plugin(): void {
-      this.app.use(express.json());
-      this.app.use(express.urlencoded({ extended: false }));
-      this.app.use(formData.parse({ uploadDir: os.tmpdir(), autoClean: true }));
-      this.app.use(formData.format());
-      this.app.use(formData.stream());
-      this.app.use(formData.union());
-      // this.app.use(bodyParser.json());
-      // this.app.use(bodyParser.urlencoded({ extended: false }));
-      this.app.use('../assets/product-images', express.static(path.join('images')));
-      connectDB();
    }
    protected cors(): void {
       this.app.use(cors())
@@ -47,6 +34,20 @@ class App {
          next();
       });
    }
+   
+   protected plugin(): void {
+      this.app.use(express.json());
+      this.app.use(express.urlencoded({ extended: false }));
+      this.app.use(formData.parse({ uploadDir: os.tmpdir(), autoClean: true }));
+      this.app.use(formData.format());
+      this.app.use(formData.stream());
+      this.app.use(formData.union());
+      // this.app.use(bodyParser.json());
+      // this.app.use(bodyParser.urlencoded({ extended: false }));
+      this.app.use('../assets/product-images', express.static(path.join('images')));
+      connectDB();
+   }
+   
    protected routes(): void {
       this.app.use(Routers)
    }
