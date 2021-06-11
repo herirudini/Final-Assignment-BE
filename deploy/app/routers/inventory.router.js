@@ -29,10 +29,10 @@ class inventoryRouter {
         this.router.get('/suplier', inventory_controller_1.default.listSuplier);
     }
     listBrandBySuplierName() {
-        this.router.get('/list-brand', inventory_controller_1.default.listBrandBySuplierName);
+        this.router.put('/list-brand', inventory_controller_1.default.listBrandBySuplierName);
     }
     listProductAndUomByBrandName() {
-        this.router.get('/list-product-uom', inventory_controller_1.default.listProductAndUomByBrandName);
+        this.router.put('/list-product-uom', inventory_controller_1.default.listProductAndUomByBrandName);
     }
     createProduct() {
         this.router.post('/product', authJwt_1.default.uniqueDataProduct, inventory_controller_1.default.createProduct);
