@@ -31,7 +31,7 @@ class App {
     }
     plugin() {
         this.app.use(express_1.default.json());
-        this.app.use(express_1.default.urlencoded({ extended: false }));
+        this.app.use(express_1.default.urlencoded({ extended: true }));
         this.app.use(express_form_data_1.default.parse({ uploadDir: os_1.default.tmpdir(), autoClean: true }));
         this.app.use(express_form_data_1.default.format());
         this.app.use(express_form_data_1.default.stream());

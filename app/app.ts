@@ -37,7 +37,7 @@ class App {
 
    protected plugin(): void {
       this.app.use(express.json());
-      this.app.use(express.urlencoded({ extended: false }));
+      this.app.use(express.urlencoded({ extended: true }));
       this.app.use(formData.parse({ uploadDir: os.tmpdir(), autoClean: true }));
       this.app.use(formData.format());
       this.app.use(formData.stream());
