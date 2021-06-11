@@ -36,7 +36,7 @@ class inventoryController {
                 next(err)
             })
     }
-    static async listBrand(req: Request, res: Response, next: NextFunction) {
+    static async listBrandBySuplierName(req: Request, res: Response, next: NextFunction) {
         const inputSuplierName: string = req.body.suplier_name.toUpperCase();
         const listBrandName: any = await Suplier.findOne({ suplier_name: inputSuplierName }).select('brands -_id');
         try {
@@ -46,7 +46,7 @@ class inventoryController {
             next(err)
         }
     }
-    static async listProductAndUom(req: Request, res: Response, next: NextFunction) {
+    static async listProductAndUomByBrandName(req: Request, res: Response, next: NextFunction) {
         const inputBrandName: string = req.body.brand_name.toUpperCase();
         const listProductName: any = await Product.aggregate([
             { $match: { brand_name: inputBrandName } },

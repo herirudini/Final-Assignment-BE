@@ -20,7 +20,7 @@ class App {
       this.routes()
    }
    protected cors(): void {
-      this.app.use(cors())
+      this.app.use(cors());
       this.app.use((req, res, next) => {
          res.setHeader("Access-Control-Allow-Origin", "*");
          res.setHeader(
@@ -34,7 +34,7 @@ class App {
          next();
       });
    }
-   
+
    protected plugin(): void {
       this.app.use(express.json());
       this.app.use(express.urlencoded({ extended: false }));

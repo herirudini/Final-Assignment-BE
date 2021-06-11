@@ -9,8 +9,8 @@ class inventoryRouter {
         this.router = Router()
         this.createSuplier()
         this.listSuplier()
-        this.listBrand()
-        this.listProductAndUom()
+        this.listBrandBySuplierName() // only retrive brand list
+        this.listProductAndUomByBrandName() //only retrive product name and uom name
         this.createProduct()
         this.getAllProduct()
         this.searchProduct()
@@ -25,11 +25,11 @@ class inventoryRouter {
     public listSuplier(): void {
         this.router.get('/suplier', inventoryController.listSuplier);
     }
-    public listBrand(): void {
-        this.router.get('/list-brand', inventoryController.listBrand);
+    public listBrandBySuplierName(): void {
+        this.router.put('/list-brand', inventoryController.listBrandBySuplierName);
     }
-    public listProductAndUom(): void {
-        this.router.get('/list-product-uom', inventoryController.listProductAndUom);
+    public listProductAndUomByBrandName(): void {
+        this.router.put('/list-product-uom', inventoryController.listProductAndUomByBrandName);
     }
     public createProduct(): void {
         this.router.post('/product', auth.uniqueDataProduct, multer, inventoryController.createProduct);

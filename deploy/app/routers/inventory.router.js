@@ -12,8 +12,8 @@ class inventoryRouter {
         this.router = express_1.Router();
         this.createSuplier();
         this.listSuplier();
-        this.listBrand();
-        this.listProductAndUom();
+        this.listBrandBySuplierName(); // only retrive brand list
+        this.listProductAndUomByBrandName(); //only retrive product name and uom name
         this.createProduct();
         this.getAllProduct();
         this.searchProduct();
@@ -28,11 +28,11 @@ class inventoryRouter {
     listSuplier() {
         this.router.get('/suplier', inventory_controller_1.default.listSuplier);
     }
-    listBrand() {
-        this.router.get('/list-brand', inventory_controller_1.default.listBrand);
+    listBrandBySuplierName() {
+        this.router.put('/list-brand', inventory_controller_1.default.listBrandBySuplierName);
     }
-    listProductAndUom() {
-        this.router.get('/list-product-uom', inventory_controller_1.default.listProductAndUom);
+    listProductAndUomByBrandName() {
+        this.router.put('/list-product-uom', inventory_controller_1.default.listProductAndUomByBrandName);
     }
     createProduct() {
         this.router.post('/product', authJwt_1.default.uniqueDataProduct, storage_1.default, inventory_controller_1.default.createProduct);

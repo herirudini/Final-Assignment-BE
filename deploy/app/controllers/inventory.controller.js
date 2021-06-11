@@ -45,7 +45,7 @@ class inventoryController {
             next(err);
         });
     }
-    static listBrand(req, res, next) {
+    static listBrandBySuplierName(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputSuplierName = req.body.suplier_name.toUpperCase();
             const listBrandName = yield Suplier_model_1.Suplier.findOne({ suplier_name: inputSuplierName }).select('brands -_id');
@@ -57,7 +57,7 @@ class inventoryController {
             }
         });
     }
-    static listProductAndUom(req, res, next) {
+    static listProductAndUomByBrandName(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputBrandName = req.body.brand_name.toUpperCase();
             const listProductName = yield Product_model_1.Product.aggregate([
