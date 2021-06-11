@@ -26,10 +26,10 @@ class inventoryRouter {
         this.router.get('/suplier', inventoryController.listSuplier);
     }
     public listBrandBySuplierName(): void {
-        this.router.put('/list-brand', inventoryController.listBrandBySuplierName);
+        this.router.get('/list-brand', inventoryController.listBrandBySuplierName);
     }
     public listProductAndUomByBrandName(): void {
-        this.router.put('/list-product-uom', inventoryController.listProductAndUomByBrandName);
+        this.router.get('/list-product-uom', inventoryController.listProductAndUomByBrandName);
     }
     public createProduct(): void {
         this.router.post('/product', auth.uniqueDataProduct, multer, inventoryController.createProduct);
