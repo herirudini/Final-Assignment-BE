@@ -8,7 +8,6 @@ const routers_1 = __importDefault(require("./routers/routers"));
 const connect_database_1 = __importDefault(require("../config/connect-database"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
-const path_1 = __importDefault(require("path"));
 const express_form_data_1 = __importDefault(require("express-form-data"));
 const os_1 = __importDefault(require("os"));
 const bodyParser = require('body-parser');
@@ -44,7 +43,7 @@ class App {
     connectDB() {
     }
     routes() {
-        this.app.use('../../assets/product-images', express_1.default.static(path_1.default.join('images')));
+        // this.app.use('../../assets/product-images', express.static(path.join('images')));
         this.app.use(routers_1.default);
     }
 }

@@ -51,7 +51,7 @@ class App {
    protected connectDB(): void{
    }
    protected routes(): void {
-      this.app.use('../../assets/product-images', express.static(path.join('images')));
+      // this.app.use('../../assets/product-images', express.static(path.join('images')));
       this.app.use(Routers)
    }
 }
