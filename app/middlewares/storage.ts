@@ -18,4 +18,5 @@ const fileFilter = (req: any, file: any, cb: any) => {
     allowedMimeTypes.includes(file.mimetype) ? cb(null, true) : cb(null, false);
 };
 
-exports.default = multer({ storage: diskStorage, fileFilter: fileFilter }).single('image');
+const storage = multer({ storage: diskStorage, fileFilter: fileFilter }).single('image');
+module.exports = storage

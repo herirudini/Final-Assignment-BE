@@ -30,7 +30,6 @@ class App {
         this.app.use(express_form_data_1.default.union());
         // this.app.use(bodyParser.json());
         // this.app.use(bodyParser.urlencoded({ extended: false }));
-        this.app.use('../assets/product-images', express_1.default.static(path_1.default.join('images')));
     }
     cors() {
         this.app.use(cors_1.default());
@@ -45,6 +44,7 @@ class App {
         connect_database_1.default();
     }
     routes() {
+        this.app.use('../../assets/product-images', express_1.default.static(path_1.default.join('images')));
         this.app.use(routers_1.default);
     }
 }
