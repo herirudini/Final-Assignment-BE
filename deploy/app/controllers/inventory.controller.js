@@ -92,7 +92,7 @@ class inventoryController {
             const inputSuplierName = req.body.suplier_name.toUpperCase();
             const inputBrandName = req.body.brand_name.toUpperCase();
             const inputProductName = req.body.product_name.toUpperCase();
-            const inputImage = 'assets/product-images' + req.file.filename;
+            const inputImage = req.body.image;
             const inputUom = req.body.uom.toUpperCase();
             const inputSellPrice = req.body.sellPrice;
             const inputBarcode = req.body.barcode;

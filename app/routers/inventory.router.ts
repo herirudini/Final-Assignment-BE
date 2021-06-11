@@ -32,7 +32,7 @@ class inventoryRouter {
         this.router.put('/list-product-uom', inventoryController.listProductAndUomByBrandName);
     }
     public createProduct(): void {
-        this.router.put('/product', auth.uniqueDataProduct, multer, inventoryController.createProduct);
+        this.router.post('/product', auth.uniqueDataProduct, inventoryController.createProduct);
     }
     public getAllProduct(): void {
         this.router.get('/product', inventoryController.getAllProduct);
