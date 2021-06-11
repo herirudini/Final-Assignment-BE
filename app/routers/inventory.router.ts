@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import inventoryController from '../controllers/inventory.controller'
 import auth from '../middlewares/authJwt'
-import multer from '../middlewares/storage'
+const multer = require('../middlewares/storage')
 
 class inventoryRouter {
     router: Router
@@ -32,7 +32,7 @@ class inventoryRouter {
         this.router.put('/list-product-uom', inventoryController.listProductAndUomByBrandName);
     }
     public createProduct(): void {
-        this.router.put('/product', auth.uniqueDataProduct, multer, inventoryController.createProduct);
+        this.router.post('/product', auth.uniqueDataProduct, multer, inventoryController.createProduct);
     }
     public getAllProduct(): void {
         this.router.get('/product', inventoryController.getAllProduct);
