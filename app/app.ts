@@ -16,11 +16,12 @@ class App {
       dotenv.config()
       this.app = express()
       this.plugin()
-      this.routes()
       this.cors()
+      this.connectDB()
+      this.routes()
    }
 
-   public plugin(): void {
+   protected plugin(): void {
       this.app.use(express.json());
       this.app.use(express.urlencoded({ extended: true }));
       this.app.use(formData.parse({ uploadDir: os.tmpdir(), autoClean: true }));
@@ -30,14 +31,8 @@ class App {
       // this.app.use(bodyParser.json());
       // this.app.use(bodyParser.urlencoded({ extended: false }));
       this.app.use('../assets/product-images', express.static(path.join('images')));
-      connectDB();
    }
-   
-   public routes(): void {
-      this.app.use(Routers)
-   }
-
-   public cors(): void {
+   protected cors(): void {
       this.app.use(cors());
       this.app.use((req, res, next) => {
          res.setHeader("Access-Control-Allow-Origin", "*");
@@ -51,6 +46,12 @@ class App {
          );
          next();
       });
+   }
+   protected connectDB(): void{
+      connectDB();
+   }
+   protected routes(): void {
+      this.app.use(Routers)
    }
 }
 const app = new App().app

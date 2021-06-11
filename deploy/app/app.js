@@ -17,8 +17,9 @@ class App {
         dotenv_1.default.config();
         this.app = express_1.default();
         this.plugin();
-        this.routes();
         this.cors();
+        this.connectDB();
+        this.routes();
     }
     plugin() {
         this.app.use(express_1.default.json());
@@ -30,10 +31,6 @@ class App {
         // this.app.use(bodyParser.json());
         // this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use('../assets/product-images', express_1.default.static(path_1.default.join('images')));
-        connect_database_1.default();
-    }
-    routes() {
-        this.app.use(routers_1.default);
     }
     cors() {
         this.app.use(cors_1.default());
@@ -43,6 +40,12 @@ class App {
             res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
             next();
         });
+    }
+    connectDB() {
+        connect_database_1.default();
+    }
+    routes() {
+        this.app.use(routers_1.default);
     }
 }
 const app = new App().app;
