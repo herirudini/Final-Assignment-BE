@@ -20,7 +20,7 @@ class App {
       this.cors()
    }
 
-   protected plugin(): void {
+   public plugin(): void {
       this.app.use(express.json());
       this.app.use(express.urlencoded({ extended: true }));
       this.app.use(formData.parse({ uploadDir: os.tmpdir(), autoClean: true }));
@@ -33,11 +33,11 @@ class App {
       connectDB();
    }
    
-   protected routes(): void {
+   public routes(): void {
       this.app.use(Routers)
    }
 
-   protected cors(): void {
+   public cors(): void {
       this.app.use(cors());
       this.app.use((req, res, next) => {
          res.setHeader("Access-Control-Allow-Origin", "*");
