@@ -18,7 +18,7 @@ class App {
         this.app = express_1.default();
         this.plugin();
         this.cors();
-        this.connectDB();
+        // this.connectDB()
         this.routes();
     }
     plugin() {
@@ -28,6 +28,7 @@ class App {
         this.app.use(express_form_data_1.default.format());
         this.app.use(express_form_data_1.default.stream());
         this.app.use(express_form_data_1.default.union());
+        connect_database_1.default();
         // this.app.use(bodyParser.json());
         // this.app.use(bodyParser.urlencoded({ extended: false }));
     }
@@ -41,7 +42,6 @@ class App {
         });
     }
     connectDB() {
-        connect_database_1.default();
     }
     routes() {
         this.app.use('../../assets/product-images', express_1.default.static(path_1.default.join('images')));

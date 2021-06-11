@@ -17,7 +17,7 @@ class App {
       this.app = express()
       this.plugin()
       this.cors()
-      this.connectDB()
+      // this.connectDB()
       this.routes()
    }
 
@@ -28,6 +28,8 @@ class App {
       this.app.use(formData.format());
       this.app.use(formData.stream());
       this.app.use(formData.union());
+      connectDB();
+
       // this.app.use(bodyParser.json());
       // this.app.use(bodyParser.urlencoded({ extended: false }));
    }
@@ -47,7 +49,6 @@ class App {
       });
    }
    protected connectDB(): void{
-      connectDB();
    }
    protected routes(): void {
       this.app.use('../../assets/product-images', express.static(path.join('images')));
