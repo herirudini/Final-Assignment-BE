@@ -63,7 +63,7 @@ class auth {
     }
     static async uniqueDataSuplier(req: Request, res: Response, next: NextFunction) { //res JANGAN DIHAPUS nanti tidak terdeteksi oleh router
         const inputSuplierName: string = req.body.suplier_name.toUpperCase()
-        const checkSuplierByName: any = await Suplier.countDocuments({ name: inputSuplierName })
+        const checkSuplierByName: any = await Suplier.countDocuments({ suplier_name: inputSuplierName })
         try {
             if (checkSuplierByName != 0) {
                 throw ({ name: 'unique_name' })

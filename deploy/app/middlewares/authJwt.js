@@ -86,7 +86,7 @@ class auth {
     static uniqueDataSuplier(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputSuplierName = req.body.suplier_name.toUpperCase();
-            const checkSuplierByName = yield Suplier_model_1.Suplier.countDocuments({ name: inputSuplierName });
+            const checkSuplierByName = yield Suplier_model_1.Suplier.countDocuments({ suplier_name: inputSuplierName });
             try {
                 if (checkSuplierByName != 0) {
                     throw ({ name: 'unique_name' });
