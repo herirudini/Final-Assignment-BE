@@ -259,15 +259,16 @@ class inventoryController {
                 newStatus = "active"
             } else {
                 newStatus = "inactive"
-            }
-            updateStatus = await Product.findByIdAndUpdate(req.params.product_id, { status: newStatus }, { new: true })
+            };
+            updateStatus = await Product.findByIdAndUpdate(req.params.product_id, { status: newStatus }, { new: true });
+            res.status(200).json({ success: true, message: `Succes set status: ${newStatus}`, data: updateStatus })
         }
         catch (err) {
             next(err)
         }
         finally {
             console.log("Success set product status")
-            next()
+            // next()
         }
     }
     static async editProduct(req: Request, res: Response, next: NextFunction) {

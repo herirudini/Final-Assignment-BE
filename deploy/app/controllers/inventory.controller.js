@@ -281,14 +281,16 @@ class inventoryController {
                 else {
                     newStatus = "inactive";
                 }
+                ;
                 updateStatus = yield Product_model_1.Product.findByIdAndUpdate(req.params.product_id, { status: newStatus }, { new: true });
+                res.status(200).json({ success: true, message: `Succes set status: ${newStatus}`, data: updateStatus });
             }
             catch (err) {
                 next(err);
             }
             finally {
                 console.log("Success set product status");
-                next();
+                // next()
             }
         });
     }
