@@ -272,11 +272,10 @@ class inventoryController {
         return __awaiter(this, void 0, void 0, function* () {
             const inputStatus = req.body.status;
             const getProduct = yield Product_model_1.Product.findById(req.params.product_id);
-            const checkProductStatus = getProduct === null || getProduct === void 0 ? void 0 : getProduct.status;
             let newStatus;
             let updateStatus;
             try {
-                if (inputStatus === checkProductStatus) {
+                if (inputStatus === "active") {
                     newStatus = "inactive";
                 }
                 else {

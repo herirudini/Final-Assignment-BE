@@ -252,11 +252,10 @@ class inventoryController {
     static async setProductStatus(req: Request, res: Response, next: NextFunction) {
         const inputStatus = req.body.status;
         const getProduct = await Product.findById(req.params.product_id);
-        const checkProductStatus: string | undefined = getProduct?.status;
         let newStatus: string;
         let updateStatus: any;
         try {
-            if (inputStatus === checkProductStatus) {
+            if (inputStatus === "active") {
                 newStatus = "inactive"
             } else {
                 newStatus = "active"
