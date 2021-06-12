@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const cashier_controller_1 = __importDefault(require("../controllers/cashier.controller"));
+const inventory_controller_1 = __importDefault(require("../controllers/inventory.controller"));
 class cashierRouter {
     constructor() {
         this.router = express_1.Router();
@@ -15,6 +16,9 @@ class cashierRouter {
         this.cancelItem();
         this.checkOut();
         // this.listReceipt()
+    }
+    getAllProduct() {
+        this.router.get('/product', inventory_controller_1.default.getAllProduct);
     }
     addToCart() {
         this.router.post('/product', cashier_controller_1.default.addToCart);

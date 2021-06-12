@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import cashierController from '../controllers/cashier.controller'
-import auth from '../middlewares/authJwt'
+import inventoryController from '../controllers/inventory.controller'
 
 class cashierRouter {
     router: Router
@@ -13,6 +13,9 @@ class cashierRouter {
         this.cancelItem()
         this.checkOut()
         // this.listReceipt()
+    }
+    public getAllProduct(): void {
+        this.router.get('/product', inventoryController.getAllProduct);
     }
     public addToCart(): void {
         this.router.post('/product', cashierController.addToCart);
