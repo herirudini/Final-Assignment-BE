@@ -5,7 +5,7 @@ import { Receipt } from '../models/Receipt.model'
 
 class cashierController {
     static getAllProduct(req: Request, res: Response, next: NextFunction) {
-        Product.find({ status: "active" })
+        Product.find({ status: "active" }).select('-suplier_name -buyPrice')
             .then((result) => {
                 res.status(200).json({ success: true, message: "All Active Product:", data: result })
             })

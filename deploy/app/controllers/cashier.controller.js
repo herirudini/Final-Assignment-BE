@@ -14,7 +14,7 @@ const Cart_model_1 = require("../models/Cart.model");
 const Receipt_model_1 = require("../models/Receipt.model");
 class cashierController {
     static getAllProduct(req, res, next) {
-        Product_model_1.Product.find({ status: "active" })
+        Product_model_1.Product.find({ status: "active" }).select('-suplier_name -buyPrice')
             .then((result) => {
             res.status(200).json({ success: true, message: "All Active Product:", data: result });
         })
