@@ -13,6 +13,15 @@ const Product_model_1 = require("../models/Product.model");
 const Cart_model_1 = require("../models/Cart.model");
 const Receipt_model_1 = require("../models/Receipt.model");
 class cashierController {
+    static getAllProduct(req, res, next) {
+        Product_model_1.Product.find({ status: "active" })
+            .then((result) => {
+            res.status(200).json({ success: true, message: "All Active Product:", data: result });
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
     static searchProduct(req, res, next) {
         const keywords = req.body.keywords;
         Product_model_1.Product.find({ status: "active", $text: { $search: keywords } }, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })

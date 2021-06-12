@@ -4,6 +4,15 @@ import { Cart } from '../models/Cart.model'
 import { Receipt } from '../models/Receipt.model'
 
 class cashierController {
+    static getAllProduct(req: Request, res: Response, next: NextFunction) {
+        Product.find({ status: "active" })
+            .then((result) => {
+                res.status(200).json({ success: true, message: "All Active Product:", data: result })
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
 
     static searchProduct(req: Request, res: Response, next: NextFunction) {
         const keywords: string = req.body.keywords;
@@ -193,7 +202,7 @@ class cashierController {
             next(err)
         }
         finally {
-            res.status(200).json({success: true, message: "item canceled", data: updateStatus})
+            res.status(200).json({ success: true, message: "item canceled", data: updateStatus })
         }
     }
     static async checkOut(req: Request, res: Response, next: NextFunction) {
