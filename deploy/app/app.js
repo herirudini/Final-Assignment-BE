@@ -17,7 +17,7 @@ class App {
         this.app = express_1.default();
         this.plugin();
         this.cors();
-        // this.connectDB()
+        this.connectDB();
         this.routes();
     }
     plugin() {
@@ -27,20 +27,20 @@ class App {
         this.app.use(express_form_data_1.default.format());
         this.app.use(express_form_data_1.default.stream());
         this.app.use(express_form_data_1.default.union());
-        connect_database_1.default();
         // this.app.use(bodyParser.json());
         // this.app.use(bodyParser.urlencoded({ extended: false }));
     }
     cors() {
-        this.app.use(cors_1.default());
         this.app.use((req, res, next) => {
             res.setHeader("Access-Control-Allow-Origin", "*");
             res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
             res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
             next();
         });
+        this.app.use(cors_1.default());
     }
     connectDB() {
+        connect_database_1.default();
     }
     routes() {
         // this.app.use('../../assets/product-images', express.static(path.join('images')));
