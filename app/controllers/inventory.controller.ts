@@ -250,15 +250,16 @@ class inventoryController {
             })
     }
     static async setProductStatus(req: Request, res: Response, next: NextFunction) {
+        const inputStatus = req.body.status;
         const getProduct = await Product.findById(req.params.product_id);
-        const getProductStatus: string | undefined = getProduct?.status;
+        const checkProductStatus: string | undefined = getProduct?.status;
         let newStatus: string;
         let updateStatus: any;
         try {
-            if (getProductStatus === "inactive") {
-                newStatus = "active"
-            } else {
+            if (inputStatus === checkProductStatus) {
                 newStatus = "inactive"
+            } else {
+                newStatus = "active"
             };
             updateStatus = await Product.findByIdAndUpdate(req.params.product_id, { status: newStatus }, { new: true });
             res.status(200).json({ success: true, message: `Succes set status: ${newStatus}`, data: updateStatus })

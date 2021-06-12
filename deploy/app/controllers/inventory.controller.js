@@ -270,16 +270,17 @@ class inventoryController {
     }
     static setProductStatus(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
+            const inputStatus = req.body.status;
             const getProduct = yield Product_model_1.Product.findById(req.params.product_id);
-            const getProductStatus = getProduct === null || getProduct === void 0 ? void 0 : getProduct.status;
+            const checkProductStatus = getProduct === null || getProduct === void 0 ? void 0 : getProduct.status;
             let newStatus;
             let updateStatus;
             try {
-                if (getProductStatus === "inactive") {
-                    newStatus = "active";
+                if (inputStatus === checkProductStatus) {
+                    newStatus = "inactive";
                 }
                 else {
-                    newStatus = "inactive";
+                    newStatus = "active";
                 }
                 ;
                 updateStatus = yield Product_model_1.Product.findByIdAndUpdate(req.params.product_id, { status: newStatus }, { new: true });
