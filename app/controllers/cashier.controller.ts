@@ -41,6 +41,7 @@ class cashierController {
         let updateCart: any;
 
         const countStock: number = getStock - quantity;
+        let success = false;
         let updateStockData: object;
         let updateStock: any;
         let data: any;
@@ -63,22 +64,26 @@ class cashierController {
                     totalPrice: totalPrice,
                 });
                 data = createCart;
+                success = true;
             } else {
                 updateCart = await Cart.findOneAndUpdate({ status: "on-process", product_id: getProductId, admin_id: getUserId }, { $inc: { quantity: quantity, totalPrice: totalPrice, tax: tax } }, { new: true });
                 data = updateCart;
+                success = true;
             };
-            if (countStock <= 10) {
-                updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
-            } else {
-                updateStockData = { $inc: { stock: -quantity } };
-            };
-            updateStock = await Product.findOneAndUpdate({ barcode: inputBarcode }, updateStockData, { new: true });
         }
         catch (err) {
             next(err)
         }
         finally {
-            res.status(201).json({ success: true, message: "product added to cart", data: data })
+            if (countStock <= 10) {
+                updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
+            } else {
+                updateStockData = { $inc: { stock: -quantity } };
+            }
+            if (success) {
+                updateStock = await Product.findByIdAndUpdate(getProductId, updateStockData, { new: true });
+                res.status(201).json({ success: true, message: "product added to cart", data: data })
+            }
         }
     }
     static async addToCartManual(req: Request, res: Response, next: NextFunction) {
@@ -104,6 +109,7 @@ class cashierController {
         let updateCart: any;
 
         const countStock: number = getStock - quantity;
+        let success = false;
         let updateStockData: object;
         let updateStock: any;
         let data: any;
@@ -125,22 +131,26 @@ class cashierController {
                     totalPrice: totalPrice,
                 });
                 data = createCart;
+                success = true
             } else {
                 updateCart = await Cart.findOneAndUpdate({ status: "on-process", product_id: inputProductId, admin_id: getUserId }, { $inc: { quantity: quantity } }, { new: true });
                 data = updateCart;
+                success = true
             };
-            if (countStock <= 10) {
-                updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
-            } else {
-                updateStockData = { $inc: { stock: -quantity } };
-            };
-            updateStock = await Product.findByIdAndUpdate(inputProductId, updateStockData, { new: true });
         }
         catch (err) {
             next(err)
         }
         finally {
-            res.status(201).json({ success: true, message: "product added to cart", data: data })
+            if (countStock <= 10) {
+                updateStockData = { $inc: { stock: -quantity }, status: "inactive" }
+            } else {
+                updateStockData = { $inc: { stock: -quantity } };
+            }
+            if (success) {
+                updateStock = await Product.findByIdAndUpdate(inputProductId, updateStockData, { new: true });
+                res.status(201).json({ success: true, message: "product added to cart", data: data })
+            }
         }
     }
     static listCart(req: Request, res: Response, next: NextFunction) {
@@ -183,7 +193,7 @@ class cashierController {
             next(err)
         }
         finally {
-            next()
+            res.status(200).json({success: true, message: "item canceled", data: updateStatus})
         }
     }
     static async checkOut(req: Request, res: Response, next: NextFunction) {

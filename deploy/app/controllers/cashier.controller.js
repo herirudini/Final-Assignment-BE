@@ -44,6 +44,7 @@ class cashierController {
             let createCart;
             let updateCart;
             const countStock = getStock - quantity;
+            let success = false;
             let updateStockData;
             let updateStock;
             let data;
@@ -67,26 +68,29 @@ class cashierController {
                         totalPrice: totalPrice,
                     });
                     data = createCart;
+                    success = true;
                 }
                 else {
                     updateCart = yield Cart_model_1.Cart.findOneAndUpdate({ status: "on-process", product_id: getProductId, admin_id: getUserId }, { $inc: { quantity: quantity, totalPrice: totalPrice, tax: tax } }, { new: true });
                     data = updateCart;
+                    success = true;
                 }
                 ;
+            }
+            catch (err) {
+                next(err);
+            }
+            finally {
                 if (countStock <= 10) {
                     updateStockData = { $inc: { stock: -quantity }, status: "inactive" };
                 }
                 else {
                     updateStockData = { $inc: { stock: -quantity } };
                 }
-                ;
-                updateStock = yield Product_model_1.Product.findOneAndUpdate({ barcode: inputBarcode }, updateStockData, { new: true });
-            }
-            catch (err) {
-                next(err);
-            }
-            finally {
-                res.status(201).json({ success: true, message: "product added to cart", data: data });
+                if (success) {
+                    updateStock = yield Product_model_1.Product.findByIdAndUpdate(getProductId, updateStockData, { new: true });
+                    res.status(201).json({ success: true, message: "product added to cart", data: data });
+                }
             }
         });
     }
@@ -110,6 +114,7 @@ class cashierController {
             let createCart;
             let updateCart;
             const countStock = getStock - quantity;
+            let success = false;
             let updateStockData;
             let updateStock;
             let data;
@@ -133,26 +138,29 @@ class cashierController {
                         totalPrice: totalPrice,
                     });
                     data = createCart;
+                    success = true;
                 }
                 else {
                     updateCart = yield Cart_model_1.Cart.findOneAndUpdate({ status: "on-process", product_id: inputProductId, admin_id: getUserId }, { $inc: { quantity: quantity } }, { new: true });
                     data = updateCart;
+                    success = true;
                 }
                 ;
+            }
+            catch (err) {
+                next(err);
+            }
+            finally {
                 if (countStock <= 10) {
                     updateStockData = { $inc: { stock: -quantity }, status: "inactive" };
                 }
                 else {
                     updateStockData = { $inc: { stock: -quantity } };
                 }
-                ;
-                updateStock = yield Product_model_1.Product.findByIdAndUpdate(inputProductId, updateStockData, { new: true });
-            }
-            catch (err) {
-                next(err);
-            }
-            finally {
-                res.status(201).json({ success: true, message: "product added to cart", data: data });
+                if (success) {
+                    updateStock = yield Product_model_1.Product.findByIdAndUpdate(inputProductId, updateStockData, { new: true });
+                    res.status(201).json({ success: true, message: "product added to cart", data: data });
+                }
             }
         });
     }
@@ -200,7 +208,7 @@ class cashierController {
                 next(err);
             }
             finally {
-                next();
+                res.status(200).json({ success: true, message: "item canceled", data: updateStatus });
             }
         });
     }
