@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import inventoryController from '../controllers/inventory.controller'
 import auth from '../middlewares/authJwt'
-// import uploadFilesMiddleware from '../middlewares/storage'
+import uploadFiles from '../middlewares/multer'
 
 class inventoryRouter {
     router: Router
@@ -32,7 +32,7 @@ class inventoryRouter {
         this.router.put('/list-product-uom', inventoryController.listProductAndUomByBrandName);
     }
     public createProduct(): void {
-        this.router.post('/product', auth.uniqueDataProduct, inventoryController.createProduct);
+        this.router.post('/product', auth.uniqueDataProduct, uploadFiles.single("image"), inventoryController.createProduct);
     }
     public getAllProduct(): void {
         this.router.get('/product', inventoryController.getAllProduct);
@@ -41,10 +41,10 @@ class inventoryRouter {
         this.router.put('/product/search', inventoryController.searchProduct);
     }
     public setProductStatus(): void {
-        this.router.patch('/product/status/:product_id', inventoryController.setProductStatus, inventoryController.getAllProduct);
+        this.router.patch('/product/status/:product_id', inventoryController.setProductStatus);
     }
     public editProduct(): void {
-        this.router.patch('/product/edit/:product_id', inventoryController.editProduct, inventoryController.getAllProduct);
+        this.router.patch('/product/edit/:product_id', inventoryController.editProduct);
     }
     public purchaseOrder(): void {
         this.router.post('/purchase-order', inventoryController.purchaseOrder);

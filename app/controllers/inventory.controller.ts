@@ -77,11 +77,11 @@ class inventoryController {
     }
     static async createProduct(req: Request, res: Response, next: NextFunction) {
         // await uploadFilesMiddleware(req, res);
-        const inputSuplierName: string = req.body.suplier_name;
-        const inputBrandName: string = req.body.brand_name;
-        const inputProductName: string = req.body.product_name;
+        const inputSuplierName: string = req.body.suplier_name.toUpperCase();
+        const inputBrandName: string = req.body.brand_name.toUpperCase();
+        const inputProductName: string = req.body.product_name.toUpperCase();
+        const inputUom = req.body.uom.toUpperCase();
         const inputImage = req.body.image
-        const inputUom = req.body.uom;
         const inputSellPrice = req.body.sellPrice;
         const inputBarcode = req.body.barcode;
         const inputBuyPrice = req.body.buyPrice;
@@ -99,15 +99,15 @@ class inventoryController {
             // if (req.file == undefined) {
             //     res.status(422).json({ success: false, message: "Image not detected" })
             // } else
-             if (getSuplierName === undefined) {
+            if (getSuplierName === undefined) {
                 res.status(422).json({ success: false, message: "Suplier not found" })
             } else if (checkProduct === 0) {
                 createProduct = await Product.create({
-                    suplier_name: inputSuplierName.toUpperCase(),
-                    brand_name: inputBrandName.toUpperCase(),
-                    product_name: inputProductName.toUpperCase(),
+                    suplier_name: inputSuplierName,
+                    brand_name: inputBrandName,
+                    product_name: inputProductName,
                     image: inputImage,
-                    uom: inputUom.toUpperCase(),
+                    uom: inputUom,
                     buyPrice: inputBuyPrice,
                     sellPrice: inputSellPrice,
                     isAfterTax: inputIsAfterTax,
@@ -272,30 +272,33 @@ class inventoryController {
         catch (err) {
             next(err)
         }
-        finally {
-            console.log("Success set product status")
-            // next()
-        }
+        // finally {
+        //     console.log("Success set product status")
+        //     next()
+        // }
     }
     static async editProduct(req: Request, res: Response, next: NextFunction) {
         const productId: string = req.params.product_id;
-        const inputBrandName = req.body.brand_name.toUpperCase();
-        const inputProductName = req.body.product_name.toUpperCase();
+        const inputBrandName = req.body.brand_name
+        const inputProductName = req.body.product_name;
         const inputImage = req.body.image;
-        const inputUom = req.body.uom.toUpperCase();
+        const inputUom = req.body.uom;
         const inputSellPrice = req.body.sellPrice;
         const inputBuyPrice = req.body.buyPrice;
-        const checkProduct = await Product.countDocuments({ id: { $ne: productId }, brand_name: inputBrandName, product_name: inputProductName, uom: inputUom });
-        const data: any = { brand_name: inputBrandName, product_name: inputProductName, image: inputImage, uom: inputUom, sellPrice: inputSellPrice, buyPrice: inputBuyPrice };
-        let updateProduct: any;
-        for (const key in data) {
-            if (!data[key]) {
-                delete data[key]
-            }
-        }
+
         try {
+            const data: any = { brand_name: inputBrandName, product_name: inputProductName, image: inputImage, uom: inputUom, sellPrice: inputSellPrice, buyPrice: inputBuyPrice };
+
+            for (const key in data) {
+                if (!data[key]) {
+                    delete data[key]
+                }
+            }
+            let updateProduct: any = await Product.findByIdAndUpdate(productId, data, { new: false })
+            const checkProduct = await Product.countDocuments({ id: { $ne: updateProduct.id }, brand_name: updateProduct.brand_name, product_name: updateProduct.product_name, uom: updateProduct.uom });
             if (checkProduct == 0) {
-                updateProduct = await Product.findByIdAndUpdate(productId, data, { new: true })
+                updateProduct.new = true;
+                res.status(200).json({ success: true, message: "Product edited", data: updateProduct })
             } else {
                 res.status(400).json({ success: false, message: "This product already exists! cannot be the same" })
             }
@@ -304,10 +307,10 @@ class inventoryController {
             console.log("edit product err:" + err)
             next(err)
         }
-        finally {
-            console.log("Success edit product")
-            next()
-        }
+        // finally {
+        //     console.log("Success edit product")
+        //     res.status(200).json({ success: true, message: "Product edited", data: updateProduct })
+        // }
     }
 }
 

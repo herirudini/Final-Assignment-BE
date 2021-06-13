@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const inventory_controller_1 = __importDefault(require("../controllers/inventory.controller"));
 const authJwt_1 = __importDefault(require("../middlewares/authJwt"));
-// import uploadFilesMiddleware from '../middlewares/storage'
+const multer_1 = __importDefault(require("../middlewares/multer"));
 class inventoryRouter {
     constructor() {
         this.router = express_1.Router();
@@ -35,7 +35,7 @@ class inventoryRouter {
         this.router.put('/list-product-uom', inventory_controller_1.default.listProductAndUomByBrandName);
     }
     createProduct() {
-        this.router.post('/product', authJwt_1.default.uniqueDataProduct, inventory_controller_1.default.createProduct);
+        this.router.post('/product', authJwt_1.default.uniqueDataProduct, multer_1.default.single("image"), inventory_controller_1.default.createProduct);
     }
     getAllProduct() {
         this.router.get('/product', inventory_controller_1.default.getAllProduct);
@@ -44,10 +44,10 @@ class inventoryRouter {
         this.router.put('/product/search', inventory_controller_1.default.searchProduct);
     }
     setProductStatus() {
-        this.router.patch('/product/status/:product_id', inventory_controller_1.default.setProductStatus, inventory_controller_1.default.getAllProduct);
+        this.router.patch('/product/status/:product_id', inventory_controller_1.default.setProductStatus);
     }
     editProduct() {
-        this.router.patch('/product/edit/:product_id', inventory_controller_1.default.editProduct, inventory_controller_1.default.getAllProduct);
+        this.router.patch('/product/edit/:product_id', inventory_controller_1.default.editProduct);
     }
     purchaseOrder() {
         this.router.post('/purchase-order', inventory_controller_1.default.purchaseOrder);

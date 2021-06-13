@@ -11,17 +11,17 @@ const storage = new GridFsStorage({
         const match = ["image/png", "image/jpeg", "image/jpg"];
 
         if (match.indexOf(file.mimetype) === -1) {
-            const filename = `${Date.now()}-bezkoder-${file.originalname}`;
+            const filename = `${Date.now()}"-"${file.originalname}`;
             return filename;
         }
-
+        else 
         return {
             bucketName: "photos",
-            filename: `${Date.now()}-bezkoder-${file.originalname}`
+            filename: `${Date.now()}"-"${file.originalname}`
         };
     }
 });
 
-const uploadFile = multer({ storage: storage }).single("image");
-const uploadFilesMiddleware = util.promisify(uploadFile);
-export default uploadFilesMiddleware;
+const uploadFile = multer({ storage: storage });
+// const uploadFilesMiddleware = util.promisify(uploadFile);
+export default uploadFile;
