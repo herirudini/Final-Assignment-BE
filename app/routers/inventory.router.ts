@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import inventoryController from '../controllers/inventory.controller'
 import auth from '../middlewares/authJwt'
-const multer = require('../middlewares/storage')
+// import uploadFilesMiddleware from '../middlewares/storage'
 
 class inventoryRouter {
     router: Router

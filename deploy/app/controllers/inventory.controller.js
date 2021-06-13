@@ -14,6 +14,9 @@ const Suplier_model_1 = require("../models/Suplier.model");
 const Product_model_1 = require("../models/Product.model");
 const Delivery_model_1 = require("../models/Delivery.model");
 const Invoice_model_1 = require("../models/Invoice.model");
+// import fs from 'fs'
+// import path from 'path'
+// import uploadFilesMiddleware from '../middlewares/storage'
 class inventoryController {
     static createSuplier(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -89,11 +92,12 @@ class inventoryController {
     }
     static createProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const inputSuplierName = req.body.suplier_name.toUpperCase();
-            const inputBrandName = req.body.brand_name.toUpperCase();
-            const inputProductName = req.body.product_name.toUpperCase();
+            // await uploadFilesMiddleware(req, res);
+            const inputSuplierName = req.body.suplier_name;
+            const inputBrandName = req.body.brand_name;
+            const inputProductName = req.body.product_name;
             const inputImage = req.body.image;
-            const inputUom = req.body.uom.toUpperCase();
+            const inputUom = req.body.uom;
             const inputSellPrice = req.body.sellPrice;
             const inputBarcode = req.body.barcode;
             const inputBuyPrice = req.body.buyPrice;
@@ -106,16 +110,19 @@ class inventoryController {
             let pushBrand;
             let createProduct;
             try {
+                // if (req.file == undefined) {
+                //     res.status(422).json({ success: false, message: "Image not detected" })
+                // } else
                 if (getSuplierName === undefined) {
                     res.status(422).json({ success: false, message: "Suplier not found" });
                 }
                 else if (checkProduct === 0) {
                     createProduct = yield Product_model_1.Product.create({
-                        suplier_name: inputSuplierName,
-                        brand_name: inputBrandName,
-                        product_name: inputProductName,
+                        suplier_name: inputSuplierName.toUpperCase(),
+                        brand_name: inputBrandName.toUpperCase(),
+                        product_name: inputProductName.toUpperCase(),
                         image: inputImage,
-                        uom: inputUom,
+                        uom: inputUom.toUpperCase(),
                         buyPrice: inputBuyPrice,
                         sellPrice: inputSellPrice,
                         isAfterTax: inputIsAfterTax,

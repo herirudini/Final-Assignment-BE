@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 class mongoDB {
     public connectDB(): void {
         const db = mongoose.connection
-        const path: any = process.env.DATABASE as string
+        const mongoURI: any = process.env.DATABASE as string
         const connectOption = {
             useNewUrlParser: true, 
             useUnifiedTopology: true, 
@@ -11,7 +11,7 @@ class mongoDB {
             useFindAndModify: false
         }
         mongoose.set('runValidators', true)
-        mongoose.connect(path, connectOption)
+        mongoose.connect(mongoURI, connectOption)
 
 
         db.on('error', console.error.bind(console, "Database connection error: "))

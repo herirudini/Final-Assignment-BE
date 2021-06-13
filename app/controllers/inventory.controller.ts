@@ -4,7 +4,9 @@ import { Suplier } from '../models/Suplier.model'
 import { Product } from '../models/Product.model'
 import { Delivery } from '../models/Delivery.model'
 import { Invoice } from '../models/Invoice.model'
-
+// import fs from 'fs'
+// import path from 'path'
+// import uploadFilesMiddleware from '../middlewares/storage'
 
 
 class inventoryController {
@@ -74,11 +76,12 @@ class inventoryController {
         }
     }
     static async createProduct(req: Request, res: Response, next: NextFunction) {
-        const inputSuplierName = req.body.suplier_name.toUpperCase();
-        const inputBrandName = req.body.brand_name.toUpperCase();
-        const inputProductName = req.body.product_name.toUpperCase();
-        const inputImage = req.body.image;
-        const inputUom = req.body.uom.toUpperCase();
+        // await uploadFilesMiddleware(req, res);
+        const inputSuplierName: string = req.body.suplier_name;
+        const inputBrandName: string = req.body.brand_name;
+        const inputProductName: string = req.body.product_name;
+        const inputImage = req.body.image
+        const inputUom = req.body.uom;
         const inputSellPrice = req.body.sellPrice;
         const inputBarcode = req.body.barcode;
         const inputBuyPrice = req.body.buyPrice;
@@ -93,15 +96,18 @@ class inventoryController {
 
         let createProduct: any;
         try {
-            if (getSuplierName === undefined) {
+            // if (req.file == undefined) {
+            //     res.status(422).json({ success: false, message: "Image not detected" })
+            // } else
+             if (getSuplierName === undefined) {
                 res.status(422).json({ success: false, message: "Suplier not found" })
             } else if (checkProduct === 0) {
                 createProduct = await Product.create({
-                    suplier_name: inputSuplierName,
-                    brand_name: inputBrandName,
-                    product_name: inputProductName,
+                    suplier_name: inputSuplierName.toUpperCase(),
+                    brand_name: inputBrandName.toUpperCase(),
+                    product_name: inputProductName.toUpperCase(),
                     image: inputImage,
-                    uom: inputUom,
+                    uom: inputUom.toUpperCase(),
                     buyPrice: inputBuyPrice,
                     sellPrice: inputSellPrice,
                     isAfterTax: inputIsAfterTax,

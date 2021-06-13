@@ -47,11 +47,11 @@ class App {
       });
       this.app.use(cors());
    }
-   protected connectDB(): void{
+   protected connectDB(): void {
       connectDB();
    }
    protected routes(): void {
-      // this.app.use('../../assets/product-images', express.static(path.join('images')));
+      // this.app.use(express.static(path.join(__dirname, '../../../', 'uploads')));
       this.app.use(Routers)
    }
 }

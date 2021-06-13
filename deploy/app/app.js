@@ -43,7 +43,7 @@ class App {
         connect_database_1.default();
     }
     routes() {
-        // this.app.use('../../assets/product-images', express.static(path.join('images')));
+        // this.app.use(express.static(path.join(__dirname, '../../../', 'uploads')));
         this.app.use(routers_1.default);
     }
 }

@@ -8,7 +8,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 class mongoDB {
     connectDB() {
         const db = mongoose_1.default.connection;
-        const path = process.env.DATABASE;
+        const mongoURI = process.env.DATABASE;
         const connectOption = {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -16,7 +16,7 @@ class mongoDB {
             useFindAndModify: false
         };
         mongoose_1.default.set('runValidators', true);
-        mongoose_1.default.connect(path, connectOption);
+        mongoose_1.default.connect(mongoURI, connectOption);
         db.on('error', console.error.bind(console, "Database connection error: "));
         db.once('open', () => {
             console.log("Database connected..");
