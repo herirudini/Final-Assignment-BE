@@ -5,7 +5,6 @@ class cashierRouter {
     router: Router
     constructor() {
         this.router = Router()
-        this.getAllProduct()
         this.addToCart()
         this.searchProduct()
         this.addToCartManual()

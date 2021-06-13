@@ -8,7 +8,6 @@ const cashier_controller_1 = __importDefault(require("../controllers/cashier.con
 class cashierRouter {
     constructor() {
         this.router = express_1.Router();
-        this.getAllProduct();
         this.addToCart();
         this.searchProduct();
         this.addToCartManual();
