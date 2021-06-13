@@ -132,15 +132,15 @@ class userController {
             try {
                 linkChangePassword = inputOriginUrl + `/${getUserId}/${superkey}`;
                 const transporter = nodemailer.createTransport({
-                    host: hostmailer,
-                    port: parseInt(portmailer),
+                    service: hostmailer,
+                    // port: parseInt(portmailer),
                     auth: {
                         user: usermailer,
                         pass: passmailer
                     }
                 });
                 mailOptions = {
-                    from: '"Acong Kelontong" <acongkelontong@gmail.com>',
+                    from: `"Acong Kelontong" <${usermailer}>`,
                     to: inputEmail,
                     subject: "Reset Password",
                     text: `Dear ${getUserName}, please click the link below to reset your password

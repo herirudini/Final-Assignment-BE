@@ -45,8 +45,8 @@ class acongController {
             try {
                 console.log("usermailer:", usermailer, passmailer);
                 const transporter = nodemailer.createTransport({
-                    host: hostmailer,
-                    port: parseInt(portmailer),
+                    service: hostmailer,
+                    // port: parseInt(portmailer),
                     auth: {
                         user: usermailer,
                         pass: passmailer
@@ -61,7 +61,7 @@ class acongController {
                     });
                     linkChangePassword = inputOriginUrl + `/${createUser.id}/${superkey}`;
                     mailOptions = {
-                        from: '"Acong Kelontong" <acongkelontong@gmail.com>',
+                        from: `"Acong Kelontong" <${usermailer}>`,
                         to: email,
                         subject: "Reset Password",
                         text: `Dear ${username}, please click the link below to reset your password
