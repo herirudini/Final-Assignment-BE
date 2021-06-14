@@ -11,6 +11,7 @@ class inventoryRouter {
         this.listSuplier()
         this.listBrandBySuplierName() // only retrive brand list
         this.listProductAndUomByBrandName() //only retrive product name and uom name
+        this.listAllBrand()
         this.createProduct()
         this.getAllProduct()
         this.searchProduct()
@@ -28,6 +29,9 @@ class inventoryRouter {
     }
     public listBrandBySuplierName(): void {
         this.router.put('/list-brand', inventoryController.listBrandBySuplierName);
+    }
+    public listAllBrand(): void {
+        this.router.get('/listBrand', inventoryController.listAllBrand);
     }
     public listProductAndUomByBrandName(): void {
         this.router.put('/list-product-uom', inventoryController.listProductAndUomByBrandName);

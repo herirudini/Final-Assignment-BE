@@ -60,6 +60,18 @@ class inventoryController {
             }
         });
     }
+    static listAllBrand(req, res, next) {
+        Product_model_1.Product.aggregate([
+            { $match: {} },
+            { $group: { _id: '$brand_name' } },
+        ])
+            .then((result) => {
+            res.status(200).json({ success: true, message: "All Brand:", data: result });
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
     static listProductAndUomByBrandName(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputBrandName = req.body.brand_name.toUpperCase();

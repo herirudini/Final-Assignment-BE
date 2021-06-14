@@ -48,6 +48,18 @@ class inventoryController {
             next(err)
         }
     }
+    static listAllBrand(req: Request, res: Response, next: NextFunction) {
+        Product.aggregate([
+            { $match: {} },
+            { $group: { _id: '$brand_name' } },
+        ])
+            .then((result) => {
+                res.status(200).json({ success: true, message: "All Brand:", data: result })
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
     static async listProductAndUomByBrandName(req: Request, res: Response, next: NextFunction) {
         const inputBrandName: string = req.body.brand_name.toUpperCase();
         const listProductName: any = await Product.aggregate([
