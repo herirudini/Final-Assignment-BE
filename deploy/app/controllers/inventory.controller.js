@@ -92,12 +92,19 @@ class inventoryController {
     }
     static createProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
+            // const uploadFiles = require('../middlewares/multer')
+            // const upload = await uploadFiles((err) => {
+            //     if (err) {
+            //         console.log("uploadFiles error:", err)
+            //     }
+            // })
+            // console.log(req.file)
             // await uploadFilesMiddleware(req, res);
+            const inputImage = req.body.image;
             const inputSuplierName = req.body.suplier_name.toUpperCase();
             const inputBrandName = req.body.brand_name.toUpperCase();
             const inputProductName = req.body.product_name.toUpperCase();
             const inputUom = req.body.uom.toUpperCase();
-            const inputImage = req.body.image;
             const inputSellPrice = req.body.sellPrice;
             const inputBarcode = req.body.barcode;
             const inputBuyPrice = req.body.buyPrice;
@@ -270,6 +277,16 @@ class inventoryController {
         Product_model_1.Product.find({ brand_name: brand_name, $text: { $search: keywords } }, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } })
             .then((result) => {
             res.status(200).json({ success: true, message: "Product found: ", data: result });
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
+    static getProductByBrand(req, res, next) {
+        const inputBrandName = req.body.brand_name;
+        Product_model_1.Product.find({ brand_name: inputBrandName })
+            .then((result) => {
+            res.status(200).json({ success: true, message: "All Product by brand:" + inputBrandName, data: result });
         })
             .catch((err) => {
             next(err);

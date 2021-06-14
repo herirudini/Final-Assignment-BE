@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const inventory_controller_1 = __importDefault(require("../controllers/inventory.controller"));
 const authJwt_1 = __importDefault(require("../middlewares/authJwt"));
+const uploadFiles = require('../middlewares/multer');
 class inventoryRouter {
     constructor() {
         this.router = express_1.Router();
@@ -16,6 +17,7 @@ class inventoryRouter {
         this.createProduct();
         this.getAllProduct();
         this.searchProduct();
+        this.getProductByBrand();
         this.setProductStatus();
         this.editProduct();
         this.purchaseOrder();
@@ -38,6 +40,9 @@ class inventoryRouter {
     }
     getAllProduct() {
         this.router.get('/product', inventory_controller_1.default.getAllProduct);
+    }
+    getProductByBrand() {
+        this.router.put('/product/byBrand', inventory_controller_1.default.getProductByBrand);
     }
     searchProduct() {
         this.router.put('/product/search', inventory_controller_1.default.searchProduct);

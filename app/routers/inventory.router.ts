@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import inventoryController from '../controllers/inventory.controller'
 import auth from '../middlewares/authJwt'
-import uploadFiles from '../middlewares/multer'
+const uploadFiles = require('../middlewares/multer')
 
 class inventoryRouter {
     router: Router
@@ -14,6 +14,7 @@ class inventoryRouter {
         this.createProduct()
         this.getAllProduct()
         this.searchProduct()
+        this.getProductByBrand()
         this.setProductStatus()
         this.editProduct()
         this.purchaseOrder()
@@ -32,10 +33,13 @@ class inventoryRouter {
         this.router.put('/list-product-uom', inventoryController.listProductAndUomByBrandName);
     }
     public createProduct(): void {
-        this.router.post('/product', auth.uniqueDataProduct, inventoryController.createProduct);
+        this.router.post('/product', auth.uniqueDataProduct,  inventoryController.createProduct);
     }
     public getAllProduct(): void {
         this.router.get('/product', inventoryController.getAllProduct);
+    }
+    public getProductByBrand(): void {
+        this.router.put('/product/byBrand', inventoryController.getProductByBrand);
     }
     public searchProduct(): void {
         this.router.put('/product/search', inventoryController.searchProduct);
