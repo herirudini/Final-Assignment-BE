@@ -95,6 +95,7 @@ class financeController {
             const dateRange = { $gte: dateFrom, $lte: dateTo };
             let getSoldProduct;
             try {
+                console.log("data range", dateRange);
                 getSoldProduct = yield Cart_model_1.Cart.find({ status: "sold", updatedAt: dateRange });
             }
             catch (err) {

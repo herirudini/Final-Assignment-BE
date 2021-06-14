@@ -78,7 +78,8 @@ class financeController {
         const dateRange: object = { $gte: dateFrom, $lte: dateTo }
         let getSoldProduct: any;
         try {
-            getSoldProduct = await Cart.find({ status: "sold", updatedAt: dateRange })
+            console.log("data range", dateRange)
+            getSoldProduct = await Cart.find({ status: "sold", date: dateRange })
         }
         catch (err) {
             next(err)
