@@ -7,7 +7,7 @@ class financeRouter {
     constructor() {
         this.router = Router()
         this.getAllInvoice()
-        this.getInvoiceBySuplier()
+        // this.getInvoiceBySuplier()
         this.getInvoiceById()
         this.updateInvoiceStatus()
         this.getOutcome()
@@ -17,14 +17,14 @@ class financeRouter {
     public getAllInvoice(): void {
         this.router.get('/invoice', financeController.getAllInvoice);
     }
-    public getInvoiceBySuplier(): void {
-        this.router.get('/invoice/suplier', financeController.getInvoiceBySuplier);
-    }
+    // public getInvoiceBySuplier(): void {
+    //     this.router.get('/invoice/suplier', financeController.getInvoiceBySuplier);
+    // }
     public getInvoiceById(): void {
-        this.router.get('/invoice/suplier/:invoice_id', financeController.getInvoiceById);
+        this.router.get('/invoice/detail/:invoice_id', financeController.getInvoiceById);
     }
     public updateInvoiceStatus(): void {
-        this.router.patch('/invoice/suplier/:invoice_id', financeController.updateInvoiceStatus);
+        this.router.patch('/invoice/detail/:invoice_id', financeController.updateInvoiceStatus);
     }
     public getOutcome(): void {
         this.router.put('/outcome', financeController.getOutcome);
