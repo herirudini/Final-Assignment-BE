@@ -21,10 +21,10 @@ class financeRouter {
     //     this.router.get('/invoice/suplier', financeController.getInvoiceBySuplier);
     // }
     public getInvoiceById(): void {
-        this.router.get('/invoice/detail/:invoice_id', financeController.getInvoiceById);
+        this.router.get('/invoice/:invoice_id', financeController.getInvoiceById);
     }
     public updateInvoiceStatus(): void {
-        this.router.patch('/invoice/detail/:invoice_id', financeController.updateInvoiceStatus);
+        this.router.patch('/invoice/:invoice_id', financeController.updateInvoiceStatus);
     }
     public getOutcome(): void {
         this.router.put('/outcome', financeController.getOutcome);
