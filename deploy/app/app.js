@@ -8,6 +8,7 @@ const routers_1 = __importDefault(require("./routers/routers"));
 const connect_database_1 = __importDefault(require("../config/connect-database"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
 const express_form_data_1 = __importDefault(require("express-form-data"));
 const os_1 = __importDefault(require("os"));
 const bodyParser = require('body-parser');
@@ -22,7 +23,7 @@ class App {
     }
     plugin() {
         this.app.use(express_1.default.json());
-        this.app.use(express_1.default.urlencoded({ extended: true }));
+        this.app.use(express_1.default.urlencoded({ extended: false }));
         this.app.use(express_form_data_1.default.parse({ uploadDir: os_1.default.tmpdir(), autoClean: true }));
         this.app.use(express_form_data_1.default.format());
         this.app.use(express_form_data_1.default.stream());
@@ -43,7 +44,7 @@ class App {
         connect_database_1.default();
     }
     routes() {
-        // this.app.use(express.static(path.join(__dirname, '../../../', 'uploads')));
+        this.app.use('../uploads', express_1.default.static(path_1.default.join('uploads')));
         this.app.use(routers_1.default);
     }
 }

@@ -45,7 +45,7 @@ class App {
          );
          next();
       });
-      // this.app.use(cors());
+      this.app.use(cors());
    }
    protected connectDB(): void {
       connectDB();
