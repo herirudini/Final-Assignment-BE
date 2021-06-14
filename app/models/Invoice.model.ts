@@ -3,14 +3,14 @@ import mongoose, { Schema } from 'mongoose';
 interface Invoice {
     status: string,
     suplier_name: string,
-    orders: string[],
+    orders: object[],
     bill: number,
 }
 
 interface InvoiceData extends mongoose.Document {
     status: string, //unpaid, paid
     suplier_name: string,
-    orders: string[], 
+    orders: object[], 
     bill: number,
 }
 
