@@ -34,10 +34,10 @@ class Routers {
         this.router.post('/create-acong', owner_controller_1.default.createAcong);
     }
     login() {
-        this.router.put('/login', user_controller_1.default.login);
+        this.router.put('/login', authJwt_1.default.loginValidator, user_controller_1.default.login);
     }
     forgetPassword() {
-        this.router.put('/login/forget-password', user_controller_1.default.forgetPassword);
+        this.router.put('/login/forget-password', authJwt_1.default.loginValidator, user_controller_1.default.forgetPassword);
     }
     resetPassword() {
         this.router.patch('/login/reset-password/:user_id/:superkey', authJwt_1.default.resetPasswordAuth, user_controller_1.default.resetPassword);

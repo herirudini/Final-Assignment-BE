@@ -6,6 +6,18 @@ import { Suplier } from '../models/Suplier.model'
 import { Product } from '../models/Product.model'
 
 class auth {
+    static loginValidator(req: Request, res: Response, next: NextFunction) {
+        User.exists({ email: (<any>req).body.email })
+            .then((result) => {
+                if (!result) {
+                    throw ({ name: 'not_verified' })
+                } else
+                    next()
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
     static async authentication(req: Request, res: Response, next: NextFunction) {
         const access_token: string = (<any>req).headers.access_token;
         const ip = req.header('x-forwarded-for') || req.connection.remoteAddress;

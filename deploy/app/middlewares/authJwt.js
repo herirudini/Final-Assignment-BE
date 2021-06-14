@@ -25,6 +25,19 @@ const User_model_1 = require("../models/User.model");
 const Suplier_model_1 = require("../models/Suplier.model");
 const Product_model_1 = require("../models/Product.model");
 class auth {
+    static loginValidator(req, res, next) {
+        User_model_1.User.exists({ email: req.body.email })
+            .then((result) => {
+            if (!result) {
+                throw ({ name: 'not_verified' });
+            }
+            else
+                next();
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
     static authentication(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const access_token = req.headers.access_token;

@@ -33,10 +33,10 @@ class Routers {
         this.router.post('/create-acong', ownerController.createAcong)
     }
     public login(): void {
-        this.router.put('/login', userController.login)
+        this.router.put('/login', auth.loginValidator, userController.login)
     }
     public forgetPassword(): void {
-        this.router.put('/login/forget-password', userController.forgetPassword)
+        this.router.put('/login/forget-password', auth.loginValidator, userController.forgetPassword)
     }
     public resetPassword(): void { //create password for new user or forget password resetPassword
         this.router.patch('/login/reset-password/:user_id/:superkey', auth.resetPasswordAuth, userController.resetPassword);
