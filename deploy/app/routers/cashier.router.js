@@ -15,7 +15,7 @@ class cashierRouter {
         this.listCart();
         this.cancelItem();
         this.checkOut();
-        // this.listReceipt()
+        this.listReceipt();
     }
     getAllProduct() {
         this.router.get('/product', cashier_controller_1.default.getAllProduct);

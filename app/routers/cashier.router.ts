@@ -12,7 +12,7 @@ class cashierRouter {
         this.listCart()
         this.cancelItem()
         this.checkOut()
-        // this.listReceipt()
+        this.listReceipt()
     }
     public getAllProduct(): void {
         this.router.get('/product', cashierController.getAllProduct);
