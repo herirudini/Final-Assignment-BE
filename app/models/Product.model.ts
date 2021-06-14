@@ -5,10 +5,8 @@ interface Product {
     suplier_name: string,
     brand_name: string,
     product_name: string,
-    image: {
-        data: any,
-        contentType: string
-    },    uom: string,
+    image: string,
+    uom: string,
     stock: number,
     buyPrice: number,
     sellPrice: number,
@@ -21,10 +19,7 @@ interface ProductData extends mongoose.Document {
     suplier_name: string,
     brand_name: string, //populate = {product_name: misedap-karisoto, image: //google.gambar/misedap-karisoto}
     product_name: string,
-    image: {
-        data: any,
-        contentType: string
-    },
+    image: string,
     uom: string, //karton-40x1
     stock: number,
     buyPrice: number,
@@ -42,10 +37,7 @@ const productSchema = new Schema({
     suplier_name: { type: String, required: true },
     brand_name: { type: String, required: true },
     product_name: { type: String, required: true },
-    image: {
-        data: { type: Buffer, required: true },
-        contentType: { type: String }
-    },
+    image: { type: String, required: true },
     uom: { type: String, required: true },
     stock: { type: Number, default: 0 },
     buyPrice: { type: Number },

@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const inventory_controller_1 = __importDefault(require("../controllers/inventory.controller"));
 const authJwt_1 = __importDefault(require("../middlewares/authJwt"));
-const multer_1 = __importDefault(require("../middlewares/multer"));
 class inventoryRouter {
     constructor() {
         this.router = express_1.Router();
@@ -35,7 +34,7 @@ class inventoryRouter {
         this.router.put('/list-product-uom', inventory_controller_1.default.listProductAndUomByBrandName);
     }
     createProduct() {
-        this.router.post('/product', authJwt_1.default.uniqueDataProduct, multer_1.default.single("image"), inventory_controller_1.default.createProduct);
+        this.router.post('/product', authJwt_1.default.uniqueDataProduct, inventory_controller_1.default.createProduct);
     }
     getAllProduct() {
         this.router.get('/product', inventory_controller_1.default.getAllProduct);
