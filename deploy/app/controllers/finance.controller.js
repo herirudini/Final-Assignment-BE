@@ -96,7 +96,7 @@ class financeController {
             let getSoldProduct;
             try {
                 console.log("data range", dateRange);
-                getSoldProduct = yield Cart_model_1.Cart.find({ status: "sold", updatedAt: dateRange });
+                getSoldProduct = yield Cart_model_1.Cart.find({ status: "sold", date: dateRange });
             }
             catch (err) {
                 next(err);
