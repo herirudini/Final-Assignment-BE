@@ -24,7 +24,7 @@ class ownerRouter {
         this.router.put('/cashflow', owner_controller_1.default.cashflow);
     }
     getTopProduct() {
-        this.router.get('/top-product', owner_controller_1.default.getTopProduct);
+        this.router.put('/top-product', owner_controller_1.default.getTopProduct);
     }
 }
 exports.default = new ownerRouter().router;

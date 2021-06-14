@@ -24,7 +24,7 @@ class ownerRouter {
         this.router.put('/cashflow', ownerController.cashflow)
     }
     public getTopProduct(): void {
-        this.router.get('/top-product', ownerController.getTopProduct)
+        this.router.put('/top-product', ownerController.getTopProduct)
     }
 }
 
