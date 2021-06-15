@@ -48,6 +48,15 @@ class inventoryController {
             next(err);
         });
     }
+    static getSuplierByName(req, res, next) {
+        Suplier_model_1.Suplier.findOne({ suplier_name: req.body.suplier_name })
+            .then((result) => {
+            res.status(200).json({ success: true, message: "Suplier detail:", data: result });
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
     static listBrandBySuplierName(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const inputSuplierName = req.body.suplier_name.toUpperCase();

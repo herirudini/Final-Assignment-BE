@@ -38,6 +38,15 @@ class inventoryController {
                 next(err)
             })
     }
+    static getSuplierByName(req: Request, res: Response, next: NextFunction) {
+        Suplier.findOne({suplier_name: req.body.suplier_name})
+            .then((result) => {
+                res.status(200).json({ success: true, message: "Suplier detail:", data: result })
+            })
+            .catch((err) => {
+                next(err)
+            })
+    }
     static async listBrandBySuplierName(req: Request, res: Response, next: NextFunction) {
         const inputSuplierName: string = req.body.suplier_name.toUpperCase();
         const listBrandName: any = await Suplier.findOne({ suplier_name: inputSuplierName }).select('brands -_id');

@@ -12,6 +12,7 @@ class inventoryRouter {
         this.router = express_1.Router();
         this.createSuplier();
         this.listSuplier();
+        this.getSuplierByName();
         this.listBrandBySuplierName(); // only retrive brand list
         this.listProductAndUomByBrandName(); //only retrive product name and uom name
         this.listAllBrand();
@@ -29,6 +30,9 @@ class inventoryRouter {
     }
     listSuplier() {
         this.router.get('/suplier', inventory_controller_1.default.listSuplier);
+    }
+    getSuplierByName() {
+        this.router.put('/suplier', inventory_controller_1.default.getSuplierByName);
     }
     listBrandBySuplierName() {
         this.router.put('/list-brand', inventory_controller_1.default.listBrandBySuplierName);
