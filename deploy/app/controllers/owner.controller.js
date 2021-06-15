@@ -129,7 +129,7 @@ class acongController {
             let getInvoices;
             let data;
             try {
-                getSoldProduct = yield Cart_model_1.Cart.find({ status: "sold", updatedAt: dateRange });
+                getSoldProduct = yield Cart_model_1.Cart.find({ status: "sold", date: dateRange });
                 getInvoices = yield Invoice_model_1.Invoice.find({ status: "paid", updatedAt: dateRange });
                 data = { outcome: getInvoices, income: getSoldProduct };
                 res.status(200).json({ success: true, message: "Cashflow:", data: data });

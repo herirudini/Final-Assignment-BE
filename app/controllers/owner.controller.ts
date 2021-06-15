@@ -108,7 +108,7 @@ class acongController {
         let getInvoices: any;
         let data: object;
         try {
-            getSoldProduct = await Cart.find({ status: "sold", updatedAt: dateRange })
+            getSoldProduct = await Cart.find({ status: "sold", date: dateRange })
             getInvoices = await Invoice.find({ status: "paid", updatedAt: dateRange })
             data = { outcome: getInvoices, income: getSoldProduct }
             res.status(200).json({ success: true, message: "Cashflow:", data: data })
