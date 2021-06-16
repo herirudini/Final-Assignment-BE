@@ -34,18 +34,18 @@ class auth {
                         throw ({ name: 'invalid_token' })
                     }
                     (<any>req).user_id = decoded.id;
-                    next()
                 })
-                // const author: any = await User.findById((<any>req).user_id);
-                // const logIp = author.logIp;
-                // let ipExist = logIp.includes(ip)
+                const author: any = await User.findById((<any>req).user_id);
+                // const logToken = author.logToken;
+                const logIp = author.logIp;
+                let ipExist = logIp.includes(ip)
 
-                // if (ipExist == false) {
-                //     throw ({ name: 'unauthorized' })
-                // } else {
-                //     console.log("berhasil lewat Authentication")
-                //     next();
-                // }
+                if (ipExist == false) {
+                    throw ({ name: 'unauthorized' })
+                } else {
+                    console.log("berhasil lewat Authentication")
+                    next();
+                }
             }
         }
         catch (err) {
