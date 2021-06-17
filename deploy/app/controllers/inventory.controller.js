@@ -14,6 +14,12 @@ const Suplier_model_1 = require("../models/Suplier.model");
 const Product_model_1 = require("../models/Product.model");
 const Delivery_model_1 = require("../models/Delivery.model");
 const Invoice_model_1 = require("../models/Invoice.model");
+<<<<<<< HEAD
+=======
+// import fs from 'fs'
+// import path from 'path'
+// import uploadFilesMiddleware from '../middlewares/storage'
+>>>>>>> parent of 10693b4 (debug limit body parser)
 class inventoryController {
     static createSuplier(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -110,6 +116,17 @@ class inventoryController {
     }
     static createProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
+<<<<<<< HEAD
+=======
+            // const uploadFiles = require('../middlewares/multer')
+            // const upload = await uploadFiles((err) => {
+            //     if (err) {
+            //         console.log("uploadFiles error:", err)
+            //     }
+            // })
+            // console.log(req.file)
+            // await uploadFilesMiddleware(req, res);
+>>>>>>> parent of 10693b4 (debug limit body parser)
             const inputImage = req.body.image;
             const inputSuplierName = req.body.suplier_name.toUpperCase();
             const inputBrandName = req.body.brand_name.toUpperCase();
@@ -127,6 +144,9 @@ class inventoryController {
             let pushBrand;
             let createProduct;
             try {
+                // if (req.file == undefined) {
+                //     res.status(422).json({ success: false, message: "Image not detected" })
+                // } else
                 if (getSuplierName === undefined) {
                     res.status(422).json({ success: false, message: "Suplier not found" });
                 }
