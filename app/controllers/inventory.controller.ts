@@ -4,9 +4,6 @@ import { Suplier } from '../models/Suplier.model'
 import { Product } from '../models/Product.model'
 import { Delivery } from '../models/Delivery.model'
 import { Invoice } from '../models/Invoice.model'
-// import fs from 'fs'
-// import path from 'path'
-// import uploadFilesMiddleware from '../middlewares/storage'
 
 
 class inventoryController {
@@ -97,14 +94,7 @@ class inventoryController {
         }
     }
     static async createProduct(req: any, res: Response, next: NextFunction) {
-        // const uploadFiles = require('../middlewares/multer')
-        // const upload = await uploadFiles((err) => {
-        //     if (err) {
-        //         console.log("uploadFiles error:", err)
-        //     }
-        // })
-        // console.log(req.file)
-        // await uploadFilesMiddleware(req, res);
+
         const inputImage = req.body.image
         const inputSuplierName: string = req.body.suplier_name.toUpperCase();
         const inputBrandName: string = req.body.brand_name.toUpperCase();
@@ -124,9 +114,6 @@ class inventoryController {
 
         let createProduct: any;
         try {
-            // if (req.file == undefined) {
-            //     res.status(422).json({ success: false, message: "Image not detected" })
-            // } else
             if (getSuplierName === undefined) {
                 res.status(422).json({ success: false, message: "Suplier not found" })
             } else if (checkProduct === 0) {
