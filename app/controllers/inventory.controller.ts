@@ -4,10 +4,9 @@ import { Suplier } from '../models/Suplier.model'
 import { Product } from '../models/Product.model'
 import { Delivery } from '../models/Delivery.model'
 import { Invoice } from '../models/Invoice.model'
-// import formidable from 'formidable'
-import fs from 'fs'
+// import fs from 'fs'
 // import path from 'path'
-// import converter64 from '../middlewares/converter'
+// import uploadFilesMiddleware from '../middlewares/storage'
 
 
 class inventoryController {
@@ -40,7 +39,7 @@ class inventoryController {
             })
     }
     static getSuplierByName(req: Request, res: Response, next: NextFunction) {
-        Suplier.findOne({ suplier_name: req.body.suplier_name })
+        Suplier.findOne({suplier_name: req.body.suplier_name})
             .then((result) => {
                 res.status(200).json({ success: true, message: "Suplier detail:", data: result })
             })
@@ -97,20 +96,16 @@ class inventoryController {
             next(err)
         }
     }
-    // static uploadImage(req: Request, res: Response) {
-    //     const formdata = new formidable.IncomingForm();
-    //     formdata.parse(req, function (error, fields, file){
-    //         const oldPath = file.path;
-    //         const newPath = __dirname + "../images" + file.name;
-    //         fs.rename(oldPath, newPath, function (err){
-
-    //         })
-    //     })
-    // }
-    static async createProduct(req: Request, res: Response, next: NextFunction) {
-        // const file = fs.readFileSync(req.body.image, { encoding: 'base64' })
-        // const imageBuffer = Buffer.from(file).toString()
-        const image: string = req.body.image;
+    static async createProduct(req: any, res: Response, next: NextFunction) {
+        // const uploadFiles = require('../middlewares/multer')
+        // const upload = await uploadFiles((err) => {
+        //     if (err) {
+        //         console.log("uploadFiles error:", err)
+        //     }
+        // })
+        // console.log(req.file)
+        // await uploadFilesMiddleware(req, res);
+        const inputImage = req.body.image
         const inputSuplierName: string = req.body.suplier_name.toUpperCase();
         const inputBrandName: string = req.body.brand_name.toUpperCase();
         const inputProductName: string = req.body.product_name.toUpperCase();
@@ -129,6 +124,9 @@ class inventoryController {
 
         let createProduct: any;
         try {
+            // if (req.file == undefined) {
+            //     res.status(422).json({ success: false, message: "Image not detected" })
+            // } else
             if (getSuplierName === undefined) {
                 res.status(422).json({ success: false, message: "Suplier not found" })
             } else if (checkProduct === 0) {
@@ -136,7 +134,7 @@ class inventoryController {
                     suplier_name: inputSuplierName,
                     brand_name: inputBrandName,
                     product_name: inputProductName,
-                    image: image,
+                    image: inputImage,
                     uom: inputUom,
                     buyPrice: inputBuyPrice,
                     sellPrice: inputSellPrice,

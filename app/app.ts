@@ -7,8 +7,8 @@ import cors from 'cors'
 import path from 'path'
 import formData from 'express-form-data'
 import os from 'os'
-
-const bodyParser = require('body-parser')
+import bodyparser from 'body-parser'
+// const bodyParser = require('body-parser')
 
 class App {
    public app: Application
@@ -22,15 +22,15 @@ class App {
    }
 
    protected plugin(): void {
-      this.app.use(express.json());
+      // this.app.use(bodyparser.json({ limit: '16mb' }));
+      // this.app.use(bodyparser.urlencoded({ extended: false }));
+
+      this.app.use(express.json({ limit: '16mb' }));
       this.app.use(express.urlencoded({ extended: false }));
       this.app.use(formData.parse({ uploadDir: os.tmpdir(), autoClean: true }));
       this.app.use(formData.format());
       this.app.use(formData.stream());
       this.app.use(formData.union());
-
-      // this.app.use(bodyParser.json());
-      // this.app.use(bodyParser.urlencoded({ extended: false }));
    }
    protected cors(): void {
       this.app.use((req, res, next) => {
