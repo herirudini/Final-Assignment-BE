@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const inventory_controller_1 = __importDefault(require("../controllers/inventory.controller"));
 const authJwt_1 = __importDefault(require("../middlewares/authJwt"));
-const uploadFiles = require('../middlewares/multer');
 class inventoryRouter {
     constructor() {
         this.router = express_1.Router();
