@@ -4,13 +4,6 @@ import { Suplier } from '../models/Suplier.model'
 import { Product } from '../models/Product.model'
 import { Delivery } from '../models/Delivery.model'
 import { Invoice } from '../models/Invoice.model'
-<<<<<<< HEAD
-=======
-// import fs from 'fs'
-// import path from 'path'
-// import uploadFilesMiddleware from '../middlewares/storage'
->>>>>>> parent of 10693b4 (debug limit body parser)
-
 
 class inventoryController {
     static async createSuplier(req: Request, res: Response, next: NextFunction) {
@@ -100,18 +93,7 @@ class inventoryController {
         }
     }
     static async createProduct(req: any, res: Response, next: NextFunction) {
-<<<<<<< HEAD
 
-=======
-        // const uploadFiles = require('../middlewares/multer')
-        // const upload = await uploadFiles((err) => {
-        //     if (err) {
-        //         console.log("uploadFiles error:", err)
-        //     }
-        // })
-        // console.log(req.file)
-        // await uploadFilesMiddleware(req, res);
->>>>>>> parent of 10693b4 (debug limit body parser)
         const inputImage = req.body.image
         const inputSuplierName: string = req.body.suplier_name.toUpperCase();
         const inputBrandName: string = req.body.brand_name.toUpperCase();

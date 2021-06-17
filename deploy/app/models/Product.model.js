@@ -13,7 +13,7 @@ const productSchema = new mongoose_1.Schema({
     suplier_name: { type: String, required: true },
     brand_name: { type: String, required: true },
     product_name: { type: String, required: true },
-    image: { type: String, required: true },
+    image: { type: Buffer, required: true },
     uom: { type: String, required: true },
     stock: { type: Number, default: 0 },
     buyPrice: { type: Number },

@@ -7,8 +7,6 @@ import cors from 'cors'
 import path from 'path'
 import formData from 'express-form-data'
 import os from 'os'
-// import bodyparser from 'body-parser'
-// const bodyParser = require('body-parser')
 
 class App {
    public app: Application

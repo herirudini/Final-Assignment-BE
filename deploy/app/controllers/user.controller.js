@@ -37,7 +37,7 @@ class userController {
                 if (!passwordIsValid) {
                     throw ({ name: 'not_verified' });
                 }
-                else if (ipExist) { //true email and password
+                else if (!ipExist) { //true email and password
                     updateCredentials = yield User_model_1.User.findOneAndUpdate({ email: req.body.email }, { $push: { logIp: ip } }, { new: true });
                     res.status(202).json({ success: true, message: "success login", data: user, token });
                 }
