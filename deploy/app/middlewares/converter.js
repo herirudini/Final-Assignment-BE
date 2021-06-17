@@ -1,33 +1,30 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = __importDefault(require("util"));
-const multer_1 = __importDefault(require("multer"));
-const GridFsStorage = require("multer-gridfs-storage");
-const mongoURI = process.env.DATABASE;
-function uploadImage() {
-    let imageLink;
-    const storage = new GridFsStorage({
-        url: `${mongoURI}`,
-        options: { useNewUrlParser: true, useUnifiedTopology: true },
-        file: (req, file) => {
-            const match = ["image/png", "image/jpeg", "image/jpg"];
-            if (match.indexOf(file.mimetype) === -1) {
-                const filename = `${Date.now()}-acongkelontong-${file.originalname}`;
-                return filename;
-            }
-            return {
-                bucketName: "photos",
-                filename: `${Date.now()}-acongkelontong-${file.originalname}`
-            };
-        }
-    });
-    util_1.default.promisify(multer_1.default({ storage: storage }).single("image"));
-    return imageLink = storage.file.filename;
-}
-exports.default = uploadImage;
+// import fs from 'fs';
+// export default function converter64(file: any) {
+//         const binary = fs.readFileSync(file);
+//         return new Buffer(binary).toString('base64')
+// }
+// import util from 'util';
+// import multer from 'multer';
+// const GridFsStorage = require("multer-gridfs-storage");
+// const mongoURI: string = process.env.DATABASE as string;
+// const storage = new GridFsStorage({
+//         url: `${mongoURI}`,
+//         options: { useNewUrlParser: true, useUnifiedTopology: true },
+//         file: (req: any, file: any) => {
+//                 const match = ["image/png", "image/jpeg", "image/jpg"];
+//                 if (match.indexOf(file.mimetype) === -1) {
+//                         const filename = `${Date.now()}-acongkelontong-${file.originalname}`;
+//                         return filename;
+//                 }
+//                 return {
+//                         bucketName: "photos",
+//                         filename: `${Date.now()}-acongkelontong-${file.originalname}`
+//                 };
+//         }
+// });
+// const uploadImage = util.promisify(multer({ storage: storage }).single("image"))
+// module.exports = uploadImage;
 // import { Request, Response, NextFunction } from 'express'
 // const GridFsStorage = require('multer-gridfs-storage')
 // const grid = GridFsStorage()
