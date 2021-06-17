@@ -14,8 +14,9 @@ const Suplier_model_1 = require("../models/Suplier.model");
 const Product_model_1 = require("../models/Product.model");
 const Delivery_model_1 = require("../models/Delivery.model");
 const Invoice_model_1 = require("../models/Invoice.model");
+// import fs from 'fs'
 // import path from 'path'
-// import converter64 from '../middlewares/converter'
+// import uploadFilesMiddleware from '../middlewares/storage'
 class inventoryController {
     static createSuplier(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -110,20 +111,17 @@ class inventoryController {
             }
         });
     }
-    // static uploadImage(req: Request, res: Response) {
-    //     const formdata = new formidable.IncomingForm();
-    //     formdata.parse(req, function (error, fields, file){
-    //         const oldPath = file.path;
-    //         const newPath = __dirname + "../images" + file.name;
-    //         fs.rename(oldPath, newPath, function (err){
-    //         })
-    //     })
-    // }
     static createProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            // const file = fs.readFileSync(req.body.image, { encoding: 'base64' })
-            // const imageBuffer = Buffer.from(file).toString()
-            const image = req.body.image;
+            // const uploadFiles = require('../middlewares/multer')
+            // const upload = await uploadFiles((err) => {
+            //     if (err) {
+            //         console.log("uploadFiles error:", err)
+            //     }
+            // })
+            // console.log(req.file)
+            // await uploadFilesMiddleware(req, res);
+            const inputImage = req.body.image;
             const inputSuplierName = req.body.suplier_name.toUpperCase();
             const inputBrandName = req.body.brand_name.toUpperCase();
             const inputProductName = req.body.product_name.toUpperCase();
@@ -140,6 +138,9 @@ class inventoryController {
             let pushBrand;
             let createProduct;
             try {
+                // if (req.file == undefined) {
+                //     res.status(422).json({ success: false, message: "Image not detected" })
+                // } else
                 if (getSuplierName === undefined) {
                     res.status(422).json({ success: false, message: "Suplier not found" });
                 }
@@ -148,7 +149,7 @@ class inventoryController {
                         suplier_name: inputSuplierName,
                         brand_name: inputBrandName,
                         product_name: inputProductName,
-                        image: image,
+                        image: inputImage,
                         uom: inputUom,
                         buyPrice: inputBuyPrice,
                         sellPrice: inputSellPrice,
