@@ -253,7 +253,7 @@ class inventoryController {
     static getAllProduct(req: Request, res: Response, next: NextFunction) {
         Product.find()
             .then((result) => {
-                res.status(200).json({ success: true, message: "All Products:", data: result })
+                res.type('image/webp').status(200).json({ success: true, message: "All Products:", data: result })
             })
             .catch((err) => {
                 next(err)
